@@ -1,0 +1,404 @@
+<data name="dossierSoumission" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.dossierSoumissionDS" transports="http https">
+  <description />
+  <config id="dossierSomissionDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://13.244.237.172:5432/dossier_somission</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config>
+  <resource path="addFolderNumber" method="POST">
+    <description />
+    <call-query href="addNumeroDossier">
+      <with-param name="numeroDossier" query-param="numeroDossier" />
+      <with-param name="idIpAdress" query-param="idIpAdress" />
+    </call-query>
+  </resource>
+  <resource path="updateLienDossier" method="PUT">
+    <description />
+    <call-query href="updateLienDossier">
+      <with-param name="lienDossier" query-param="lienDossier" />
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource path="addDocument" method="POST">
+    <description />
+    <call-query href="addDocument">
+      <with-param name="nomDocument" query-param="nomDocument" />
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="idTypeDocument" query-param="idTypeDocument" />
+      <with-param name="path" query-param="path" />
+    </call-query>
+  </resource>
+  <resource path="addLinkDocument" method="POST">
+    <description />
+    <call-query href="addLinkDocument">
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="idSociete" query-param="idSociete" />
+      <with-param name="lienConsultationFormulaire" query-param="lienConsultationFormulaire" />
+      <with-param name="lienEditionFormulaire" query-param="lienEditionFormulaire" />
+    </call-query>
+  </resource>
+  <resource path="verifyLink" method="GET">
+    <description />
+    <call-query href="verifyLink">
+      <with-param name="type" query-param="type" />
+      <with-param name="pod" query-param="pod" />
+    </call-query>
+  </resource>
+  <resource path="getFolderIdByLink" method="GET">
+    <description />
+    <call-query href="getfolderIdByLink">
+      <with-param name="type_link" query-param="type_link" />
+      <with-param name="pod" query-param="pod" />
+    </call-query>
+  </resource>
+  <resource path="getListDocumentById" method="GET">
+    <description />
+    <call-query href="getListDocumentById">
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource path="getInformationDossier" method="GET">
+    <description />
+    <call-query href="getInformationDossier">
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource path="updateStatutNouveau" method="PUT">
+    <description />
+    <call-query href="updateStatutNouveau">
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="value" query-param="value" />
+    </call-query>
+  </resource>
+  <resource path="updateStatutMAJ" method="PUT">
+    <description />
+    <call-query href="updateStatutMAJ">
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="value" query-param="value" />
+    </call-query>
+  </resource>
+  <resource path="updateStatutDossier" method="PUT">
+    <description />
+    <call-query href="updateStatutDossier">
+      <with-param name="idStatutDossier" query-param="idStatutDossier" />
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource path="getstatistiqueTotal" method="GET">
+    <description />
+    <call-query href="statistiqueTotal">
+      <with-param name="idStatutDossier" query-param="idStatutDossier" />
+    </call-query>
+  </resource>
+  <resource path="getListFolderDESC" method="GET">
+    <description>folder's list desc</description>
+    <call-query href="listFolderDESC">
+      <with-param name="limit" query-param="limit" />
+      <with-param name="offset" query-param="offset" />
+    </call-query>
+  </resource>
+  <resource path="getListFolderASC" method="GET">
+    <description>folder's list asc</description>
+    <call-query href="listFolderASC">
+      <with-param name="limit" query-param="limit" />
+      <with-param name="offset" query-param="offset" />
+    </call-query>
+  </resource>
+  <resource path="addComment" method="POST">
+    <description />
+    <call-query href="addComment">
+      <with-param name="idGroup" query-param="idGroup" />
+      <with-param name="commentaire" query-param="commentaire" />
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="idUtilisateur" query-param="idUtilisateur" />
+      <with-param name="idStatutCommentaire" query-param="idStatutCommentaire" />
+    </call-query>
+  </resource>
+  <resource path="getCommentList/{idEntite}" method="GET">
+    <description />
+    <call-query href="commentListByGroup">
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="idEntite" query-param="idEntite" />
+    </call-query>
+  </resource>
+  <resource path="addRdv" method="POST">
+    <description>ajout rendez-vous</description>
+    <call-query href="addRdv">
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="dateRendezVous" query-param="dateRendezVous" />
+      <with-param name="idUtilisateur" query-param="idUtilisateur" />
+      <with-param name="heureRdv" query-param="heureRdv" />
+    </call-query>
+  </resource>
+  <resource path="addFolderValidationStatus" method="POST">
+    <description>add FolderValidationStatus</description>
+    <call-query href="addFolderValidationStatus">
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="idStatutValidation" query-param="idStatutValidation" />
+    </call-query>
+  </resource>
+  <resource path="deleteFolderValidationStatus" method="DELETE">
+    <description>Supprimer un statut validation Dossier</description>
+    <call-query href="deleteFolderValidationStatus">
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="idStatutValidation" query-param="idStatutValidation" />
+    </call-query>
+  </resource>
+  <resource path="getlistFolderValidationStatus" method="GET">
+    <description />
+    <call-query href="listFolderValidationStatus">
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource path="getlistAllValidationStatus" method="GET">
+    <description />
+    <call-query href="listAllValidationStatus" />
+  </resource>
+  <resource path="getListRdv" method="GET">
+    <description>liste des rendez d'un dossier</description>
+    <call-query href="listRdv">
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource path="listStatutDepot" method="GET">
+    <description />
+    <call-query href="listStatutDepot" />
+  </resource>
+  <resource path="setFolderDepositStatus" method="PUT">
+    <description />
+    <call-query href="setFolderDepositStatus">
+      <with-param name="idStatutDepot" query-param="idStatutDepot" />
+      <with-param name="idDossier " query-param="idDossier " />
+    </call-query>
+  </resource>
+  <resource path="addIpAdress" method="POST">
+    <description />
+    <call-query href="addIpAdress">
+      <with-param name="blacklist" query-param="blacklist" />
+      <with-param name="ipAdress" query-param="ipAdress" />
+    </call-query>
+  </resource>
+  <resource path="checkBlackList" method="GET">
+    <description />
+    <call-query href="isBlacklist">
+      <with-param name="ipAdress" query-param="ipAdress" />
+    </call-query>
+  </resource>
+  <resource path="getStatistiqueOthers/{idStatutDossier}" method="GET">
+    <description>Statistique nouveau,terminer etc..</description>
+    <call-query href="statistiqueDossierNouveauTermine">
+      <with-param name="idStatutDossier" query-param="idStatutDossier" />
+    </call-query>
+  </resource>
+  <query id="addNumeroDossier" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public.dossier(
+	 "numeroDossier","idIpAdress")
+	VALUES (:numeroDossier,:idIpAdress) RETURNING "idDossier","numeroDossier"</sql>
+    <param type="IN" name="numeroDossier" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="idIpAdress" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{"idDossiers":{"idDossier":$idDossier,"numeroDossier":"$numeroDossier"}}</result>
+  </query>
+  <query id="updateLienDossier" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.dossier
+	SET  "lienDossier"=:lienDossier
+	WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="lienDossier" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+  </query>
+  <query id="addDocument" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public.document(
+	"nomDocument", "idDossier", "idTypeDocument","path")
+	VALUES (:nomDocument, :idDossier, :idTypeDocument,:path);</sql>
+    <param type="IN" name="nomDocument" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idTypeDocument" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="path" sqlType="STRING" paramType="SCALAR" />
+  </query>
+  <query id="addLinkDocument" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public."lienFormulaire"(
+	"idDossier", "idSociete", "lienConsultationFormulaire", "lienEditionFormulaire")
+	VALUES (:idDossier, :idSociete, :lienConsultationFormulaire, :lienEditionFormulaire)</sql>
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="lienEditionFormulaire" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="lienConsultationFormulaire" sqlType="STRING" paramType="SCALAR" />
+  </query>
+  <query id="verifyLink" useConfig="dossierSomissionDS">
+    <sql>WITH
+    constant_type AS (VALUES (:type)),
+    pod AS (VALUES (:pod))
+
+SELECT  CASE WHEN (table constant_type)='read' THEN (SELECT "idDossier" as exitinglink from public."lienFormulaire" where "lienConsultationFormulaire"=(table pod) LIMIT 1 ) 
+						ELSE  (SELECT "idDossier" as exitinglink from public."lienFormulaire" where "lienEditionFormulaire"=(table pod) LIMIT 1 ) 
+						END
+from public."lienFormulaire" LIMIT 1  
+</sql>
+    <param type="IN" name="type" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="pod" sqlType="STRING" paramType="SCALAR" />
+    <result outputType="json">{"links":{"link":{"idDossier":$exitinglink }}}</result>
+  </query>
+  <query id="getfolderIdByLink" useConfig="dossierSomissionDS">
+    <sql>WITH
+    constant_type AS (VALUES (:type_link)),
+    pod AS (VALUES (:pod))
+
+SELECT  CASE WHEN (table constant_type)='read' THEN (SELECT "idDossier" from public."lienFormulaire" where "lienConsultationFormulaire"=(table pod) LIMIT 1 ) 
+						ELSE  (SELECT "idDossier"  from public."lienFormulaire" where "lienEditionFormulaire"=(table pod) LIMIT 1 ) 
+						END
+from public."lienFormulaire" LIMIT 1     
+</sql>
+    <param type="IN" name="type_link" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="pod" sqlType="STRING" paramType="SCALAR" />
+    <result outputType="json">{"idDossiers":{"dossier":{"idDossier":$idDossier}}}</result>
+  </query>
+  <query id="getListDocumentById" useConfig="dossierSomissionDS">
+    <sql>SELECT "nomDocument", "idDossier", "nbDeposer", "idTypeDocument", "idDocument", path
+	FROM public.document WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{"documents":{"document":[{"nomDocument":"$nomDocument","idDossier":$idDossier,"nbDeposer":"$nbDeposer", "idTypeDocument":"$idTypeDocument", "idDocument":"$idDocument", path:"$path"}]}}</result>
+  </query>
+  <query id="getInformationDossier" useConfig="dossierSomissionDS">
+    <sql>SELECT public.dossier."idDossier", "lienDossier", "dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", updated_at, "idStatutDossier", "numeroDossier","lienConsultationFormulaire","lienEditionFormulaire"
+	FROM public.dossier INNER JOIN public."lienFormulaire" on public.dossier."idDossier"=public."lienFormulaire"."idDossier" and public.dossier."idDossier"=:idDossier</sql>
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{"dossierInfo":{"iformation":{"idDossier":$idDossier,"numeroDossier":$numeroDossier,"lienConsultationFormulaire":"$lienConsultationFormulaire","lienEditionFormulaire":"$lienEditionFormulaire","idStatutDepot":"$idStatutDepot","idStatutDossier":"$idStatutDossier"}}}</result>
+  </query>
+  <query id="updateStatutNouveau" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.statut SET nouveau=:value WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="value" sqlType="BOOLEAN" paramType="SCALAR" />
+  </query>
+  <query id="updateStatutMAJ" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.statut SET "MAJ"=:value WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="value" sqlType="BOOLEAN" paramType="SCALAR" />
+  </query>
+  <query id="updateStatutDossier" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.dossier
+	SET "idStatutDossier"=:idStatutDossier
+	WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="idStatutDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+  </query>
+  <query id="selectAllFolder" useConfig="dossierSomissionDS">
+    <sql>SELECT *
+	FROM public.dossier</sql>
+    <result />
+  </query>
+  <query id="statistiqueDossierNouveauTermine" useConfig="dossierSomissionDS">
+    <sql>
+SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"=ANY(:idStatutDossier::int[])</sql>
+    <param type="IN" name="idStatutDossier" sqlType="STRING" paramType="ARRAY" />
+    <result outputType="json">{"statistiques":{"nombre":{"quantite":$nombre}}}</result>
+  </query>
+  <query id="statistiqueTotal" useConfig="dossierSomissionDS">
+    <sql>SELECT COUNT("idDossier") as nombre  FROM public.dossier</sql>
+    <param type="IN" name="idStatutDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{"statistiquesTotal":{"nombre":{"quantite":$nombre}}}</result>
+  </query>
+  <query id="listFolderDESC" useConfig="dossierSomissionDS">
+    <sql>SELECT "idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", "numeroDossier", updated_at, "idStatutDossier"
+	FROM public.dossier order by "dateSoumission" desc limit :limit offset :offset</sql>
+    <param type="IN" name="limit" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="offset" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">
+
+
+{"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission", "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",  "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier" }]}}</result>
+  </query>
+  <query id="listFolderASC" useConfig="dossierSomissionDS">
+    <sql>SELECT "idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", "numeroDossier", updated_at, "idStatutDossier"
+	FROM public.dossier order by "dateSoumission" asc limit :limit offset :offset</sql>
+    <param type="IN" name="limit" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="offset" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">
+
+
+{"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission", "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",  "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier" }]}}</result>
+  </query>
+  <query id="addComment" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public.commentaire(
+	"idEntite", commentaires, "idDossier", "idUtilisateur", "idStatutCommentaire")
+	VALUES (:idGroup, :commentaire, :idDossier, :idUtilisateur, :idStatutCommentaire);</sql>
+    <param type="IN" name="idGroup" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="commentaire" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idUtilisateur" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="idStatutCommentaire" sqlType="INTEGER" paramType="SCALAR" defaultValue="null" />
+  </query>
+  <query id="commentListByGroup" useConfig="dossierSomissionDS">
+    <sql>SELECT "idEntite", commentaires, "dateCommentaire", "idDossier", "idUtilisateur", "idStatutCommentaire", "idCommentaire"
+	FROM public.commentaire WHERE "idEntite"=ANY(:idEntite ::varchar[]) and "idDossier"=:idDossier ORDER BY "dateCommentaire"  DESC</sql>
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idEntite" sqlType="STRING" paramType="ARRAY" />
+    <result outputType="json">{"comments":{"comment":[{"idEntite":"$idEntite", "commentaires":"$commentaires", "dateCommentaire":"$dateCommentaire", "idDossier":"$idDossier", "idUtilisateur":"$idUtilisateur", "idStatutCommentaire":"$idStatutCommentaire", "idCommentaire":"$idCommentaire"
+}]}}</result>
+  </query>
+  <query id="addRdv" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public."rendezVous"(
+	 "idDossier", "dateRendezVous", "idUtilisateur","heureRdv")
+	VALUES (:idDossier, :dateRendezVous::date, :idUtilisateur,:heureRdv::time);</sql>
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="dateRendezVous" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="idUtilisateur" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="heureRdv" sqlType="STRING" paramType="SCALAR" />
+  </query>
+  <query id="addFolderValidationStatus" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public."dossierStatutValidation"(
+	"idDossier", "idStatutValidation")
+	VALUES (:idDossier, :idStatutValidation);</sql>
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idStatutValidation" sqlType="INTEGER" paramType="SCALAR" />
+  </query>
+  <query id="deleteFolderValidationStatus" useConfig="dossierSomissionDS">
+    <sql>DELETE FROM public."dossierStatutValidation"
+	WHERE "idDossier"=:idDossier and "idStatutValidation"=:idStatutValidation</sql>
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idStatutValidation" sqlType="INTEGER" paramType="SCALAR" />
+  </query>
+  <query id="listFolderValidationStatus" useConfig="dossierSomissionDS">
+    <sql>SELECT "idDossier", "idStatutValidation"
+	FROM public."dossierStatutValidation" WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{"folderValidationStatuses":{"folderValidationStatus":[{"idDossier":"$idDossier","idStatutValidation":"$idStatutValidation"}]}}</result>
+  </query>
+  <query id="listAllValidationStatus" useConfig="dossierSomissionDS">
+    <sql>SELECT "idStatutValidation", "libelleStatutValidation"
+	FROM public."statutValidation"</sql>
+    <result outputType="json">{"validationStatuses":{"validationStatus":[{"idStatutValidation":"$idStatutValidation","libelleStatutValidation":"$libelleStatutValidation"}]}}</result>
+  </query>
+  <query id="listRdv" useConfig="dossierSomissionDS">
+    <sql>SELECT "idRendezVous", "idDossier", "dateRendezVous", "idUtilisateur", "heureRdv"
+	FROM public."rendezVous" WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">
+{"rdvs":{"rdv":[{"idRendezVous":"$idRendezVous", "idDossier":"$idDossier", "dateRendezVous":"$dateRendezVous", "idUtilisateur":"$idUtilisateur", "heureRdv":"$heureRdv"}]}}</result>
+  </query>
+  <query id="listStatutDepot" useConfig="dossierSomissionDS">
+    <sql>SELECT "idStatutDepot", "nomStatutDepot"
+	FROM public."statutDepot";</sql>
+    <result outputType="json">{"depositStatuses":{"depositStatuse":[{"idStatutDepot":"$idStatutDepot", "nomStatutDepot":"$nomStatutDepot"
+}]}}</result>
+  </query>
+  <query id="setFolderDepositStatus" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.dossier
+	SET  "idStatutDepot"=:idStatutDepot
+	WHERE "idDossier"=:idDossier ;</sql>
+    <param type="IN" name="idStatutDepot" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idDossier " sqlType="INTEGER" paramType="SCALAR" />
+  </query>
+  <query id="addIpAdress" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public."adresseIp"(
+	"ipAdress", blacklist)
+	VALUES ( :ipAdress, :blacklist) RETURNING id;</sql>
+    <param type="IN" name="blacklist" sqlType="BOOLEAN" paramType="SCALAR" defaultValue="false" />
+    <param type="IN" name="ipAdress" sqlType="STRING" paramType="SCALAR" />
+    <result outputType="json">{"idIpAdresses":{"idIpAdress":"$id"}}</result>
+  </query>
+  <query id="isBlacklist" useConfig="dossierSomissionDS">
+    <sql>SELECT "ipAdress", id, blacklist FROM public."adresseIp" WHERE "ipAdress"=:ipAdress</sql>
+    <param type="IN" name="ipAdress" sqlType="STRING" paramType="SCALAR" />
+    <result outputType="json">{"isBlackLists":{"isBlackList":{"blacklist":$blacklist,"id":"$id"}}}</result>
+  </query>
+</data>

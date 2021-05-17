@@ -1,0 +1,26 @@
+<data transports="https http" serviceGroup="mg.gov.edbm.societe.siteInformationDS" serviceNamespace="" name="siteInformation">
+  <description>site web d'information</description>
+  <operation name="getCategoryName">
+    <call-query href="categoryName">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </operation>
+  <resource method="GET" path="getCategoryName">
+    <description />
+    <call-query href="categoryName">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="categoryName" useConfig="siteInformationDS">
+    <sql>SELECT "codeSection", "codeDivision", "codeGroupe", "codeClasse", id, "descriptivesCategorie_fr", note_fr, "descriptivesCategorie_en", note_en, "descriptivesCategorie_mg", note_mg, created_by, updated_by, created_at, updated_at
+	FROM public."categorieActivite" WHERE id=:id</sql>
+    <param type="IN" name="id" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"categoryNames":{"categoryName":{"descriptivesCategorie_fr":"$descriptivesCategorie_fr"}}}</result>
+  </query>
+  <config id="siteInformationDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://13.244.237.172:5432/siteWebInformation</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config>
+</data>
