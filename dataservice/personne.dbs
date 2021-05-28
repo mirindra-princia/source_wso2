@@ -169,6 +169,15 @@
       <with-param name="idAdresse" query-param="idAdresse" />
     </call-query>
   </resource>
+  <resource path="updatePersonIdentity" method="PUT">
+    <description />
+    <call-query href="updatePersonIdentity">
+      <with-param name="idTypePiece" query-param="idTypePiece" />
+      <with-param name="dateDelivrancePiece" query-param="dateDelivrancePiece" />
+      <with-param name="lieuDelivrancePiece" query-param="lieuDelivrancePiece" />
+      <with-param name="numeroPiece" query-param="numeroPiece" />
+    </call-query>
+  </resource>
   
   <query id="selectAllRole" useConfig="personneDS">
     <sql>SELECT id_role, libelle_role, id_parent
@@ -381,5 +390,16 @@ FROM public.role ;</sql>
     <param name="idArrondissement" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
     <param name="idPays" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="true" />
     <param name="idAdresse" paramType="SCALAR" sqlType="INTEGER" type="IN" />
+  </query>
+  <query id="updatePersonIdentity" useConfig="personneDS">
+    <sql>
+        UPDATE public."pieceIdentite"
+        SET  "numeroPiece"=:numeroPiece, "idTypePiece"=:idTypePiece, "dateDelivrancePiece"=:dateDelivrancePiece, "lieuDelivrancePiece"=:lieuDelivrancePiece
+        WHERE "numeroPiece"=:numeroPiece
+    </sql>
+    <param name="idTypePiece" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
+    <param name="dateDelivrancePiece" paramType="SCALAR" sqlType="DATE" type="IN" optional="false" />
+    <param name="lieuDelivrancePiece" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+    <param name="numeroPiece" paramType="SCALAR" sqlType="STRING" type="IN" />
   </query>
 </data>
