@@ -130,6 +130,13 @@
       <with-param name="tel2" query-param="tel2" />
     </call-query>
   </resource>
+  <resource path="getPersonProfil" method="GET">
+    <description />
+    <call-query href="getPersonProfil">
+      <with-param name="idPersonne" query-param="idPersonne" />
+    </call-query>
+  </resource>
+  
   <query id="selectAllRole" useConfig="personneDS">
     <sql>SELECT id_role, libelle_role, id_parent
 FROM public.role ;</sql>
@@ -268,5 +275,34 @@ FROM public.role ;</sql>
     <param name="idConjoint" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="true" />
     <param name="tel2" paramType="SCALAR" sqlType="STRING" type="IN" optional="true" />
     <result outputType="json">{"data":{"idPersonne":"$idPersonne"}}</result>
+  </query>
+  <query id="getPersonProfil" useConfig="personneDS">
+    <sql>
+    	SELECT * FROM public.personne personne JOIN public.adresse adresse ON personne.idadresse = adresse."idAdresse" JOIN public.role role ON role.id_role = personne.idrole WHERE "idPersonne"=:idPersonne
+	</sql>
+    <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">
+		{"personne":{"idPersonne":"$idPersonne", "nom":"$nom","prenom":"$prenom","nomPere":"$nomPere", "nomMere":"$nomMere", "dateNaissance":"$dateNaissance", "lieuNaissance":"$lieuNaissance", "situationMatrimonial":"$situationMatrimonial", 
+	    "pieceIdentite":"$pieceIdentite", "sexe":"$sexe", "societe_mandataire":"$societe_mandataire", "idadresse":"$idadresse", "idrole":"$idrole", "tel":"$tel","e_mail":"$e_mail","idUtilisateur":"$idUtilisateur", "engagement":"$engagement", "civilite":"$civilite", 
+	    "idPersonneSociete":"$idPersonneSociete", "idConjoint":"$idConjoint", "tel2":"$tel2", 
+	    "adresse": {
+	    	"idAdresse":"$idAdresse",
+	    	"idFokontany":"$idFokontany",
+	    	"idCommune":"$idCommune",
+	    	"idRegion":"$idRegion",
+	    	"idDistrict":"$idDistrict",
+	    	"idArrondissement":"$idArrondissement",
+	    	"adresse":"$adresse",
+	    	"idProvince":"$idProvince",
+	    	"idPays":"$idPays"
+	    },
+	    "role":{
+	    	"id_role":"$id_role",
+	    	"libelle_role":"$libelle_role",
+	    	"id_parent":"$id_parent"
+	    },
+	    
+	    }}
+	</result>
   </query>
 </data>
