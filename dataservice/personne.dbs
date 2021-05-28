@@ -178,6 +178,14 @@
       <with-param name="numeroPiece" query-param="numeroPiece" />
     </call-query>
   </resource>
+  <resource path="updatePersonSociety" method="PUT">
+    <description />
+    <call-query href="updatePersonSociety">
+      <with-param name="nomSociete" query-param="nomSociete" />
+      <with-param name="telSociete" query-param="telSociete" />
+      <with-param name="idPersonneSociete" query-param="idPersonneSociete" />
+    </call-query>
+  </resource>
   
   <query id="selectAllRole" useConfig="personneDS">
     <sql>SELECT id_role, libelle_role, id_parent
@@ -401,5 +409,15 @@ FROM public.role ;</sql>
     <param name="dateDelivrancePiece" paramType="SCALAR" sqlType="DATE" type="IN" optional="false" />
     <param name="lieuDelivrancePiece" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
     <param name="numeroPiece" paramType="SCALAR" sqlType="STRING" type="IN" />
+  </query>
+  <query id="updatePersonSociety" useConfig="personneDS">
+    <sql>
+        UPDATE public."personneSociete"
+        SET  "nomSociete"=:nomSociete, "telSociete"=:telSociete
+        WHERE "idPersonneSociete"=:idPersonneSociete
+    </sql>
+    <param name="nomSociete" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+    <param name="telSociete" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+    <param name="idPersonneSociete" paramType="SCALAR" sqlType="INTEGER" type="IN" />
   </query>
 </data>
