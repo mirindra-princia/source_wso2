@@ -155,6 +155,20 @@
       <with-param name="tel2" query-param="tel2" />
     </call-query>
   </resource>
+  <resource path="updatePersonAdress" method="PUT">
+    <description />
+    <call-query href="updatePersonAdress">
+      <with-param name="idFokontany" query-param="idFokontany" />
+      <with-param name="idCommune" query-param="idCommune" />
+      <with-param name="idDistrict" query-param="idDistrict" />
+      <with-param name="idProvince" query-param="idProvince" />
+      <with-param name="idRegion" query-param="idRegion" />
+      <with-param name="adresse" query-param="adresse" />
+      <with-param name="idArrondissement" query-param="idArrondissement" />
+      <with-param name="idPays" query-param="idPays" />
+      <with-param name="idAdresse" query-param="idAdresse" />
+    </call-query>
+  </resource>
   
   <query id="selectAllRole" useConfig="personneDS">
     <sql>SELECT id_role, libelle_role, id_parent
@@ -351,5 +365,21 @@ FROM public.role ;</sql>
     <param name="e_mail" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
     <param name="civilite" paramType="SCALAR" sqlType="TINYINT" type="IN" optional="true" />
     <param name="tel2" paramType="SCALAR" sqlType="STRING" type="IN" optional="true" />
+  </query>
+  <query id="updatePersonAdress" useConfig="personneDS">
+    <sql>
+        UPDATE public.adresse
+        SET  "idFokontany"=:idFokontany, "idCommune"=:idCommune, "idRegion"=:idRegion, "idDistrict"=:idDistrict, "idArrondissement"=:idArrondissement, adresse=:adresse, "idProvince"=:idProvince, "idPays" = :idPays
+        WHERE "idAdresse"=:idAdresse
+    </sql>
+    <param name="idFokontany" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
+    <param name="idCommune" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
+    <param name="idDistrict" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
+    <param name="idProvince" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
+    <param name="idRegion" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
+    <param name="adresse" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+    <param name="idArrondissement" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
+    <param name="idPays" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="true" />
+    <param name="idAdresse" paramType="SCALAR" sqlType="INTEGER" type="IN" />
   </query>
 </data>
