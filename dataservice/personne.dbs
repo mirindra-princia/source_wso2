@@ -176,6 +176,7 @@
       <with-param name="dateDelivrancePiece" query-param="dateDelivrancePiece" />
       <with-param name="lieuDelivrancePiece" query-param="lieuDelivrancePiece" />
       <with-param name="numeroPiece" query-param="numeroPiece" />
+      <with-param name="ancienNumeroPiece" query-param="ancienNumeroPiece" />
     </call-query>
   </resource>
   <resource path="updatePersonSociety" method="PUT">
@@ -403,12 +404,13 @@ FROM public.role ;</sql>
     <sql>
         UPDATE public."pieceIdentite"
         SET  "numeroPiece"=:numeroPiece, "idTypePiece"=:idTypePiece, "dateDelivrancePiece"=:dateDelivrancePiece, "lieuDelivrancePiece"=:lieuDelivrancePiece
-        WHERE "numeroPiece"=:numeroPiece
+        WHERE "numeroPiece"=:ancienNumeroPiece
     </sql>
     <param name="idTypePiece" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
     <param name="dateDelivrancePiece" paramType="SCALAR" sqlType="DATE" type="IN" optional="false" />
     <param name="lieuDelivrancePiece" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
     <param name="numeroPiece" paramType="SCALAR" sqlType="STRING" type="IN" />
+    <param name="ancienNumeroPiece" paramType="SCALAR" sqlType="STRING" type="IN" />
   </query>
   <query id="updatePersonSociety" useConfig="personneDS">
     <sql>
