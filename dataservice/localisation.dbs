@@ -2,7 +2,7 @@
   <description>Service adresse</description>
   <config id="localisationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://13.244.237.172:5432/localisation</property>
+    <property name="url">jdbc:postgresql://localhost:5432/localisation</property>
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config>

@@ -19,7 +19,7 @@
   </query>
   <config id="siteInformationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://13.244.237.172:5432/siteWebInformation</property>
+    <property name="url">jdbc:postgresql://localhost:5432/siteWebInformation</property>
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config>

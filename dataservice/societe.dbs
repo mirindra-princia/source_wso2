@@ -2,7 +2,7 @@
   <description />
   <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://13.244.237.172:5432/societe</property>
+    <property name="url">jdbc:postgresql://localhost:5432/societe</property>
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config>
@@ -154,6 +154,7 @@
       <with-param name="finExerciceSocial" query-param="finExerciceSocial" />
       <with-param name="dateStatut" query-param="dateStatut" />
       <with-param name="idPersonne" query-param="idPersonne" />
+      <with-param name="idDossier" query-param="idDossier" />
     </call-query>
   </resource>
   <resource method="PUT" path="updateCompany">
@@ -315,9 +316,9 @@
   </query>
   <query id="addCompany" useConfig="societeDS">
     <sql>INSERT INTO public.societe(
-    "formeJuridique","idFormeJuridique","denominationSocial","nomCommercial",sigle,"objetSocial","idSecteurActivite","activitePrincipal", "activiteImportExport", "activiteIndustrielCollecteur", "activiteGrossiste",capital,"montantPartSocial","dateStatut","choixImposition",tva,duree,"finExerciceSocial","idPersonne")
+    "formeJuridique","idFormeJuridique","denominationSocial","nomCommercial",sigle,"objetSocial","idSecteurActivite","activitePrincipal", "activiteImportExport", "activiteIndustrielCollecteur", "activiteGrossiste",capital,"montantPartSocial","dateStatut","choixImposition",tva,duree,"finExerciceSocial","idPersonne","idDossier")
 	VALUES (
-    :formeJuridique,:idFormeJuridique,:denominationSocial,:nomCommercial,:sigle,:objetSocial,:idSecteurActivite,:activitePrincipal, :activiteImportExport, :activiteIndustrielCollecteur, :activiteGrossiste,:capital,:montantPartSocial,:dateStatut,:choixImposition,:tva,:duree,:finExerciceSocial,:idPersonne) RETURNING "idSociete";</sql>
+    :formeJuridique,:idFormeJuridique,:denominationSocial,:nomCommercial,:sigle,:objetSocial,:idSecteurActivite,:activitePrincipal, :activiteImportExport, :activiteIndustrielCollecteur, :activiteGrossiste,:capital,:montantPartSocial,:dateStatut,:choixImposition,:tva,:duree,:finExerciceSocial,:idPersonne,:idDossier) RETURNING "idSociete","idDossier";</sql>
     <param type="IN" name="formeJuridique" paramType="SCALAR" sqlType="STRING" />
     <param type="IN" name="idFormeJuridique" paramType="SCALAR" sqlType="INTEGER" />
     <param type="IN" name="denominationSocial" paramType="SCALAR" sqlType="STRING" />
@@ -337,7 +338,8 @@
     <param type="IN" name="finExerciceSocial" paramType="SCALAR" sqlType="DATE" />
     <param type="IN" name="dateStatut" paramType="SCALAR" sqlType="DATE" />
     <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" />
-    <result outputType="json">{"idSocietes":{"idSociete":"$idSociete"}}</result>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"idSocietes":{"idSociete":"$idSociete","idDossier":"$idDossier"}}</result>
   </query>
   <query id="updateCompany" useConfig="societeDS">
     <sql>    UPDATE public.societe
@@ -362,6 +364,5 @@
     <param type="IN" name="finExerciceSocial" paramType="SCALAR" sqlType="DATE" />
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" />
     <param type="IN" name="dateStatut" paramType="SCALAR" sqlType="DATE" />
-     
   </query>
 </data>
