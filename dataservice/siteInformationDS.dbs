@@ -19,8 +19,8 @@
   </query>
   <config id="siteInformationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/siteWebInformation</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/siteWebInformation</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
   </config>
 </data>
