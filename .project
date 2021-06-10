@@ -3,6 +3,7 @@
 	<name>edbm_dematerialisation_DS</name>
 	<comment></comment>
 	<projects>
+		<project>edbm_composite</project>
 	</projects>
 	<buildSpec>
 	</buildSpec>
