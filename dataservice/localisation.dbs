@@ -2,9 +2,9 @@
   <description>Service adresse</description>
   <config id="localisationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://13.244.237.172:5432/localisation</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/localisation</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
   </config>
   <resource method="GET" path="province">
     <description>List of all province</description>
@@ -165,11 +165,61 @@
     <param type="IN" name="common_id" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"adresses":{"adress":[{"b":"$b","c":"$c","f":"$f","d":"$d","r":"$r","p":"$p"}]}}</result>
   </query>
-
-
-<resource path="getAdressName" method="GET">
+  <resource path="getAdressName" method="GET">
     <description />
     <call-query href="selectAdressName">
+      <with-param name="fokontany_id" query-param="fokontany_id" />
+      <with-param name="borough_id " query-param="borough_id " />
+      <with-param name="province_id" query-param="province_id" />
+      <with-param name="region_id" query-param="region_id" />
+      <with-param name="district_id" query-param="district_id" />
+      <with-param name="common_id" query-param="common_id" />
+    </call-query>
+  </resource>
+  <query id="getAddressDetail" useConfig="localisationDS">
+    <sql>SELECT fokontany.name as f_name, fokontany.id as f_id, borough.name as b_name, borough.id as b_id, common.name as c_name, common.id as c_id, district.name as d_name, district.id as d_id, region.name as r_name, region.id as r_id, province.name as p_name, province.id as p_id
+	FROM public.borough,public.common,public.district,public.region,public.province,public.fokontany
+	WHERE   common.id= :common_id AND district.id= :district_id AND region.id= :region_id AND province.id= :province_id AND borough.id= :borough_id AND fokontany.id= :fokontany_id</sql>
+    <param type="IN" name="fokontany_id" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="borough_id " sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="province_id" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="region_id" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="district_id" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="common_id" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{"adresse":{
+    "province":{
+    	"id": $p_id,
+    	"name": "$p_name"
+    },
+    "region":{
+    	"id": $r_id,
+    	"name": "$r_name",
+    	"province_id": $p_id
+    },
+    "district":{
+    	"id": $d_id,
+    	"name": "$d_name",
+    	"region_id": $r_id
+    },
+    "commune":{
+    	"id": $c_id,
+    	"name": "$c_name",
+    	"district_id": $d_id
+    },
+    "arrondissement":{
+    	"id": $b_id,
+    	"name": "$b_name",
+    	"common_id": $c_id
+    },
+    "fokontany":{
+    	"id": $f_id,
+    	"name": "$f_name",
+    	"borough_id": $b_id
+    }}}</result>
+  </query>
+  <resource path="getAddressDetail" method="GET">
+    <description />
+    <call-query href="getAddressDetail">
       <with-param name="fokontany_id" query-param="fokontany_id" />
       <with-param name="borough_id " query-param="borough_id " />
       <with-param name="province_id" query-param="province_id" />
