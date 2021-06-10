@@ -1,14 +1,11 @@
 <data name="personne" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.personneDS" transports="http https">
   <description />
-<<<<<<< HEAD
   <config id="personneDS">
     <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/personne</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/personne</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
   </config>
-=======
->>>>>>> cdf839cda4a1aa90311b13e1d6fb02375d24c894
   <resource path="listOfPersonRoleSociety" method="GET">
     <description>List of role off person in societe</description>
     <call-query href="selectAllRole" />
@@ -489,10 +486,4 @@ FROM public.role ;</sql>
     <param name="idAdresse" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
     <result outputType="json">{"adresse":{"idAdresse":$idAdresse}}</result>
   </query>
-  <config id="personneDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://127.0.0.1:5432/edbm_personne</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config>
 </data>
