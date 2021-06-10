@@ -78,10 +78,10 @@
       <with-param name="idSiege" query-param="idSiege" />
     </call-query>
   </resource>
-  <resource method="GET" path="getAdressSiegeSocial">
+  <resource method="GET" path="getAddressById">
     <description />
-    <call-query href="getAdressSiegeSocial">
-      <with-param name="idAdresseSiegeSocial" query-param="idAdresseSiegeSocial" />
+    <call-query href="getAddressById">
+      <with-param name="idAdresse" query-param="idAdresse" />
     </call-query>
   </resource>
   <resource method="PUT" path="updateSociety">
@@ -298,21 +298,19 @@
     <sql>SELECT "idSociete", "denominationSocial", duree, "nomCommercial", "formeJuridique", "dateStatut", capital, "declarationActivite", "activiteImportExport", "activiteIndustrielCollecteur", "totalPart", "idDossier", "idMandataire", "idInterlocuteur", "NIF", "STAT", "RCS", "activiteSecondaire", "objetSocial", "activiteGrossiste", "autreActiviteReglemente", "choixImposition", "nombreAssociePersPhysique", "nombreAssociePersMorale", "nombreDirigeant", "idPersonne", "idSiegeSocial", "activitePrincipal","idFormeJuridique",tva
 	FROM public.societe WHERE "idDossier"=:idDossier</sql>
     <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
-    <result outputType="json">{"societies":{"society":{"idSociete":"$idSociete","denominationSocial":"$denominationSocial","formeJuridique":"$formeJuridique","dateStatut":"$dateStatut","capital":"$capital","activiteImportExport":"$activiteImportExport","activiteIndustrielCollecteur":"$activiteIndustrielCollecteur","idDossier":"$idDossier","objetSocial":"$objetSocial","activiteGrossiste":"$activiteGrossiste","autreActiviteReglemente":"$autreActiviteReglemente","choixImposition":"$choixImposition","nombreAssociePersPhysique":"$nombreAssociePersPhysique","nombreAssociePersMorale":"$nombreAssociePersMorale","nombreDirigeant":"$nombreDirigeant","idPersonne":"$idPersonne","idSiegeSocial":"$idSiegeSocial","activitePrincipal":"$activitePrincipal","idFormeJuridique":"$idFormeJuridique","tva":"$tva"}}}</result>
+    <result outputType="json">{"societe":{"idSociete":"$idSociete","denominationSocial":"$denominationSocial","formeJuridique":"$formeJuridique","dateStatut":"$dateStatut","capital":"$capital","activiteImportExport":"$activiteImportExport","activiteIndustrielCollecteur":"$activiteIndustrielCollecteur","idDossier":"$idDossier","objetSocial":"$objetSocial","activiteGrossiste":"$activiteGrossiste","autreActiviteReglemente":"$autreActiviteReglemente","choixImposition":"$choixImposition","nombreAssociePersPhysique":"$nombreAssociePersPhysique","nombreAssociePersMorale":"$nombreAssociePersMorale","nombreDirigeant":"$nombreDirigeant","idPersonne":"$idPersonne","idSiegeSocial":"$idSiegeSocial","activitePrincipal":"$activitePrincipal","idFormeJuridique":"$idFormeJuridique","tva":"$tva"}}</result>
   </query>
   <query id="getSiegeSocial" useConfig="societeDS">
     <sql>SELECT "idSiege", "idConditionSiege", dureebail, "montantBail", bailleur, "adresseSiegeSocial", "idTypeBailleur", "idTypeContrat"
 	FROM public."siegeSocial" WHERE "idSiege"=:idSiege</sql>
     <param type="IN" name="idSiege" paramType="SCALAR" sqlType="INTEGER" />
-    <result outputType="json">
-
-{"sieges":{"siege":{"idSiege":"$idSiege","idConditionSiege":"$idConditionSiege","dureebail":"$dureebail","montantBail":"$montantBail","adresseSiegeSocial":"$adresseSiegeSocial","idTypeBailleur":"$idTypeBailleur","idTypeContrat":"$idTypeContrat"}}}</result>
+    <result outputType="json">{"siegeSocial":{"idSiege":"$idSiege","idConditionSiege":"$idConditionSiege","dureebail":"$dureebail","montantBail":"$montantBail","adresseSiegeSocial":"$adresseSiegeSocial","idTypeBailleur":"$idTypeBailleur","idTypeContrat":"$idTypeContrat"}}</result>
   </query>
-  <query id="getAdressSiegeSocial" useConfig="societeDS">
+  <query id="getAddressById" useConfig="societeDS">
     <sql>SELECT "idAdresse", "idFokontany", "idCommune", "idDistrict", "idProvince", "idRegion", adresse, "idArrondissement"
-	FROM public.adresse WHERE "idAdresse"=:idAdresseSiegeSocial</sql>
-    <param type="IN" name="idAdresseSiegeSocial" paramType="SCALAR" sqlType="INTEGER" />
-    <result outputType="json">{"adresses":{"adresse":{"idAdresse":$idAdresse,"idFokontany":$idFokontany,"idCommune":$idCommune,"idDistrict":$idDistrict,"idProvince":$idProvince,"idRegion":$idRegion,"adresse":$adresse,"idArrondissement":$idArrondissement}}}</result>
+	FROM public.adresse WHERE "idAdresse"=:idAdresse</sql>
+    <param type="IN" name="idAdresse" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"adresse":{"idAdresse":$idAdresse,"idFokontany":$idFokontany,"idCommune":$idCommune,"idDistrict":$idDistrict,"idProvince":$idProvince,"idRegion":$idRegion,"adresse":$adresse,"idArrondissement":$idArrondissement}}</result>
   </query>
   <query id="addCompany" useConfig="societeDS">
     <sql>INSERT INTO public.societe(

@@ -491,8 +491,8 @@ FROM public.role ;</sql>
   </query>
   <config id="personneDS">
     <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/personne</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
+    <property name="url">jdbc:postgresql://127.0.0.1:5432/edbm_personne</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
   </config>
 </data>
