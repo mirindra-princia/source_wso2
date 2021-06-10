@@ -6,6 +6,12 @@
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config>
+   <config id="personneDSL">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://127.0.0.1:5432/personne</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config>
   <resource path="listOfPersonRoleSociety" method="GET">
     <description>List of role off person in societe</description>
     <call-query href="selectAllRole" />
