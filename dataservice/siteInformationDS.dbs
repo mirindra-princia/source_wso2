@@ -1,29 +1,29 @@
-<data transports="https http" serviceGroup="mg.gov.edbm.societe.siteInformationDS" serviceNamespace="" name="siteInformation">
+<data name="siteInformation" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.siteInformationDS" transports="https http">
   <description>site web d'information</description>
   <operation name="getCategoryName">
     <call-query href="categoryName">
       <with-param name="id" query-param="id" />
     </call-query>
   </operation>
-  <resource method="GET" path="getCategoryName">
+  <resource path="getCategoryName" method="GET">
     <description />
     <call-query href="categoryName">
       <with-param name="id" query-param="id" />
     </call-query>
   </resource>
-  <query id="categoryName" useConfig="siteInformationDS">
+  <query useConfig="siteInformationDS" id="categoryName">
     <sql>SELECT "codeSection", "codeDivision", "codeGroupe", "codeClasse", id, "descriptivesCategorie_fr", note_fr, "descriptivesCategorie_en", note_en, "descriptivesCategorie_mg", note_mg, created_by, updated_by, created_at, updated_at
 	FROM public."categorieActivite" WHERE id=:id</sql>
-    <param type="IN" name="id" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="id" sqlType="STRING" paramType="SCALAR" />
     <result outputType="json">{"categoryName":{"descriptivesCategorie_fr":"$descriptivesCategorie_fr"}}</result>
   </query>
-  <config id="siteInformationDS">
+  <!--<config id="siteInformationDSL">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/siteWebInformation</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
-  </config>
-  <config id="siteInformationDSL">
+  </config>-->
+  <config id="siteInformationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/siteWebInformation</property>
     <property name="username">postgres</property>

@@ -1,81 +1,68 @@
-<data transports="http https" serviceGroup="mg.gov.edbm.societe.localisationDS" name="localisation">
+<data name="localisation" serviceGroup="mg.gov.edbm.societe.localisationDS" transports="http https">
   <description>Service adresse</description>
-  <config id="localisationDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/localisation</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config>
-  
-   <config id="localisationDSL">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/localisation</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config>
-  <resource method="GET" path="province">
+  <resource path="province" method="GET">
     <description>List of all province</description>
     <call-query href="selectAllProvinces" />
   </resource>
-  <resource method="GET" path="region">
+  <resource path="region" method="GET">
     <description>List of all region</description>
     <call-query href="selectAllRegion" />
   </resource>
-  <resource method="GET" path="regionByProvince">
+  <resource path="regionByProvince" method="GET">
     <description />
     <call-query href="selectAllRegionByProvince">
       <with-param name="province_id" query-param="province_id" />
     </call-query>
   </resource>
-  <resource method="GET" path="districtByRegion">
+  <resource path="districtByRegion" method="GET">
     <description>List of district by region</description>
     <call-query href="selectAllDistrictByRegion">
       <with-param name="region_id" query-param="region_id" />
     </call-query>
   </resource>
-  <resource method="GET" path="commonByDistrict">
+  <resource path="commonByDistrict" method="GET">
     <description>List of common by district id</description>
     <call-query href="selectAllCommon">
       <with-param name="district_id" query-param="district_id" />
     </call-query>
   </resource>
-  <resource method="GET" path="boroughByCommon">
+  <resource path="boroughByCommon" method="GET">
     <description />
     <call-query href="selectAllBoroughByCommon">
       <with-param name="common_id" query-param="common_id" />
     </call-query>
   </resource>
-  <resource method="GET" path="fokontanyByBorough">
+  <resource path="fokontanyByBorough" method="GET">
     <description>List of all fokontany by borough id</description>
     <call-query href="selectAllFokontanyByBorough">
       <with-param name="borough_id" query-param="borough_id" />
     </call-query>
   </resource>
-  <resource method="GET" path="getProvinceById">
+  <resource path="getProvinceById" method="GET">
     <description />
     <call-query href="selectProvinceById">
       <with-param name="id" query-param="id" />
     </call-query>
   </resource>
-  <resource method="GET" path="getRegionById">
+  <resource path="getRegionById" method="GET">
     <description />
     <call-query href="selectRegionById">
       <with-param name="id" query-param="id" />
     </call-query>
   </resource>
-  <resource method="GET" path="getDisctrictById">
+  <resource path="getDisctrictById" method="GET">
     <description />
     <call-query href="selectDistrictById">
       <with-param name="id" query-param="id" />
     </call-query>
   </resource>
-  <resource method="GET" path="getArrondissementCommuneDistrict/{idProvince}">
+  <resource path="getArrondissementCommuneDistrict/{idProvince}" method="GET">
     <description />
     <call-query href="selectArrondissementCommuneDistrict">
       <with-param name="idProvince" query-param="idProvince" />
     </call-query>
   </resource>
-  <resource method="GET" path="getCommuneFokontanyProvince/{idProvince}">
+  <resource path="getCommuneFokontanyProvince/{idProvince}" method="GET">
     <description />
     <call-query href="selectCommuneFokontanyProvince">
       <with-param name="idProvince" query-param="idProvince" />
@@ -94,48 +81,48 @@
   <query id="selectAllRegionByProvince" useConfig="localisationDS">
     <sql>SELECT id, name, province_id
 	FROM public.region WHERE province_id= :province_id</sql>
-    <param type="IN" name="province_id" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="province_id" sqlType="INTEGER" paramType="SCALAR" />
   </query>
   <query id="selectAllDistrictByRegion" useConfig="localisationDS">
     <sql>SELECT id, name, region_id
 	FROM public.district WHERE region_id= :region_id</sql>
-    <param type="IN" name="region_id" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="region_id" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"districts":{"district":[{"id":"$id","name":"$name","region_id":"$region_id"}]}}</result>
   </query>
   <query id="selectAllCommon" useConfig="localisationDS">
     <sql>SELECT name, district_id, id
 	FROM public.common WHERE district_id= :district_id</sql>
-    <param type="IN" name="district_id" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="district_id" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"commons":{"common":[{"id":"$id","name":"$name","district_id":"$district_id"}]}}</result>
   </query>
   <query id="selectAllBoroughByCommon" useConfig="localisationDS">
     <sql>SELECT id, name, common_id
 	FROM public.borough WHERE common_id= :common_id</sql>
-    <param type="IN" name="common_id" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="common_id" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"boroughs":{"borough":[{"id":"$id","name":"$name","common_id":"$common_id"}]}}</result>
   </query>
   <query id="selectAllFokontanyByBorough" useConfig="localisationDS">
     <sql>SELECT id, name, borough_id
 	FROM public.fokontany WHERE borough_id= :borough_id</sql>
-    <param type="IN" name="borough_id" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="borough_id" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"fokontanys":{"fokontany":[{"id":"$id","name":"$name","borough_id":"$borough_id"}]}}</result>
   </query>
   <query id="selectDistrictById" useConfig="localisationDS">
     <sql>SELECT id, name, region_id
 	FROM public.district where id=:id</sql>
-    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"districts":{"district":[{"id":"$id","name":"$name","region_id":"$region_id"}]}}</result>
   </query>
   <query id="selectProvinceById" useConfig="localisationDS">
     <sql>SELECT id, name
 	FROM public.province WHERE id= :id</sql>
-    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"provinces":{"province":[{"id":"$id","name":"$name"}]}}</result>
   </query>
   <query id="selectRegionById" useConfig="localisationDS">
     <sql>SELECT id, name, province_id
 	FROM public.region WHERE id= :id</sql>
-    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"regions":{"region":[{"id":"$id","name":"$name","province_id":"$province_id"}]}}</result>
   </query>
   <query id="selectFokontanyArrondissemnt" useConfig="localisationDS">
@@ -146,7 +133,7 @@
     <sql>SELECT borough.id as b_id, borough.name as b, borough.common_id,common.name as c,district.id as d_id,district.name as d,region.id as r_id,province.id as p_id
 	FROM public.borough,public.common,public.district,public.region,public.province 
 	WHERE   common.id=borough.common_id AND district.id=common.district_id AND region.id=district.region_id AND province.id=region.province_id AND province.id=ANY(:idProvince::int[])</sql>
-    <param type="IN" name="idProvince" paramType="ARRAY" sqlType="STRING" />
+    <param type="IN" name="idProvince" sqlType="STRING" paramType="ARRAY" />
     <result outputType="json">{"arrs":{"arr":[{"bId":"$b_id","b":"$b","cId":"$common_id","dId":"$d_id","d":"$d","rId":"$r_id","pId":"$p_id"}]}}
 
 </result>
@@ -155,7 +142,7 @@
     <sql>SELECT borough.id as b_id, borough.common_id,common.name as c_name,fokontany.id as fkt_id,fokontany.name as fkt,district.id as d_id,region.id as r_id,province.id as p_id
 	FROM public.borough, public.fokontany,public.common,public.district,public.region,public.province 
 	WHERE  borough.id=fokontany.borough_id AND common.id=borough.common_id AND district.id=common.district_id AND region.id=district.region_id AND province.id=region.province_id AND province.id=ANY(:idProvince::int[])</sql>
-    <param type="IN" name="idProvince" paramType="ARRAY" sqlType="STRING" />
+    <param type="IN" name="idProvince" sqlType="STRING" paramType="ARRAY" />
     <result outputType="json">{"arrondissements":{"arrondissement":[{"bId":"$b_id","cId":"$common_id","c":"$c_name","fId":"$fkt_id","f":"$fkt","dId":"$d_id","rId":"$r_id","pId":"$p_id"}]}}
 
 </result>
@@ -235,4 +222,16 @@
       <with-param name="common_id" query-param="common_id" />
     </call-query>
   </resource>
+  <!-- <config id="localisationDSL">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/localisation</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
+  </config> -->
+  <config id="localisationDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/localisation</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config>
 </data>
