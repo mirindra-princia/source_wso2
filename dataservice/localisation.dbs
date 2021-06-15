@@ -1,5 +1,17 @@
 <data transports="http https" serviceGroup="mg.gov.edbm.societe.localisationDS" name="localisation">
   <description>Service adresse</description>
+   <config id="localisationDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/localisation</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config>
+  <!--  <config id="localisationDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/localisation</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
+  </config> -->
   <resource method="GET" path="province">
     <description>List of all province</description>
     <call-query href="selectAllProvinces" />
@@ -90,12 +102,7 @@
       <with-param name="common_id" query-param="common_id" />
     </call-query>
   </resource>
-  <config id="localisationDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/localisation</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config>
+ 
   <resource method="POST" path="addCommonOther">
     <description />
     <call-query href="addCommonOther">

@@ -420,7 +420,7 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     <param type="IN" name="idIpAdress" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"idDossiers":{"idDossier":$idDossier}}</result>
   </query>
-<!--   <config id="dossierSomissionDSL">
+  <!-- <config id="dossierSomissionDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/dossier_somission</property>
     <property name="username">devedbmdb</property>
