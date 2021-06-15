@@ -53,7 +53,13 @@
       <with-param name="idPersonne" query-param="idPersonne" />
     </call-query>
   </resource>
-  <resource path="getAdressPerson" method="GET">
+  <resource method="GET" path="getPersonByEmail">
+    <description />
+    <call-query href="getPersonByEmail">
+      <with-param name="e_mail" query-param="e_mail" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="getAdressPerson">
     <description />
     <call-query href="getAdressPerson">
       <with-param name="idAdressePerson" query-param="idAdressePerson" />
@@ -321,7 +327,13 @@ FROM public.role ;</sql>
     <result outputType="json">
 {"personnes":{"personne":{"idPersonne":$idPersonne, "nom":"$nom", "prenom":"$prenom", "nomPere":"$nomPere", "nomMere":"$nomMere", "dateNaissance":"$dateNaissance", "lieuNaissance":"$lieuNaissance", "situationMatrimonial":"$situationMatrimonial", "pieceIdentite":"$pieceIdentite", "sexe":"$sexe", "societe_mandataire":"$societe_mandataire", "e_mail":"$e_mail", "idUtilisateur":"$idUtilisateur", "tel":$tel, "idrole":"$idrole", "idadresse":"$idadresse","tel2":$tel2}}}</result>
   </query>
-  <query id="getAdressPerson" useConfig="personneDS">
+  <query useConfig="personneDS" id="getPersonByEmail">
+    <sql>SELECT * FROM public.personne WHERE e_mail=:e_mail</sql>
+    <param type="IN" name="e_mail" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">
+	{"personne":{"idPersonne":$idPersonne, "nom":"$nom", "prenom":"$prenom", "nomPere":"$nomPere", "nomMere":"$nomMere", "dateNaissance":"$dateNaissance", "lieuNaissance":"$lieuNaissance", "situationMatrimonial":"$situationMatrimonial", "pieceIdentite":"$pieceIdentite", "sexe":"$sexe", "societe_mandataire":"$societe_mandataire", "e_mail":"$e_mail", "idUtilisateur":"$idUtilisateur", "tel":$tel, "idrole":"$idrole", "idadresse":"$idadresse","tel2":$tel2}}</result>
+  </query>
+  <query useConfig="personneDS" id="getAdressPerson">
     <sql>SELECT "idAdresse", "idFokontany", "idCommune", "idDistrict", "idProvince", "idRegion", adresse, "idArrondissement"
 	FROM public.adresse WHERE "idAdresse"=:idAdressePerson</sql>
     <param type="IN" name="idAdressePerson" sqlType="INTEGER" paramType="SCALAR" />
