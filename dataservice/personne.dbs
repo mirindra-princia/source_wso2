@@ -142,7 +142,13 @@
       <with-param name="idPersonne" query-param="idPersonne" />
     </call-query>
   </resource>
-  <resource method="PUT" path="updatePersonProfil">
+  <resource path="getPersonCompany" method="GET">
+    <description />
+    <call-query href="getPersonCompany">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <resource path="updatePersonProfil" method="PUT">
     <description />
     <call-query href="updatePersonProfil">
       <with-param name="nom" query-param="nom" />
@@ -422,6 +428,32 @@ FROM public.role ;</sql>
 	    	"numeroPiece": "$numeroPiece",
 	    	"idTypePiece": "$idTypePiece"
 	    }
+	    }}
+	</result>
+  </query>
+  <query id="getPersonCompany" useConfig="personneDS">
+    <sql>
+    	SELECT * FROM public."personneSociete" societe LEFT JOIN public.adresse adresse ON adresse."idAdresse" = societe."idAdresseSociete" WHERE societe."idPersonneSociete"=:id
+	</sql>
+    <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">
+		{"data":{
+	    	"idPersonneSociete": "$idPersonneSociete",
+	    	"nomSociete": "$nomSociete",
+	    	"idAdresseSociete": "$idAdresseSociete",
+	    	"telSociete": "$telSociete",
+	    	"idSociete": "$idSociete",
+	    	"adresse": {
+		    	"idAdresse":"$idAdresse",
+		    	"idFokontany":"$idFokontany",
+		    	"idCommune":"$idCommune",
+		    	"idRegion":"$idRegion",
+		    	"idDistrict":"$idDistrict",
+		    	"idArrondissement":"$idArrondissement",
+		    	"adresse":"$adresse",
+		    	"idProvince":"$idProvince",
+		    	"idPays":"$idPays"
+		    }
 	    }}
 	</result>
   </query>
