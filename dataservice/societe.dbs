@@ -1,17 +1,17 @@
 <data transports="http https" serviceGroup="mg.gov.edbm.societe.societeDS" serviceNamespace="" name="societe">
   <description />
-<!--   <config id="societeDS">
+  <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/societe</property>
     <property name="username">postgres</property>
     <property name="password">postgres</property>
-  </config> -->
-  <config id="societeDS">
+  </config>
+  <!-- <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
-  </config>
+  </config> -->
   <resource path="addSocietyForm" method="POST">
     <description>add society from online form</description>
     <call-query href="addSociety">
