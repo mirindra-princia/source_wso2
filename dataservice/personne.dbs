@@ -198,7 +198,7 @@ FROM public.role ;</sql>
         UPDATE public.personne
         SET "nom" = :nom, "prenom" = :prenom, "nomPere" = :nomPere, "nomMere" = :nomMere, "dateNaissance" = :dateNaissance, "lieuNaissance" = :lieuNaissance, "situationMatrimonial" = :situationMatrimonial, 
 	    "idPieceIdentite" = :idPieceIdentite, "sexe" = :sexe, "idrole" = :idrole, "tel" = :tel, "e_mail" = :e_mail, "civilite" = :civilite, 
-	    "tel2" = :tel2, "idPersonneSociete"=:idPersonneSociete
+	    "tel2" = :tel2, "idPersonneSociete"=:idPersonneSociete, "idadresse" = :idadresse, "idConjoint" = :idConjoint
         WHERE "idPersonne"=:idPersonne RETURNING "idPersonne"
    	</sql>
     <param type="IN" name="nom" sqlType="STRING" paramType="SCALAR" optional="false" />
@@ -212,11 +212,13 @@ FROM public.role ;</sql>
     <param type="IN" name="idPersonneSociete" sqlType="INTEGER" paramType="SCALAR" optional="true" />
     <param type="IN" name="sexe" sqlType="TINYINT" paramType="SCALAR" optional="true" />
     <param type="IN" name="idrole" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idadresse" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <param type="IN" name="tel" sqlType="STRING" paramType="SCALAR" optional="false" />
     <param type="IN" name="e_mail" sqlType="STRING" paramType="SCALAR" optional="false" />
     <param type="IN" name="civilite" sqlType="TINYINT" paramType="SCALAR" optional="true" />
     <param type="IN" name="tel2" sqlType="STRING" paramType="SCALAR" optional="true" />
-    <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="idConjoint" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"personne":{"idPersonne":$idPersonne}}</result>
   </query>
   <query id="updatePersonIdentity" useConfig="personneDS">
@@ -487,10 +489,12 @@ FROM public.role ;</sql>
       <with-param name="idPersonneSociete" query-param="idPersonneSociete" />
       <with-param name="sexe" query-param="sexe" />
       <with-param name="idrole" query-param="idrole" />
+      <with-param name="idadresse" query-param="idadresse" />
       <with-param name="tel" query-param="tel" />
       <with-param name="e_mail" query-param="e_mail" />
       <with-param name="civilite" query-param="civilite" />
       <with-param name="tel2" query-param="tel2" />
+      <with-param name="idConjoint" query-param="idConjoint" />
       <with-param name="idPersonne" query-param="idPersonne" />
     </call-query>
   </resource>
