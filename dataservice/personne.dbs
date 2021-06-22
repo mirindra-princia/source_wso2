@@ -219,23 +219,6 @@ FROM public.role ;</sql>
     <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" optional="true" />
     <result outputType="json">{"personne":{"idPersonne":$idPersonne}}</result>
   </query>
-  <query id="updatePersonAddress" useConfig="personneDS">
-    <sql>
-        UPDATE public.adresse
-        SET  "idFokontany"=:idFokontany, "idCommune"=:idCommune, "idRegion"=:idRegion, "idDistrict"=:idDistrict, "idArrondissement"=:idArrondissement, adresse=:adresse, "idProvince"=:idProvince, "idPays" = :idPays
-        WHERE "idAdresse"=:idAdresse RETURNING "idAdresse"
-    </sql>
-    <param type="IN" name="idFokontany" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="idCommune" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="idDistrict" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="idProvince" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="idRegion" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="adresse" sqlType="STRING" paramType="SCALAR" optional="false" />
-    <param type="IN" name="idArrondissement" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="idPays" sqlType="INTEGER" paramType="SCALAR" optional="true" />
-    <param type="IN" name="idAdresse" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"adresse":{"idAdresse":$idAdresse}}</result>
-  </query>
   <query id="updatePersonIdentity" useConfig="personneDS">
     <sql>
         UPDATE public."pieceIdentite"
@@ -825,7 +808,7 @@ FROM public.role ;</sql>
   <query id="updatePersonAddress" useConfig="personneDS">
     <sql>
         UPDATE public.adresse
-        SET  "idFokontany"=:idFokontany, "idCommune"=:idCommune, "idRegion"=:idRegion, "idDistrict"=:idDistrict, "idArrondissement"=:idArrondissement, adresse=:adresse, "idProvince"=:idProvince, "idPays" = :idPays
+        SET  "idFokontany"=:idFokontany, "idCommune"=:idCommune, "idRegion"=:idRegion, "idDistrict"=:idDistrict, "idArrondissement"=:idArrondissement, adresse=:adresse, "idProvince"=:idProvince, "idPays" = :idPays, "idVille" = :idVille
         WHERE "idAdresse"=:idAdresse RETURNING "idAdresse"
     </sql>
     <param type="IN" name="idFokontany" paramType="SCALAR" sqlType="INTEGER" optional="false" />
