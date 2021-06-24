@@ -6,12 +6,6 @@
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config>
-  <!-- <config id="societeDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config> -->
   <resource path="addSocietyForm" method="POST">
     <description>add society from online form</description>
     <call-query href="addSociety">
@@ -214,6 +208,18 @@
       <with-param name="idStatutSociete" query-param="idStatutSociete" />
     </call-query>
   </resource>
+  <resource path="getCompanyInformationByPersonId" method="GET">
+    <description />
+    <call-query href="getCompanyInformationByPersonId">
+      <with-param name="idPersonne" query-param="idPersonne" />
+    </call-query>
+  </resource>
+  <resource path="deleteCompany" method="DELETE">
+    <description />
+    <call-query href="deleteCompany">
+      <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
   <query id="addSociety" useConfig="societeDS">
     <sql>INSERT INTO public.societe(
 	 "denominationSocial" , "activitePrincipal", "formeJuridique", "dateStatut", capital,  "activiteImportExport", "activiteIndustrielCollecteur",  "objetSocial", "activiteGrossiste", "autreActiviteReglemente", "choixImposition", "nombreAssociePersPhysique", "nombreAssociePersMorale", "nombreDirigeant", "idPersonne","idSiegeSocial","idFormeJuridique",tva)
@@ -331,7 +337,6 @@
     <sql>SELECT "idSociete", "denominationSocial", duree, "nomCommercial", "formeJuridique", "dateStatut", capital, "declarationActivite", "activiteImportExport", "activiteIndustrielCollecteur", "totalPart", "idDossier", "idMandataire", "idInterlocuteur", "NIF", "STAT", "RCS", "activiteSecondaire", "objetSocial", "activiteGrossiste", "autreActiviteReglemente", "choixImposition", "nombreAssociePersPhysique", "nombreAssociePersMorale", "nombreDirigeant", "idPersonne", "idSiegeSocial", "activitePrincipal","idFormeJuridique",tva
 	FROM public.societe WHERE "idDossier"=:idDossier</sql>
     <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"societe":{"idSociete":"$idSociete","denominationSocial":"$denominationSocial","formeJuridique":"$formeJuridique","dateStatut":"$dateStatut","capital":"$capital","activiteImportExport":"$activiteImportExport","activiteIndustrielCollecteur":"$activiteIndustrielCollecteur","idDossier":"$idDossier","objetSocial":"$objetSocial","activiteGrossiste":"$activiteGrossiste","autreActiviteReglemente":"$autreActiviteReglemente","choixImposition":"$choixImposition","nombreAssociePersPhysique":"$nombreAssociePersPhysique","nombreAssociePersMorale":"$nombreAssociePersMorale","nombreDirigeant":"$nombreDirigeant","idPersonne":"$idPersonne","idSiegeSocial":"$idSiegeSocial","activitePrincipal":"$activitePrincipal","idFormeJuridique":"$idFormeJuridique","tva":"$tva"}}</result>
   </query>
   <query id="getSiegeSocial" useConfig="societeDS">
     <sql>SELECT "idSiege", "idConditionSiege", dureebail, "montantBail", bailleur, "adresseSiegeSocial", "idTypeBailleur", "idTypeContrat"
@@ -422,5 +427,14 @@
     <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <param type="IN" name="idAssocie" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <param type="IN" name="isDefault" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+  </query>
+  <query id="getCompanyInformationByPersonId" useConfig="societeDS">
+    <sql>SELECT "idSociete", "denominationSocial","idDossier"	FROM public.societe WHERE "idPersonne"=:idPersonne</sql>
+    <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"societies":{"society":[{"idSociete":"$idSociete", "denominationSocial":"$denominationSocial","idDossier":"$idDossier"}]}}</result>
+  </query>
+  <query id="deleteCompany" useConfig="societeDS">
+    <sql>Delete 	FROM public.societe WHERE "idSociete"=:idSociete</sql>
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
 </data>

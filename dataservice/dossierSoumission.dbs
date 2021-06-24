@@ -1,5 +1,11 @@
 <data name="dossierSoumission" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.dossierSoumissionDS" transports="http https">
   <description />
+  <config id="dossierSomissionDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config>
   <resource path="addFolderNumber" method="POST">
     <description />
     <call-query href="addNumeroDossier">
@@ -195,6 +201,7 @@
     <description />
     <call-query href="insertAnEmptyFolder">
       <with-param name="idIpAdress" query-param="idIpAdress" />
+      <with-param name="step" query-param="step" />
     </call-query>
   </resource>
   <query id="addNumeroDossier" useConfig="dossierSomissionDS">
@@ -265,10 +272,10 @@ from public."lienFormulaire" LIMIT 1
     <result outputType="json">{"documents":{"document":[{"nomDocument":"$nomDocument","idDossier":$idDossier,"nbDeposer":"$nbDeposer", "idTypeDocument":"$idTypeDocument", "idDocument":"$idDocument", path:"$path"}]}}</result>
   </query>
   <query id="getInformationDossier" useConfig="dossierSomissionDS">
-    <sql>SELECT public.dossier."idDossier", "lienDossier", "dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", updated_at, "idStatutDossier", "numeroDossier","lienConsultationFormulaire","lienEditionFormulaire"
-	FROM public.dossier INNER JOIN public."lienFormulaire" on public.dossier."idDossier"=public."lienFormulaire"."idDossier" and public.dossier."idDossier"=:idDossier</sql>
+    <sql>SELECT public.dossier."idDossier", "lienDossier", "dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", updated_at, "idStatutDossier", "numeroDossier","lienConsultationFormulaire","lienEditionFormulaire",step,"idProgression","dateSoumission"
+	FROM public.dossier left JOIN public."lienFormulaire" on public.dossier."idDossier"=public."lienFormulaire"."idDossier" where public.dossier."idDossier"=:idDossier</sql>
     <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"dossier":{"idDossier":$idDossier,"numeroDossier":$numeroDossier,"lienConsultationFormulaire":"$lienConsultationFormulaire","lienEditionFormulaire":"$lienEditionFormulaire","idStatutDepot":"$idStatutDepot","idStatutDossier":"$idStatutDossier"}}</result>
+    <result outputType="json">{"dossier":{"idDossier":$idDossier,"numeroDossier":$numeroDossier,"lienConsultationFormulaire":"$lienConsultationFormulaire","lienEditionFormulaire":"$lienEditionFormulaire","idStatutDepot":"$idStatutDepot","idStatutDossier":"$idStatutDossier","step":"$step","dateSoumission":"$dateSoumission","idProgression":"$idProgression"}}</result>
   </query>
   <query id="updateStatutNouveau" useConfig="dossierSomissionDS">
     <sql>UPDATE public.statut SET nouveau=:value WHERE "idDossier"=:idDossier</sql>
@@ -415,21 +422,10 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
   </query>
   <query id="insertAnEmptyFolder" useConfig="dossierSomissionDS">
     <sql>INSERT INTO public.dossier(
-	"idIpAdress")
-	VALUES ( :idIpAdress) RETURNING "idDossier";</sql>
+	"idIpAdress",step)
+	VALUES ( :idIpAdress,:step) RETURNING "idDossier";</sql>
     <param type="IN" name="idIpAdress" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="step" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"idDossiers":{"idDossier":$idDossier}}</result>
   </query>
-  <!-- <config id="dossierSomissionDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/dossier_somission</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config> -->
-  <config id="dossierSomissionDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config>
 </data>
