@@ -369,7 +369,7 @@
     <param type="IN" name="capital" sqlType="DOUBLE" paramType="SCALAR" />
     <param type="IN" name="montantPartSocial" sqlType="DOUBLE" paramType="SCALAR" />
     <param type="IN" name="choixImposition" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="tva" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="tva" sqlType="INTEGER" paramType="SCALAR" optional="true" />
     <param type="IN" name="duree" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="finExerciceSocial" sqlType="DATE" paramType="SCALAR" />
     <param type="IN" name="dateStatut" sqlType="DATE" paramType="SCALAR" />
@@ -437,4 +437,13 @@
     <sql>Delete 	FROM public.societe WHERE "idSociete"=:idSociete</sql>
     <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
+  <query id="getActivitySector" useConfig="societeDS">
+    <sql>SELECT "libelleSecteurActivite", "idSecteurActivite"
+	FROM public."secteurActivite";</sql>
+    <result outputType="json">{"activitySectors":{"activity":[{"libelleSecteurActivite":"$libelleSecteurActivite","idSecteurActivite":"$idSecteurActivite"}]}}</result>
+  </query>
+  <resource path="getActivitySector" method="GET">
+    <description />
+    <call-query href="getActivitySector" />
+  </resource>
 </data>
