@@ -99,7 +99,7 @@
     <description />
     <call-query href="documentToUploadByMandataire" />
   </resource>
- <!--  <config id="documentDS">
+  <!-- <config id="documentDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/document</property>
     <property name="username">devedbmdb</property>
