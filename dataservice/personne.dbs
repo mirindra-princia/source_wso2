@@ -6,7 +6,7 @@
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config>
-  <!-- <config id="personneDS">
+ <!--  <config id="personneDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/personne</property>
     <property name="username">devedbmdb</property>
@@ -205,7 +205,7 @@
   <query id="addPersonAddress" useConfig="personneDS">
     <sql>INSERT INTO public.adresse(
 	 "idFokontany", "idCommune", "idDistrict", "idProvince", "idRegion", adresse, "idArrondissement", "idPays",longitude,latitude)
-	VALUES (:idFokontany, :idCommune, :idDistrict, :idProvince, :idRegion, :adresse, :idArrondissement, :idPays,:longitude,l)RETURNING "idAdresse";</sql>
+	VALUES (:idFokontany, :idCommune, :idDistrict, :idProvince, :idRegion, :adresse, :idArrondissement, :idPays,:longitude,:latitude)RETURNING "idAdresse";</sql>
     <param type="IN" name="idFokontany" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="idCommune" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="idDistrict" paramType="SCALAR" sqlType="INTEGER" optional="false" />
@@ -238,10 +238,10 @@
   <query id="addPerson" useConfig="personneDS">
     <sql>INSERT INTO public.personne(nom,prenom,"nomPere", "nomMere", "dateNaissance", "lieuNaissance", "situationMatrimonial", 
 	    "idPieceIdentite", sexe, societe_mandataire, idadresse, idrole, tel,e_mail,"idUtilisateur", engagement, civilite, 
-	    "idPersonneSociete", "idConjoint", tel2)
+	    "idPersonneSociete", "idConjoint", tel2,nationalite)
 		VALUES (:nom, :prenom, :nomPere, :nomMere, :dateNaissance, :lieuNaissance, :situationMatrimonial, 
 	    :idPieceIdentite, :sexe, :societe_mandataire, :idadresse, :idrole, :tel, :e_mail, :idUtilisateur, :engagement, :civilite, 
-	    :idPersonneSociete, :idConjoint, :tel2) RETURNING "idPersonne"
+	    :idPersonneSociete, :idConjoint, :tel2,:nationalite) RETURNING "idPersonne"
 	</sql>
     <param type="IN" name="nom" paramType="SCALAR" sqlType="STRING" optional="false" />
     <param type="IN" name="prenom" paramType="SCALAR" sqlType="STRING" optional="false" />
@@ -263,6 +263,7 @@
     <param type="IN" name="idPersonneSociete" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <param type="IN" name="idConjoint" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <param type="IN" name="tel2" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="nationalite" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <result outputType="json">{"data":{"idPersonne":"$idPersonne"}}</result>
   </query>
   <resource path="addPerson" method="POST">
@@ -288,6 +289,7 @@
       <with-param name="idPersonneSociete" query-param="idPersonneSociete" />
       <with-param name="idConjoint" query-param="idConjoint" />
       <with-param name="tel2" query-param="tel2" />
+      <with-param name="nationalite" query-param="nationalite" />
     </call-query>
   </resource>
   
@@ -338,7 +340,7 @@
         UPDATE public.personne
         SET "nom" = :nom, "prenom" = :prenom, "nomPere" = :nomPere, "nomMere" = :nomMere, "dateNaissance" = :dateNaissance, "lieuNaissance" = :lieuNaissance, "situationMatrimonial" = :situationMatrimonial, 
 	    "idPieceIdentite" = :idPieceIdentite, "sexe" = :sexe, "idrole" = :idrole, "tel" = :tel, "e_mail" = :e_mail, "civilite" = :civilite, 
-	    "tel2" = :tel2, "idPersonneSociete"=:idPersonneSociete, "idadresse" = :idadresse, "idConjoint" = :idConjoint
+	    "tel2" = :tel2, "idPersonneSociete"=:idPersonneSociete, "idadresse" = :idadresse, "idConjoint" = :idConjoint, nationalite= :nationalite
         WHERE "idPersonne"=:idPersonne RETURNING "idPersonne"
    	</sql>
     <param type="IN" name="nom" sqlType="STRING" paramType="SCALAR" optional="false" />
@@ -359,6 +361,7 @@
     <param type="IN" name="tel2" sqlType="STRING" paramType="SCALAR" optional="true" />
     <param type="IN" name="idConjoint" sqlType="INTEGER" paramType="SCALAR" optional="true" />
     <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="nationalite" sqlType="INTEGER" paramType="SCALAR" optional="true" />
     <result outputType="json">{"personne":{"idPersonne":$idPersonne}}</result>
   </query>
   <resource path="updatePersonProfil" method="PUT">
@@ -382,6 +385,7 @@
       <with-param name="tel2" query-param="tel2" />
       <with-param name="idConjoint" query-param="idConjoint" />
       <with-param name="idPersonne" query-param="idPersonne" />
+       <with-param name="nationalite" query-param="nationalite" />
     </call-query>
   </resource>
   <query id="getPersonCompany" useConfig="personneDS">

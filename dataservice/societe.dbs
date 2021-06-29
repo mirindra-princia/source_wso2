@@ -6,7 +6,7 @@
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config>
-    <!-- <config id="societeDS">
+ <!--    <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
     <property name="username">devedbmdb</property>
@@ -38,13 +38,17 @@
   <resource path="addAdressSociety" method="POST">
     <description />
     <call-query href="addAdress">
+      <with-param name="idFokontany" query-param="idFokontany" />
       <with-param name="idCommune" query-param="idCommune" />
       <with-param name="idDistrict" query-param="idDistrict" />
       <with-param name="idProvince" query-param="idProvince" />
       <with-param name="idRegion" query-param="idRegion" />
       <with-param name="adresse" query-param="adresse" />
       <with-param name="idArrondissement" query-param="idArrondissement" />
-      <with-param name="idFokontany" query-param="idFokontany" />
+      <with-param name="idPays" query-param="idPays" />
+      <with-param name="idVille" query-param="idVille" />
+      <with-param name="longitude" query-param="longitude" />
+      <with-param name="latitude" query-param="latitude" />
     </call-query>
   </resource>
   <resource path="addSiegeSocial" method="POST">
@@ -55,6 +59,7 @@
       <with-param name="adresseSiegeSocial" query-param="adresseSiegeSocial" />
       <with-param name="idTypeBailleur" query-param="idTypeBailleur" />
       <with-param name="idTypeContrat" query-param="idTypeContrat" />
+      <with-param name="siegePrincipal" query-param="siegePrincipal" />
     </call-query>
   </resource>
   <resource path="getTypeContrat" method="GET">
@@ -117,14 +122,18 @@
   <resource path="updateAdress" method="PUT">
     <description />
     <call-query href="updateAdress">
+      <with-param name="idFokontany" query-param="idFokontany" />
       <with-param name="idCommune" query-param="idCommune" />
       <with-param name="idDistrict" query-param="idDistrict" />
       <with-param name="idProvince" query-param="idProvince" />
       <with-param name="idRegion" query-param="idRegion" />
       <with-param name="adresse" query-param="adresse" />
       <with-param name="idArrondissement" query-param="idArrondissement" />
-      <with-param name="idFokontany" query-param="idFokontany" />
+      <with-param name="idPays" query-param="idPays" />
+      <with-param name="idVille" query-param="idVille" />
       <with-param name="idAdresse" query-param="idAdresse" />
+      <with-param name="longitude" query-param="longitude" />
+      <with-param name="latitude" query-param="latitude" />
     </call-query>
   </resource>
   <resource path="updateSiegeSocial" method="PUT">
@@ -275,40 +284,52 @@
     <param type="IN" name="idFormeJuridique" sqlType="INTEGER" paramType="SCALAR" />
   </query>
   <query id="addAdress" useConfig="societeDS">
-    <sql>INSERT INTO public.adresse(
-	 "idFokontany", "idCommune", "idDistrict", "idProvince", "idRegion", adresse, "idArrondissement")
-	VALUES (:idFokontany, :idCommune, :idDistrict, :idProvince, :idRegion, :adresse, :idArrondissement)RETURNING "idAdresse";</sql>
-    <param type="IN" name="idCommune" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idDistrict" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idProvince" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idRegion" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="adresse" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="idArrondissement" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idFokontany" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"idAdresses":{"idAdresse":"$idAdresse"}}</result>
+     <sql>INSERT INTO public.adresse(
+	 "idFokontany", "idCommune", "idDistrict", "idProvince", "idRegion", adresse, "idArrondissement", "idPays",longitude,latitude)
+	VALUES (:idFokontany, :idCommune, :idDistrict, :idProvince, :idRegion, :adresse, :idArrondissement, :idPays,:longitude,:latitude)RETURNING "idAdresse";</sql>
+    <param type="IN" name="idFokontany" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idCommune" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idDistrict" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idProvince" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idRegion" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="adresse" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="idArrondissement" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idPays" paramType="SCALAR" sqlType="INTEGER" optional="true" />
+    <param type="IN" name="idVille" paramType="SCALAR" sqlType="INTEGER" optional="true" /> 
+    <param type="IN" name="longitude" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="latitude" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <result outputType="json">{"idAdresses":{"idAdresse":$idAdresse}}</result>
   </query>
   <query id="updateAdress" useConfig="societeDS">
-    <sql>UPDATE public.adresse SET
-	 "idFokontany"=:idFokontany, "idCommune"= :idCommune, "idDistrict"=:idDistrict, "idProvince"=:idProvince, "idRegion"=:idRegion, adresse=:adresse, "idArrondissement"=:idArrondissement
- WHERE "idAdresse"=:idAdresse</sql>
-    <param type="IN" name="idCommune" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idDistrict" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idProvince" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idRegion" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="adresse" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="idArrondissement" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idFokontany" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idAdresse" sqlType="INTEGER" paramType="SCALAR" />
+   <sql>
+        UPDATE public.adresse
+        SET  "idFokontany"=:idFokontany, "idCommune"=:idCommune, "idRegion"=:idRegion, "idDistrict"=:idDistrict, "idArrondissement"=:idArrondissement, adresse=:adresse, "idProvince"=:idProvince, "idPays" = :idPays, "idVille" = :idVille, longitude= :longitude, latitude= :latitude 
+        WHERE "idAdresse"=:idAdresse RETURNING "idAdresse"
+    </sql>
+    <param type="IN" name="idFokontany" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idCommune" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idDistrict" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idProvince" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idRegion" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="adresse" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="idArrondissement" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idPays" paramType="SCALAR" sqlType="INTEGER" optional="true" />
+    <param type="IN" name="idVille" paramType="SCALAR" sqlType="INTEGER" optional="true" />
+    <param type="IN" name="idAdresse" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="longitude" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="latitude" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <result outputType="json">{"adresse":{"idAdresse":$idAdresse}}</result>
   </query>
   <query id="addSiegeSocial" useConfig="societeDS">
     <sql>INSERT INTO public."siegeSocial"(
-  dureebail, "montantBail",  "adresseSiegeSocial", "idTypeBailleur", "idTypeContrat")
-	VALUES (  :dureebail, :montantBail, :adresseSiegeSocial, :idTypeBailleur, :idTypeContrat) RETURNING "idSiege";</sql>
+  dureebail, "montantBail",  "adresseSiegeSocial", "idTypeBailleur", "idTypeContrat","siegePrincipal")
+	VALUES (  :dureebail, :montantBail, :adresseSiegeSocial, :idTypeBailleur, :idTypeContrat,:siegePrincipal) RETURNING "idSiege";</sql>
     <param type="IN" name="dureebail" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="montantBail" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="adresseSiegeSocial" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="idTypeBailleur" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="idTypeContrat" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="siegePrincipal" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"idSiege":{"idSiege":$idSiege}}</result>
   </query>
   <query id="updateSiegeSocial" useConfig="societeDS">
