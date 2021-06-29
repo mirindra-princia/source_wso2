@@ -204,8 +204,8 @@
   </resource>
   <query id="addPersonAddress" useConfig="personneDS">
     <sql>INSERT INTO public.adresse(
-	 "idFokontany", "idCommune", "idDistrict", "idProvince", "idRegion", adresse, "idArrondissement", "idPays")
-	VALUES (:idFokontany, :idCommune, :idDistrict, :idProvince, :idRegion, :adresse, :idArrondissement, :idPays)RETURNING "idAdresse";</sql>
+	 "idFokontany", "idCommune", "idDistrict", "idProvince", "idRegion", adresse, "idArrondissement", "idPays",longitude,latitude)
+	VALUES (:idFokontany, :idCommune, :idDistrict, :idProvince, :idRegion, :adresse, :idArrondissement, :idPays,:longitude,l)RETURNING "idAdresse";</sql>
     <param type="IN" name="idFokontany" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="idCommune" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="idDistrict" paramType="SCALAR" sqlType="INTEGER" optional="false" />
@@ -215,6 +215,8 @@
     <param type="IN" name="idArrondissement" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="idPays" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <param type="IN" name="idVille" paramType="SCALAR" sqlType="INTEGER" optional="true" /> 
+    <param type="IN" name="longitude" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="latitude" paramType="SCALAR" sqlType="STRING" optional="true" />
     <result outputType="json">{"idAdresses":{"idAdresse":$idAdresse}}</result>
   </query>
   <resource path="addPersonAddress" method="POST">
@@ -229,6 +231,8 @@
       <with-param name="idArrondissement" query-param="idArrondissement" />
       <with-param name="idPays" query-param="idPays" />
       <with-param name="idVille" query-param="idVille" />
+      <with-param name="longitude" query-param="longitude" />
+      <with-param name="latitude" query-param="latitude" />
     </call-query>
   </resource>
   <query id="addPerson" useConfig="personneDS">
@@ -450,7 +454,7 @@
   <query id="updatePersonAddress" useConfig="personneDS">
     <sql>
         UPDATE public.adresse
-        SET  "idFokontany"=:idFokontany, "idCommune"=:idCommune, "idRegion"=:idRegion, "idDistrict"=:idDistrict, "idArrondissement"=:idArrondissement, adresse=:adresse, "idProvince"=:idProvince, "idPays" = :idPays, "idVille" = :idVille
+        SET  "idFokontany"=:idFokontany, "idCommune"=:idCommune, "idRegion"=:idRegion, "idDistrict"=:idDistrict, "idArrondissement"=:idArrondissement, adresse=:adresse, "idProvince"=:idProvince, "idPays" = :idPays, "idVille" = :idVille, longitude= :longitude, latitude= :latitude 
         WHERE "idAdresse"=:idAdresse RETURNING "idAdresse"
     </sql>
     <param type="IN" name="idFokontany" paramType="SCALAR" sqlType="INTEGER" optional="false" />
@@ -463,6 +467,8 @@
     <param type="IN" name="idPays" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <param type="IN" name="idVille" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <param type="IN" name="idAdresse" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="longitude" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="latitude" paramType="SCALAR" sqlType="STRING" optional="true" />
     <result outputType="json">{"adresse":{"idAdresse":$idAdresse}}</result>
   </query>
   <resource path="updatePersonAddress" method="PUT">
@@ -478,6 +484,8 @@
       <with-param name="idPays" query-param="idPays" />
       <with-param name="idVille" query-param="idVille" />
       <with-param name="idAdresse" query-param="idAdresse" />
+      <with-param name="longitude" query-param="longitude" />
+      <with-param name="latitude" query-param="latitude" />
     </call-query>
   </resource>
   <query id="updatePersonIdentity" useConfig="personneDS">

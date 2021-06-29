@@ -6,7 +6,7 @@
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config>
- <!--    <config id="societeDS">
+    <!-- <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
     <property name="username">devedbmdb</property>
@@ -435,7 +435,7 @@
     <param type="IN" name="isDefault" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
   <query id="getCompanyInformationByPersonId" useConfig="societeDS">
-    <sql>SELECT "idSociete", "denominationSocial","idDossier"	FROM public.societe WHERE "idPersonne"=:idPersonne</sql>
+    <sql>SELECT "idSociete", "denominationSocial","idDossier"	FROM public.societe WHERE "idPersonne"=:idPersonne ORDER by "idSociete" DESC</sql>
     <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"societies":{"society":[{"idSociete":"$idSociete", "denominationSocial":"$denominationSocial","idDossier":"$idDossier"}]}}</result>
   </query>
