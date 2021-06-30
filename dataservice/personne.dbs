@@ -6,6 +6,12 @@
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config>
+ <!--   <config id="personneDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/personne</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
+  </config> -->
   <resource method="POST" path="addPerson">
     <description />
     <call-query href="addPerson">
@@ -492,7 +498,7 @@
   </query>
   <query id="getPersonProfil" useConfig="personneDS">
     <sql>
-    	SELECT * FROM public.personne personne LEFT JOIN public.adresse adresse ON personne.idadresse = adresse."idAdresse" LEFT JOIN public.role role ON role.id_role = personne.idrole LEFT JOIN public."pieceIdentite" identite ON identite.id = personne."idPieceIdentite" WHERE "idPersonne"=:idPersonne
+    	SELECT * FROM public.personne personne LEFT JOIN public.adresse adresse ON personne.idadresse = adresse."idAdresse" LEFT JOIN public.role role ON role.id_role = personne.idrole LEFT JOIN public."pieceIdentite" identite ON identite.id = personne."idPieceIdentite" LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" WHERE "idPersonne"=:idPersonne
 	</sql>
     <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">
@@ -521,6 +527,13 @@
 	    	"lieuDelivrancePiece": "$lieuDelivrancePiece",
 	    	"numeroPiece": "$numeroPiece",
 	    	"idTypePiece": "$idTypePiece"
+	    },
+	    "conjoint":{
+	    	"idConjoint":"$idConjoint",
+	    	"nomConjoint":"$nomConjoint",
+	    	"prenomConjoint":"$prenomConjoint",
+	    	"mailConjoint":"$mailConjoint",
+	    	"telConjoint":"$telConjoint"
 	    }
 	    }}
 	</result>
