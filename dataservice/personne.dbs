@@ -105,7 +105,7 @@
   </query>
   <query id="addPersonAddress" useConfig="personneDS">
     <sql>INSERT INTO public.adresse(
-	 "idFokontany", "idCommune", "idDistrict", "idProvince", "idRegion", adresse, "idArrondissement", "idPays",longitude,latitude,"idVille")
+	 "idFokontany", "idCommune", "idDistrict", "idProvince", "idRegion", adresse, "idArrondissement", "codePays",longitude,latitude,"idVille")
 	VALUES (:idFokontany, :idCommune, :idDistrict, :idProvince, :idRegion, :adresse, :idArrondissement, :codePays,:longitude,:latitude,:idVille)RETURNING "idAdresse";</sql>
     <param type="IN" name="idFokontany" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <param type="IN" name="idCommune" sqlType="INTEGER" paramType="SCALAR" optional="false" />
@@ -169,7 +169,7 @@
 	    	"idArrondissement":"$idArrondissement",
 	    	"adresse":"$adresse",
 	    	"idProvince":"$idProvince",
-	    	"codePays":"$idPays"
+	    	"codePays":"$codePays"
 	    },
 	    "role":{
 	    	"id_role":"$id_role",
@@ -242,7 +242,7 @@
 		    	"idArrondissement":"$idArrondissement",
 		    	"adresse":"$adresse",
 		    	"idProvince":"$idProvince",
-		    	"codePays":"$idPays"
+		    	"codePays":"$codePays"
 		    }
 	    }}
 	</result>
@@ -270,7 +270,7 @@
   <query id="updatePersonAddress" useConfig="personneDS">
     <sql>
         UPDATE public.adresse
-        SET  "idFokontany"=:idFokontany, "idCommune"=:idCommune, "idRegion"=:idRegion, "idDistrict"=:idDistrict, "idArrondissement"=:idArrondissement, adresse=:adresse, "idProvince"=:idProvince, "idPays" = :codePays, "idVille" = :idVille, longitude= :longitude, latitude= :latitude 
+        SET  "idFokontany"=:idFokontany, "idCommune"=:idCommune, "idRegion"=:idRegion, "idDistrict"=:idDistrict, "idArrondissement"=:idArrondissement, adresse=:adresse, "idProvince"=:idProvince, "codePays" = :codePays, "idVille" = :idVille, longitude= :longitude, latitude= :latitude 
         WHERE "idAdresse"=:idAdresse RETURNING "idAdresse"
     </sql>
     <param type="IN" name="idFokontany" sqlType="INTEGER" paramType="SCALAR" optional="false" />
@@ -418,7 +418,7 @@
                         "idArrondissement":"$idArrondissement",
                         "adresse":"$adresse",
                         "idProvince":"$idProvince",
-                        "codePays":"$idPays",
+                        "codePays":"$codePays",
                         "idVille":"$idVille"
                     }
 }}</result>
