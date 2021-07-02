@@ -298,7 +298,7 @@
   </query>
   <query id="addAdress" useConfig="societeDS">
     <sql>INSERT INTO public.adresse(
-	 "idFokontany", "idCommune", "idDistrict", "idProvince", "idRegion", adresse, "idArrondissement", "idPays",longitude,latitude,"idVille")
+	 "idFokontany", "idCommune", "idDistrict", "idProvince", "idRegion", adresse, "idArrondissement", "codePays",longitude,latitude,"idVille")
 	VALUES (:idFokontany, :idCommune, :idDistrict, :idProvince, :idRegion, :adresse, :idArrondissement, :codePays,:longitude,:latitude,:idVille)RETURNING "idAdresse";</sql>
     <param type="IN" name="idFokontany" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="idCommune" paramType="SCALAR" sqlType="INTEGER" optional="false" />
@@ -316,7 +316,7 @@
   <query id="updateAdress" useConfig="societeDS">
     <sql>
         UPDATE public.adresse
-        SET  "idFokontany"=:idFokontany, "idCommune"=:idCommune, "idRegion"=:idRegion, "idDistrict"=:idDistrict, "idArrondissement"=:idArrondissement, adresse=:adresse, "idProvince"=:idProvince, "idPays" = :codePays, "idVille" = :idVille, longitude= :longitude, latitude= :latitude 
+        SET  "idFokontany"=:idFokontany, "idCommune"=:idCommune, "idRegion"=:idRegion, "idDistrict"=:idDistrict, "idArrondissement"=:idArrondissement, adresse=:adresse, "idProvince"=:idProvince, "codePays" = :codePays, "idVille" = :idVille, longitude= :longitude, latitude= :latitude 
         WHERE "idAdresse"=:idAdresse RETURNING "idAdresse"
     </sql>
     <param type="IN" name="idFokontany" paramType="SCALAR" sqlType="INTEGER" optional="false" />
