@@ -17,7 +17,18 @@
     <param type="IN" name="id" sqlType="STRING" paramType="SCALAR" />
     <result outputType="json">{"categoryName":{"descriptivesCategorie_fr":"$descriptivesCategorie_fr"}}</result>
   </query>
- <!--   <config id="siteInformationDS">
+  <resource path="getLegalStatusMapping" method="GET">
+    <description />
+    <call-query href="getLegalStatusMapping">
+      <with-param name="idFormeJuridiqueSi" query-param="idFormeJuridiqueSi" />
+    </call-query>
+  </resource>
+  <query id="getLegalStatusMapping" useConfig="siteInformationDS">
+    <sql>SELECT * FROM public.legal_status_lists_mapping status WHERE status."idFormeJuridiqueSi"=:idFormeJuridiqueSi</sql>
+    <param type="IN" name="idFormeJuridiqueSi" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{"legalStatusMapping":{"idFormeJuridiqueSi":"$idFormeJuridiqueSi", "idFormeJuridiqueRncs":"$idFormeJuridiqueRncs"}}</result>
+  </query>
+   <!-- <config id="siteInformationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/siteWebInformation</property>
     <property name="username">devedbmdb</property>
