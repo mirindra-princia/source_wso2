@@ -236,6 +236,12 @@
     <description />
     <call-query href="getActivitySector" />
   </resource>
+  <resource method="GET" path="getAssociateByCompanyId">
+    <description />
+    <call-query href="getAssociateByCompanyId">
+      <with-param name="idSociete " query-param="idSociete " />
+    </call-query>
+  </resource>
   <query id="addSociety" useConfig="societeDS">
     <sql>INSERT INTO public.societe(
 	 "denominationSocial" , "activitePrincipal", "formeJuridique", "dateStatut", capital,  "activiteImportExport", "activiteIndustrielCollecteur",  "objetSocial", "activiteGrossiste", "autreActiviteReglemente", "choixImposition", "nombreAssociePersPhysique", "nombreAssociePersMorale", "nombreDirigeant", "idPersonne","idSiegeSocial","idFormeJuridique",tva)
@@ -297,14 +303,12 @@
     <param type="IN" name="idArrondissement" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="codePays" paramType="SCALAR" sqlType="STRING" optional="true" />
     <param type="IN" name="idVille" paramType="SCALAR" sqlType="INTEGER" optional="true" />
-
     <param type="IN" name="longitude" paramType="SCALAR" sqlType="STRING" optional="true" />
     <param type="IN" name="latitude" paramType="SCALAR" sqlType="STRING" optional="true" />
     <result outputType="json">{"idAdresses":{"idAdresse":$idAdresse}}</result>
   </query>
   <query id="updateAdress" useConfig="societeDS">
-
-   <sql>
+    <sql>
         UPDATE public.adresse
         SET  "idFokontany"=:idFokontany, "idCommune"=:idCommune, "idRegion"=:idRegion, "idDistrict"=:idDistrict, "idArrondissement"=:idArrondissement, adresse=:adresse, "idProvince"=:idProvince, "idPays" = :codePays, "idVille" = :idVille, longitude= :longitude, latitude= :latitude 
         WHERE "idAdresse"=:idAdresse RETURNING "idAdresse"
@@ -323,7 +327,7 @@
     <param type="IN" name="latitude" paramType="SCALAR" sqlType="STRING" optional="true" />
     <result outputType="json">{"adresse":{"idAdresse":$idAdresse}}</result>
   </query>
-   <query id="addSiegeSocial" useConfig="societeDS">
+  <query id="addSiegeSocial" useConfig="societeDS">
     <sql>INSERT INTO public."siegeSocial"(
   dureebail, "montantBail",  "adresseSiegeSocial", "idTypeBailleur", "idTypeContrat","autorisationProp","idBailleurPersonne","idBailleurPersonneMoral","siegePrincipal")
 	VALUES (  :dureebail, :montantBail, :adresseSiegeSocial, :idTypeBailleur, :idTypeContrat,:autorisationProp,:idBailleurPersonne,:idBailleurPersonneMoral,:siegePrincipal) RETURNING "idSiege";</sql>
@@ -336,7 +340,6 @@
     <param type="IN" name="idBailleurPersonneMoral" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="idBailleurPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="montantBail" paramType="SCALAR" sqlType="DOUBLE" optional="false" />
-
     <result outputType="json">{"idSiege":{"idSiege":$idSiege}}</result>
   </query>
   <query id="updateSiegeSocial" useConfig="societeDS">
@@ -448,10 +451,10 @@
     <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <param type="IN" name="engagement" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <param type="IN" name="idTypeAssocie" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="gerantStatutaire" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="apportNature" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="idPersonneMoral" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <param type="IN" name="idStatutSociete" paramType="ARRAY" sqlType="STRING" optional="false" />
+    <param type="IN" name="gerantStatutaire" paramType="SCALAR" sqlType="INTEGER" optional="false" defaultValue="null" />
     <result outputType="json">{"idAssocie":{"idAssocie":$idAssocie}}</result>
   </query>
   <query id="addCompanyAssociate" useConfig="societeDS">
@@ -460,13 +463,11 @@
 	VALUES (:idSociete, :idAssocie, :isDefault);</sql>
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="idAssocie" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="isDefault" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="isDefault" paramType="SCALAR" sqlType="STRING" optional="false" />
   </query>
   <query id="getCompanyInformationByPersonId" useConfig="societeDS">
-
     <sql>SELECT "idSociete", "denominationSocial","idDossier"	FROM public.societe WHERE "idPersonne"=:idPersonne ORDER by "idSociete" DESC</sql>
-    <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-
+    <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <result outputType="json">{"societies":{"society":[{"idSociete":"$idSociete", "denominationSocial":"$denominationSocial","idDossier":"$idDossier"}]}}</result>
   </query>
   <query id="deleteCompany" useConfig="societeDS">
@@ -477,5 +478,24 @@
     <sql>SELECT "libelleSecteurActivite", "idSecteurActivite"
 	FROM public."secteurActivite";</sql>
     <result outputType="json">{"activitySectors":{"activity":[{"libelleSecteurActivite":"$libelleSecteurActivite","idSecteurActivite":"$idSecteurActivite"}]}}</result>
+  </query>
+  <query id="getAssociateByCompanyId" useConfig="societeDS">
+    <sql>SELECT  "idStatutSociete"::varchar,associe ."idAssocie" as "idAssocie" , "isDefault", "idSociete","partCapitalAssocie", "idPersonne", "idTypeAssocie", "idPersonneMoral", "gerantStatutaire", "apportNature",engagement FROM  public."societeAssocie" socAs  LEFT JOIN public."associe" associe ON associe."idAssocie"=socAs."idAssocie" 
+	WHERE "idSociete"=:idSociete ;</sql>
+    <param type="IN" name="idSociete " paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"associates":{"associate":[{
+"idStatutSociete":"$idStatutSociete",
+"idAssocie":"$idAssocie",
+"isDefault":"$isDefault",
+"idSociete":"$idSociete",
+"partCapitalAssocie":"$partCapitalAssocie",
+"idPersonne":"$idPersonne",
+"idTypeAssocie":"$idTypeAssocie",
+"idPersonneMoral":"$idPersonneMoral",
+"gerantStatutaire":"$gerantStatutaire",
+"apportNature":"$apportNature",
+"engagement":"$engagement"
+
+}]}}</result>
   </query>
 </data>
