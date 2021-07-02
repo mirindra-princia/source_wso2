@@ -1,5 +1,11 @@
 <data transports="http https" serviceGroup="mg.gov.edbm.societe.localisationDS" name="localisation">
   <description>Service adresse</description>
+ <!--  <config id="localisationDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/localisation</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
+  </config> -->
   <config id="localisationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/localisation</property>
@@ -203,7 +209,7 @@
   <query id="selectCommuneFokontanyProvince" useConfig="localisationDS">
     <sql>SELECT borough.id as b_id, borough.common_id,common.name as c_name,fokontany.id as fkt_id,fokontany.name as fkt,district.id as d_id,region.id as r_id,province.id as p_id
 	FROM public.borough, public.fokontany,public.common,public.district,public.region,public.province 
-	WHERE  borough.id=fokontany.borough_id AND common.id=borough.common_id AND district.id=common.district_id AND region.id=district.region_id AND province.id=region.province_id AND province.id=ANY(:idProvince::int[])</sql>
+	WHERE  borough.id=fokontany.borough_id AND common.id=borough.common_id AND district.id=common.district_id AND region.id=district.region_id AND province.id=region.province_id AND province.id=ANY(:idProvince::int[]associates)</sql>
     <param type="IN" name="idProvince" paramType="ARRAY" sqlType="STRING" />
     <result outputType="json">{"arrondissements":{"arrondissement":[{"bId":"$b_id","cId":"$common_id","c":"$c_name","fId":"$fkt_id","f":"$fkt","dId":"$d_id","rId":"$r_id","pId":"$p_id"}]}}
 
