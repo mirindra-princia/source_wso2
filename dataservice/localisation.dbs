@@ -85,18 +85,7 @@
       <with-param name="common_id" query-param="common_id" />
     </call-query>
   </resource>
-  <resource method="GET" path="getAddressDetail">
-    <description />
-    <call-query href="getAddressDetail">
-      <with-param name="fokontany_id" query-param="fokontany_id" />
-      <with-param name="borough_id " query-param="borough_id " />
-      <with-param name="province_id" query-param="province_id" />
-      <with-param name="region_id" query-param="region_id" />
-      <with-param name="district_id" query-param="district_id" />
-      <with-param name="common_id" query-param="common_id" />
-    </call-query>
-  </resource>
-  <resource method="POST" path="addCommonOther">
+  <resource path="addCommonOther" method="POST">
     <description />
     <call-query href="addCommonOther">
       <with-param name="codePays" query-param="codePays" />
@@ -222,15 +211,15 @@
     <result outputType="json">{"adresses":{"adress":[{"b":"$b","c":"$c","f":"$f","d":"$d","r":"$r","p":"$p"}]}}</result>
   </query>
   <query id="getAddressDetail" useConfig="localisationDS">
-    <sql>SELECT fokontany.name as f_name, fokontany.id as f_id, borough.name as b_name, borough.id as b_id, common.name as c_name, common.id as c_id, district.name as d_name, district.id as d_id, region.name as r_name, region.id as r_id, province.name as p_name, province.id as p_id
-	FROM public.borough,public.common,public.district,public.region,public.province,public.fokontany
-	WHERE   common.id= :common_id AND district.id= :district_id AND region.id= :region_id AND province.id= :province_id AND borough.id= :borough_id AND fokontany.id= :fokontany_id</sql>
-    <param type="IN" name="fokontany_id" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="borough_id " paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="province_id" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="region_id" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="district_id" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="common_id" paramType="SCALAR" sqlType="INTEGER" />
+    <sql>SELECT fokontany.name as f_name, fokontany.id as f_id, borough.name as b_name, borough.id as b_id, common.name as c_name, common.id as c_id, district.name as d_name, district.id as d_id, region.name as r_name, region.id as r_id, province.name as p_name, province.id as p_id, common_mapping."idCommonRncs"
+	FROM public.borough,public.district,public.region,public.province,public.fokontany, public.common left join public.common_mapping on common_mapping."idCommon" = common.id
+	WHERE common.id= :idCommune AND district.id= :idDistrict AND region.id= :idRegion AND province.id= :idProvince AND borough.id= :idArrondissement AND fokontany.id= :idFokontany</sql>
+    <param type="IN" name="idFokontany" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idArrondissement " sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idProvince" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idRegion" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idDistrict" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idCommune" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"adresse":{
     "province":{
     	"id": $p_id,
@@ -251,6 +240,9 @@
     	"name": "$c_name",
     	"district_id": $d_id
     },
+    "commonMapping": {
+    	"idCommonRncs":"$idCommonRncs"
+    },
     "arrondissement":{
     	"id": $b_id,
     	"name": "$b_name",
@@ -262,6 +254,17 @@
     	"borough_id": $b_id
     }}}</result>
   </query>
+  <resource path="getAddressDetail" method="GET">
+    <description />
+    <call-query href="getAddressDetail">
+      <with-param name="idFokontany" query-param="idFokontany" />
+      <with-param name="idArrondissement " query-param="idArrondissement " />
+      <with-param name="idProvince" query-param="idProvince" />
+      <with-param name="idRegion" query-param="idRegion" />
+      <with-param name="idDistrict" query-param="idDistrict" />
+      <with-param name="idCommune" query-param="idCommune" />
+    </call-query>
+  </resource>
   <query id="addCommonOther" useConfig="localisationDS">
     <sql>INSERT INTO public.common_other(
 	 "idPays", name)
@@ -300,6 +303,28 @@
 	FROM public.city_other;</sql>
     <result outputType="json">{"cityOthers":{"cityOthers":[{"idCity":"$idCity", "name":"$name", "idCommonOther":"$idCommonOther" }]}}</result>
   </query>
+  <query id="commonMapping" useConfig="localisationDS">
+    <sql>SELECT * FROM public.common_mapping cm WHERE cm."idCommon" = :commonId</sql>
+    <param type="IN" name="commonId" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data": {"commonMapping":{"id":$id, "idCommon":$idCommon, "idCommonRncs":"$idCommonRncs"}}}</result>
+  </query>
+  <resource path="commonMapping" method="GET">
+    <description />
+    <call-query href="commonMapping">
+      <with-param name="commonId" query-param="commonId" />
+    </call-query>
+  </resource>
+  <query id="countryByCode" useConfig="localisationDS">
+    <sql>SELECT * FROM public.country WHERE country."codePays" = :codePays</sql>
+    <param type="IN" name="codePays" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data": {"country":{"codePays":"$codePays", "nomPays":$nomPays, "idPaysRncs":"$idPaysRncs"}}}</result>
+  </query>
+  <resource path="countryByCode" method="GET">
+    <description />
+    <call-query href="countryByCode">
+      <with-param name="codePays" query-param="codePays" />
+    </call-query>
+  </resource>
   <query id="getAllCountry" useConfig="localisationDS">
     <sql>SELECT "nomPays", "codePays"
 	FROM public.country;</sql>
