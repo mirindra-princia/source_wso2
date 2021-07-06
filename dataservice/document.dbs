@@ -105,7 +105,7 @@
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config>
-  <!-- <config id="documentDS">
+ <!--  <config id="documentDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/document</property>
     <property name="username">postgres</property>
