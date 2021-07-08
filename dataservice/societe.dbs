@@ -532,4 +532,15 @@
     <result outputType="json">{"data":{"exploitations":[{"idSiege":"$idSiege","dureebail":"$dureebail","montantBail":"$montantBail","adresseSiegeSocial":"$adresseSiegeSocial","idTypeBailleur":"$idTypeBailleur","idTypeContrat":"$idTypeContrat","idBailleurPersonne":"$idBailleurPersonne", "idBailleurPersonneMoral":"$idBailleurPersonneMoral", "autorisationProp":"$autorisationProp", "siegePrincipal":"$siegePrincipal"
 }]}}</result>
   </query>
+  <query id="getGreffeCode" useConfig="societeDS">
+    <sql> select * from public."codeGreffe" cg join public.adresse on adresse."idDistrict" = cg."idDistrict" where adresse."idAdresse" = :idAdresse</sql>
+    <param type="IN" name="idAdresse" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"codeGreffe":{"code":$code, "idDistrict":$idDistrict}}}</result>
+  </query>
+  <resource method="GET" path="getGreffeCode">
+    <description />
+    <call-query href="getGreffeCode">
+      <with-param name="idAdresse" query-param="idAdresse" />
+    </call-query>
+  </resource>
 </data>
