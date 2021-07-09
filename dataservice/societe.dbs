@@ -6,6 +6,12 @@
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config>
+  <!--   <config id="societeDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
+  </config> -->
   <resource path="addSocietyForm" method="POST">
     <description>add society from online form</description>
     <call-query href="addSociety">
@@ -401,10 +407,10 @@
 }}</result>
   </query>
   <query id="getAddressById" useConfig="societeDS">
-    <sql>SELECT "idAdresse", "idFokontany", "idCommune", "idDistrict", "idProvince", "idRegion", adresse, "idArrondissement"
+    <sql>SELECT "idAdresse", "idFokontany", "idCommune", "idDistrict", "idProvince", "idRegion", adresse, "idArrondissement","codePays"
 	FROM public.adresse WHERE "idAdresse"=:idAdresse</sql>
     <param type="IN" name="idAdresse" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"adresse":{"idAdresse":$idAdresse,"idFokontany":$idFokontany,"idCommune":$idCommune,"idDistrict":$idDistrict,"idProvince":$idProvince,"idRegion":$idRegion,"adresse":$adresse,"idArrondissement":$idArrondissement}}</result>
+    <result outputType="json">{"adresse":{"idAdresse":$idAdresse,"idFokontany":$idFokontany,"idCommune":$idCommune,"idDistrict":$idDistrict,"idProvince":$idProvince,"idRegion":$idRegion,"adresse":$adresse,"idArrondissement":$idArrondissement,"codePays":"$codePays"}}</result>
   </query>
   <query id="addCompany" useConfig="societeDS">
     <sql>INSERT INTO public.societe(
