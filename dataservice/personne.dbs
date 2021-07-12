@@ -380,6 +380,7 @@
       <with-param name="idPersonneMorale" query-param="idPersonneMorale" />
     </call-query>
   </resource>
+<<<<<<< refs/remotes/origin/develop
   <query id="selectAllRole" useConfig="personneDS">
     <sql>SELECT id_role, libelle_role, id_parent FROM public.role ;</sql>
     <result outputType="json">{"roles":{"role":[{"id_role":"$id_role","libelle_role":"$libelle_role","id_parent":"$id_parent"}]}}</result>
@@ -841,4 +842,29 @@
     <param type="IN" name="idPersonneMorale" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <result outputType="json">{"personne":{"idPersonne":$idPersonne}}</result>
   </query>
+=======
+  <query id="getNationalityMapping" useConfig="personneDS">
+    <sql>SELECT * FROM public."nationaliteMapping" WHERE "codePays" = :codePays</sql>
+    <param type="IN" name="codePays" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data":{"nationalityMapping":{"codePays":"$codePays","idNationaliteRncs":"$idNationaliteRncs"}}}</result>
+  </query>
+  <resource method="GET" path="getNationalityMapping">
+    <description />
+    <call-query href="getNationalityMapping">
+      <with-param name="codePays" query-param="codePays" />
+    </call-query>
+  </resource>
+  
+  <query id="getRoles" useConfig="personneDS">
+    <sql>SELECT * FROM public.role WHERE id_role=ANY(:ids::int[])</sql>
+    <param type="IN" name="ids" sqlType="STRING" paramType="ARRAY" optional="false" />
+    <result outputType="json">{"data":{"roles":[{"id_role":$id_role,"libelle_role":"$libelle_role", "id_parent":$id_parent, "code_role":$code_role}]}}</result>
+  </query>
+  <resource method="GET" path="getRoles">
+    <description />
+    <call-query href="getRoles">
+      <with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+>>>>>>> nationality mapping
 </data>
