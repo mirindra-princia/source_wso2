@@ -485,7 +485,18 @@
         SELECT * FROM public.adresse WHERE "idAdresse"=:idAdresse
     </sql>
     <param type="IN" name="idAdresse" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <result outputType="json">{"adresse":{"idAdresse":$idAdresse}}</result>
+    <result outputType="json">{"adresse":{
+    	"idAdresse":"$idAdresse",
+        "idFokontany":"$idFokontany",
+        "idCommune":"$idCommune",
+        "idRegion":"$idRegion",
+        "idDistrict":"$idDistrict",
+        "idArrondissement":"$idArrondissement",
+        "adresse":"$adresse",
+        "idProvince":"$idProvince",
+        "codePays":"$codePays",
+        "idVille":"$idVille"
+    }}</result>
   </query>
   <resource path="getPersonIdByUserId" method="GET">
     <description />

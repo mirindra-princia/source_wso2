@@ -284,7 +284,7 @@
     	"province_id": $p_id
     },
     "regionMapping": {
-    	"idRegionRncs":"$idRegionRncs"
+    	"idRegionRncs": "$idRegionRncs"
     },
     "district":{
     	"id": $d_id,
