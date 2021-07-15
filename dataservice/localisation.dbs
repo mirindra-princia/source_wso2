@@ -2,7 +2,7 @@
   <description>Service adresse</description>
   <config id="localisationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/localisation</property>
+    <property name="url">jdbc:postgresql://localhost:5432/edbm_localisation</property>
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config>
@@ -256,8 +256,16 @@
     <result outputType="json">{"adresses":{"adress":[{"b":"$b","c":"$c","f":"$f","d":"$d","r":"$r","p":"$p"}]}}</result>
   </query>
   <query id="getAddressDetail" useConfig="localisationDS">
-    <sql>SELECT fokontany.name as f_name, fokontany.id as f_id, borough.name as b_name, borough.id as b_id, common.name as c_name, common.id as c_id, district.name as d_name, district.id as d_id, region.name as r_name, region.id as r_id, province.name as p_name, province.id as p_id, common_mapping."idCommonRncs"
-	FROM public.borough,public.district,public.region,public.province,public.fokontany, public.common left join public.common_mapping on common_mapping."idCommon" = common.id
+    <sql>SELECT 
+    fokontany.name as f_name, fokontany.id as f_id, 
+    borough.name as b_name, borough.id as b_id, 
+    common.name as c_name, common.id as c_id, 
+    district.name as d_name, district.id as d_id, 
+    region.name as r_name, region.id as r_id, 
+    province.name as p_name, province.id as p_id, 
+    common_mapping."idCommonRncs",
+    region_mapping."idRegionRncs"
+	FROM public.borough,public.district,public.region left join public.region_mapping on region_mapping."idRegion" = region.id,public.province,public.fokontany, public.common left join public.common_mapping on common_mapping."idCommon" = common.id
 	WHERE common.id= :idCommune AND district.id= :idDistrict AND region.id= :idRegion AND province.id= :idProvince AND borough.id= :idArrondissement AND fokontany.id= :idFokontany</sql>
     <param type="IN" name="idFokontany" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="idArrondissement " sqlType="INTEGER" paramType="SCALAR" />
@@ -274,6 +282,9 @@
     	"id": $r_id,
     	"name": "$r_name",
     	"province_id": $p_id
+    },
+    "regionMapping": {
+    	"idRegionRncs": "$idRegionRncs"
     },
     "district":{
     	"id": $d_id,

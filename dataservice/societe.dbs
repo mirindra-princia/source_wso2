@@ -532,4 +532,41 @@
     <result outputType="json">{"data":{"exploitations":[{"idSiege":"$idSiege","dureebail":"$dureebail","montantBail":"$montantBail","adresseSiegeSocial":"$adresseSiegeSocial","idTypeBailleur":"$idTypeBailleur","idTypeContrat":"$idTypeContrat","idBailleurPersonne":"$idBailleurPersonne", "idBailleurPersonneMoral":"$idBailleurPersonneMoral", "autorisationProp":"$autorisationProp", "siegePrincipal":"$siegePrincipal"
 }]}}</result>
   </query>
+  <query id="getGreffeCode" useConfig="societeDS">
+    <sql> select * from public."codeGreffe" cg join public.adresse on adresse."idDistrict" = cg."idDistrict" where adresse."idAdresse" = :idAdresse</sql>
+    <param type="IN" name="idAdresse" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"codeGreffe":{"code":$code, "idDistrict":$idDistrict}}}</result>
+  </query>
+  <resource method="GET" path="getGreffeCode">
+    <description />
+    <call-query href="getGreffeCode">
+      <with-param name="idAdresse" query-param="idAdresse" />
+    </call-query>
+  </resource>
+  <query id="getBusinessPlaces" useConfig="societeDS">
+    <sql>select adresse.* from public."siegeSocial" ss 
+    	join public.societe on societe."idSiegeSocial" = ss."siegePrincipal" 
+    	join public.adresse on adresse."idAdresse" = ss."adresseSiegeSocial" 
+    	where societe."idSociete" = :id</sql>
+    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"siegeSociales":[
+    {
+    	"idAdresse":"$idAdresse",
+    	"idFokontany":"$idFokontany",
+    	"idCommune":"$idCommune",
+    	"idRegion":"$idRegion",
+    	"idDistrict":"$idDistrict",
+    	"idArrondissement":"$idArrondissement",
+    	"adresse":"$adresse",
+    	"idProvince":"$idProvince",
+    	"codePays":"$codePays",
+    	"idVille":"$idVille"
+    }]}}</result>
+  </query>
+  <resource method="GET" path="getBusinessPlaces">
+    <description />
+    <call-query href="getBusinessPlaces">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
 </data>
