@@ -1,5 +1,11 @@
 <data transports="http https" serviceGroup="mg.gov.edbm.societe.dossierSoumissionDS" serviceNamespace="" name="dossierSoumission">
   <description />
+  <!-- <config id="dossierSomissionDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config> -->
   <config id="dossierSomissionDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property>
@@ -147,6 +153,13 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
 	FROM public.commentaire WHERE "idEntite"=ANY(:idEntite ::varchar[]) and "idDossier"=:idDossier ORDER BY "dateCommentaire"  DESC</sql>
     <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
     <param type="IN" name="idEntite" paramType="ARRAY" sqlType="STRING" />
+    <result outputType="json">{"comments":{"comment":[{"idEntite":"$idEntite", "commentaires":"$commentaires", "dateCommentaire":"$dateCommentaire", "idDossier":"$idDossier", "idUtilisateur":"$idUtilisateur", "idStatutCommentaire":"$idStatutCommentaire", "idCommentaire":"$idCommentaire"
+}]}}</result>
+  </query>
+  <query id="commentListAll" useConfig="dossierSomissionDS">
+    <sql>SELECT "idEntite", commentaires, "dateCommentaire", "idDossier", "idUtilisateur", "idStatutCommentaire", "idCommentaire"
+	FROM public.commentaire WHERE  "idDossier"=:idDossier ORDER BY "dateCommentaire"  DESC</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">{"comments":{"comment":[{"idEntite":"$idEntite", "commentaires":"$commentaires", "dateCommentaire":"$dateCommentaire", "idDossier":"$idDossier", "idUtilisateur":"$idUtilisateur", "idStatutCommentaire":"$idStatutCommentaire", "idCommentaire":"$idCommentaire"
 }]}}</result>
   </query>
@@ -356,6 +369,12 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     <call-query href="commentListByGroup">
       <with-param name="idDossier" query-param="idDossier" />
       <with-param name="idEntite" query-param="idEntite" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="getCommentListAll">
+    <description />
+    <call-query href="commentListAll">
+      <with-param name="idDossier" query-param="idDossier" />
     </call-query>
   </resource>
   <resource method="POST" path="addRdv">

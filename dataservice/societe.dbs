@@ -6,6 +6,12 @@
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config>
+  <!--   <config id="societeDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
+  </config> -->
   <resource method="POST" path="addSocietyForm">
     <description>add society from online form</description>
     <call-query href="addSociety">
@@ -381,7 +387,7 @@
     <sql>SELECT "idSociete", "denominationSocial", duree, "nomCommercial", "formeJuridique", "dateStatut", capital, "declarationActivite", "activiteImportExport", "activiteIndustrielCollecteur", "totalPart", "idDossier", "idMandataire", "idInterlocuteur", "NIF", "STAT", "RCS", "activiteSecondaire", "objetSocial", "activiteGrossiste", "autreActiviteReglemente", "choixImposition", "nombreAssociePersPhysique", "nombreAssociePersMorale", "nombreDirigeant", "idPersonne", "idSiegeSocial", "activitePrincipal","idFormeJuridique",tva
 	FROM public.societe WHERE "idDossier"=:idDossier</sql>
     <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
-    <result outputType="json">{"societe":{"idSociete":"$idSociete"}}</result>
+    <result outputType="json">{"societe":{"idSociete":"$idSociete","idPersonne":"$idPersonne","denominationSocial":"$denominationSocial"}}</result>
   </query>
   <query id="getSiegeSocial" useConfig="societeDS">
     <sql>SELECT *	FROM public."siegeSocial" siege LEFT JOIN adresse on adresse."idAdresse"=siege."adresseSiegeSocial" WHERE "idSiege"=:idSiege</sql>
