@@ -80,10 +80,10 @@ from public."lienFormulaire" LIMIT 1
     <result outputType="json">{"documents":{"document":[{"nomDocument":"$nomDocument","idDossier":$idDossier,"nbDeposer":"$nbDeposer", "idTypeDocument":"$idTypeDocument", "idDocument":"$idDocument", path:"$path"}]}}</result>
   </query>
   <query id="getInformationDossier" useConfig="dossierSomissionDS">
-    <sql>SELECT public.dossier."idDossier", "lienDossier", "dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", updated_at, "idStatutDossier", "numeroDossier","lienConsultationFormulaire","lienEditionFormulaire",step,"idProgression","dateSoumission"
+    <sql>SELECT public.dossier."idDossier", "lienDossier", "dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", updated_at, "idStatutDossier", "numeroDossier","lienEditionFormulaire",step,"idProgression","dateSoumission"
 	FROM public.dossier left JOIN public."lienFormulaire" on public.dossier."idDossier"=public."lienFormulaire"."idDossier" where public.dossier."idDossier"=:idDossier</sql>
     <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
-    <result outputType="json">{"dossier":{"idDossier":$idDossier,"numeroDossier":$numeroDossier,"lienConsultationFormulaire":"$lienConsultationFormulaire","lienEditionFormulaire":"$lienEditionFormulaire","idStatutDepot":"$idStatutDepot","idStatutDossier":"$idStatutDossier","step":"$step","dateSoumission":"$dateSoumission","idProgression":"$idProgression"}}</result>
+    <result outputType="json">{"dossier":{"idDossier":$idDossier,"numeroDossier":$numeroDossier,"lienEditionFormulaire":"$lienEditionFormulaire","idStatutDepot":"$idStatutDepot","idStatutDossier":"$idStatutDossier","step":"$step","dateSoumission":"$dateSoumission","idProgression":"$idProgression"}}</result>
   </query>
   <query id="updateStatutNouveau" useConfig="dossierSomissionDS">
     <sql>UPDATE public.statut SET nouveau=:value WHERE "idDossier"=:idDossier</sql>
