@@ -194,7 +194,7 @@
     </call-query>
   </resource>
   <query id="getPersonInformationByPersonId" useConfig="personneDS">
-    <sql>SELECT nom, prenom, e_mail, tel,tel2,libelle_role
+    <sql>SELECT nom, prenom, e_mail, tel,tel2,libelle_role,personne.idrole
 	FROM  public.personne inner JOIN  public.role on public.personne."idPersonne"=:idPersonne and public.personne.idrole=public.role.id_role</sql>
     <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">{"personnes":{"personne":{"nom":"$nom", "prenom":"$prenom", "e_mail":"$e_mail", "tel":"$tel","libelle_role":"$libelle_role","tel2":"$tel2"
