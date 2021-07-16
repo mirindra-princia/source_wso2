@@ -569,4 +569,29 @@
       <with-param name="id" query-param="id" />
     </call-query>
   </resource>
+  <query id="getDefaultAssociateByCompanyId" useConfig="societeDS">
+    <sql>SELECT  "idStatutSociete"::varchar,associe."idAssocie" as "idAssocie" , "isDefault", "idSociete","partCapitalAssocie", "idPersonne", "idTypeAssocie", "idPersonneMoral", "gerantStatutaire", "apportNature",engagement FROM  public."societeAssocie" socAs  LEFT JOIN public."associe" associe ON associe."idAssocie"=socAs."idAssocie" 
+	WHERE "idSociete"=:idSociete AND socAs."isDefault" = 'true';</sql>
+    <param type="IN" name="idSociete " paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"data":{"associate":{
+		"idStatutSociete":"$idStatutSociete",
+		"idAssocie":"$idAssocie",
+		"isDefault":"$isDefault",
+		"idSociete":"$idSociete",
+		"partCapitalAssocie":"$partCapitalAssocie",
+		"idPersonne":"$idPersonne",
+		"idTypeAssocie":"$idTypeAssocie",
+		"idPersonneMoral":"$idPersonneMoral",
+		"gerantStatutaire":"$gerantStatutaire",
+		"apportNature":"$apportNature",
+		"engagement":"$engagement"
+		}}}
+	</result>
+  </query>
+  <resource method="GET" path="getDefaultAssociateByCompanyId">
+    <description />
+    <call-query href="getDefaultAssociateByCompanyId">
+      <with-param name="idSociete " query-param="idSociete " />
+    </call-query>
+  </resource>
 </data>
