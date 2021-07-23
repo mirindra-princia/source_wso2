@@ -466,7 +466,7 @@
     <param type="IN" name="idSiegeSocial" paramType="SCALAR" sqlType="INTEGER" optional="false" defaultValue="null" />
   </query>
   <query id="getCompany" useConfig="societeDS">
-    <sql> SELECT "formeJuridique","idFormeJuridique","denominationSocial","nomCommercial",sigle,"objetSocial","idSecteurActivite","activitePrincipal", "activiteImportExport", "activiteIndustrielCollecteur", "activiteGrossiste",capital,"montantPartSocial","dateStatut","choixImposition",tva,duree,"finExerciceSocial","idPersonne","idDossier","idSiegeSocial", "" FROM public.societe WHERE "idSociete"=:idSociete</sql>
+    <sql> SELECT * FROM public.societe WHERE "idSociete"=:idSociete</sql>
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">{"Company":{"idSociete":$idSociete, "formeJuridique":"$formeJuridique","idFormeJuridique":"$idFormeJuridique","denominationSocial":"$denominationSocial","nomCommercial":"$nomCommercial","sigle":"$sigle","objetSocial":"$objetSocial","idSecteurActivite":"$idSecteurActivite","activitePrincipal":"$activitePrincipal", "activiteImportExport":"$activiteImportExport", "activiteIndustrielCollecteur":"$activiteIndustrielCollecteur", "activiteGrossiste":"$activiteGrossiste",capital:$capital,"montantPartSocial":"$montantPartSocial","dateStatut":"$dateStatut","choixImposition":"$choixImposition",tva:$tva,duree:$duree,"finExerciceSocial":"$finExerciceSocial","idPersonne":"$idPersonne","idDossier":"$idDossier","idSiegeSocial":"$idSiegeSocial"}}</result>
   </query>
