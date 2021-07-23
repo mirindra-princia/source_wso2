@@ -444,7 +444,13 @@
   </query>
   <query id="getPersonProfil" useConfig="personneDS">
     <sql>
-    	SELECT * FROM public.personne personne LEFT JOIN public.adresse adresse ON personne.idadresse = adresse."idAdresse" LEFT JOIN public.role role ON role.id_role = personne.idrole LEFT JOIN public."pieceIdentite" identite ON identite.id = personne."idPieceIdentite" LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" WHERE "idPersonne"=:idPersonne
+    	SELECT * FROM public.personne personne 
+    	LEFT JOIN public.adresse adresse ON personne.idadresse = adresse."idAdresse" 
+    	LEFT JOIN public.role role ON role.id_role = personne.idrole 
+    	LEFT JOIN public."pieceIdentite" identite ON identite.id = personne."idPieceIdentite" 
+    	LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" 
+    	LEFT JOIN public."situationMatrimoniale" sma ON sma."idSituationMatrimonial" = personne."situationMatrimonial"
+    	WHERE "idPersonne"=:idPersonne
 	</sql>
     <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">
@@ -482,6 +488,10 @@
 	    	"prenomConjoint":"$prenomConjoint",
 	    	"mailConjoint":"$mailConjoint",
 	    	"telConjoint":"$telConjoint"
+	    },
+	    "maritalSituation":{
+	    	"libelleSituationMatrimonial":"$libelleSituationMatrimonial",
+	    	"codeSituationMatrimonial":"$codeSituationMatrimonial"
 	    }
 	    }}
 	</result>
