@@ -6,12 +6,6 @@
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config>
-<!--    <config id="societeDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config> -->
   <resource path="addSocietyForm" method="POST">
     <description>add society from online form</description>
     <call-query href="addSociety">
@@ -143,10 +137,14 @@
     <description />
     <call-query href="updateSiegeSocial">
       <with-param name="dureebail" query-param="dureebail" />
-      <with-param name="montantBail" query-param="montantBail" />
       <with-param name="adresseSiegeSocial" query-param="adresseSiegeSocial" />
       <with-param name="idTypeBailleur" query-param="idTypeBailleur" />
       <with-param name="idTypeContrat" query-param="idTypeContrat" />
+      <with-param name="autorisationProp" query-param="autorisationProp" />
+      <with-param name="siegePrincipal" query-param="siegePrincipal" />
+      <with-param name="idBailleurPersonneMoral" query-param="idBailleurPersonneMoral" />
+      <with-param name="idBailleurPersonne" query-param="idBailleurPersonne" />
+      <with-param name="montantBail" query-param="montantBail" />
       <with-param name="idSiege" query-param="idSiege" />
     </call-query>
   </resource>
@@ -291,6 +289,26 @@
       <with-param name="idAssocie" query-param="idAssocie" />
     </call-query>
   </resource>
+  <resource path="updateAssociate" method="PUT">
+    <description />
+    <call-query href="updateAssociate">
+      <with-param name="idAssocie" query-param="idAssocie" />
+      <with-param name="partCapitalAssocie" query-param="partCapitalAssocie" />
+      <with-param name="idPersonne" query-param="idPersonne" />
+      <with-param name="engagement" query-param="engagement" />
+      <with-param name="idTypeAssocie" query-param="idTypeAssocie" />
+      <with-param name="apportNature" query-param="apportNature" />
+      <with-param name="idPersonneMoral" query-param="idPersonneMoral" />
+      <with-param name="idStatutSociete" query-param="idStatutSociete" />
+      <with-param name="gerantStatutaire" query-param="gerantStatutaire" />
+    </call-query>
+  </resource>
+  <resource path="deleteSocialPlace" method="DELETE">
+    <description />
+    <call-query href="deleteSocialPlace">
+      <with-param name="idSiege" query-param="idSiege" />
+    </call-query>
+  </resource>
   <query id="addSociety" useConfig="societeDS">
     <sql>INSERT INTO public.societe(
 	 "denominationSocial" , "activitePrincipal", "formeJuridique", "dateStatut", capital,  "activiteImportExport", "activiteIndustrielCollecteur",  "objetSocial", "activiteGrossiste", "autreActiviteReglemente", "choixImposition", "nombreAssociePersPhysique", "nombreAssociePersMorale", "nombreDirigeant", "idPersonne","idSiegeSocial","idFormeJuridique",tva)
@@ -369,11 +387,11 @@
     <param type="IN" name="idRegion" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <param type="IN" name="adresse" sqlType="STRING" paramType="SCALAR" optional="false" />
     <param type="IN" name="idArrondissement" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="codePays" sqlType="INTEGER" paramType="SCALAR" optional="true" />
     <param type="IN" name="idVille" sqlType="INTEGER" paramType="SCALAR" optional="true" />
     <param type="IN" name="idAdresse" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="longitude" sqlType="STRING" paramType="SCALAR" optional="true" />
     <param type="IN" name="latitude" sqlType="STRING" paramType="SCALAR" optional="true" />
+    <param type="IN" name="codePays" sqlType="STRING" paramType="SCALAR" optional="false" />
     <result outputType="json">{"adresse":{"idAdresse":$idAdresse}}</result>
   </query>
   <query id="addSiegeSocial" useConfig="societeDS">
@@ -395,7 +413,7 @@
     <sql>UPDATE public."siegeSocial" SET
   dureebail=:dureebail, "montantBail"=:montantBail,  "adresseSiegeSocial"=:adresseSiegeSocial, "idTypeBailleur"=:idTypeBailleur, "idTypeContrat"=:idTypeContrat,"autorisationProp"=:autorisationProp,"idBailleurPersonne"=:idBailleurPersonne,"idBailleurPersonneMoral"=:idBailleurPersonneMoral,"siegePrincipal"=:siegePrincipal
   WHERE "idSiege"=:idSiege</sql>
-  <param type="IN" name="dureebail" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="dureebail" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="adresseSiegeSocial" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="idTypeBailleur" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="idTypeContrat" sqlType="INTEGER" paramType="SCALAR" />
@@ -654,18 +672,20 @@
     <param type="IN" name="idStatutSociete" sqlType="STRING" paramType="ARRAY" optional="false" />
     <param type="IN" name="gerantStatutaire" sqlType="INTEGER" paramType="SCALAR" optional="false" defaultValue="null" />
   </query>
-  <resource path="updateAssociate" method="PUT">
+  <query id="deleteSocialPlace" useConfig="societeDS">
+    <sql>DELETE FROM public."siegeSocial"
+	WHERE "idSiege"=:idSiege</sql>
+    <param type="IN" name="idSiege" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+  </query>
+  <query id="deleteAdress" useConfig="societeDS">
+    <sql>DELETE FROM public.adresse
+	WHERE "idAdresse"=:idAdresse</sql>
+    <param type="IN" name="idAdresse" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+  </query>
+  <resource path="deleteAdress" method="DELETE">
     <description />
-    <call-query href="updateAssociate">
-      <with-param name="idAssocie" query-param="idAssocie" />
-      <with-param name="partCapitalAssocie" query-param="partCapitalAssocie" />
-      <with-param name="idPersonne" query-param="idPersonne" />
-      <with-param name="engagement" query-param="engagement" />
-      <with-param name="idTypeAssocie" query-param="idTypeAssocie" />
-      <with-param name="apportNature" query-param="apportNature" />
-      <with-param name="idPersonneMoral" query-param="idPersonneMoral" />
-      <with-param name="idStatutSociete" query-param="idStatutSociete" />
-      <with-param name="gerantStatutaire" query-param="gerantStatutaire" />
+    <call-query href="deleteAdress">
+      <with-param name="idAdresse" query-param="idAdresse" />
     </call-query>
   </resource>
 </data>
