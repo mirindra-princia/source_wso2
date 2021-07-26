@@ -20,4 +20,7 @@
     <artifact name="siteInformationDS" groupId="com.example.edbm_dematerialisation.dataservice" version="1.0.0" type="service/dataservice" serverRole="DataServicesServer">
         <file>dataservice/siteInformationDS.dbs</file>
     </artifact>
+    <artifact name="messagerie" groupId="com.example.edbm_dematerialisation.dataservice" version="1.0.0" type="service/dataservice" serverRole="DataServicesServer">
+        <file>dataservice/messagerie.dbs</file>
+    </artifact>
 </artifacts>

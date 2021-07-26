@@ -1,0 +1,41 @@
+<data name="messagerie" serviceNamespace="" serviceGroup="" transports="https http">
+    <description/>
+    <config id="societeDS">
+    	<property name="driverClassName">org.postgresql.Driver</property>
+	    <property name="url">jdbc:postgresql://localhost:5432/messagerie</property>
+	    <property name="username">postgres</property>
+	    <property name="password">postgres</property>
+   	</config>
+	<!--  <config id="societeDS">
+	  <property name="driverClassName">org.postgresql.Driver</property>
+	  <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
+	  <property name="username">devedbmdb</property>
+	  <property name="password">devedbmdb</property>
+	</config> -->
+	
+	<resource method="POST" path="addMessage">
+	    <description>add messagerie</description>
+	    <call-query href="addMessage">
+	      <with-param name="idMessageParent" query-param="idMessageParent" />
+	      <with-param name="expediteur" query-param="expediteur" />
+	      <with-param name="destinataire" query-param="destinataire" />
+	      <with-param name="idDossier" query-param="idDossier" />
+	      <with-param name="sujet" query-param="sujet" />
+	      <with-param name="contenu" query-param="contenu" />
+	      <with-param name="createdAt" query-param="createdAt" />
+	    </call-query>
+  	</resource>
+  	<query id="addMessage" useConfig="societeDS">
+	    <sql>INSERT INTO public.message(
+		 "idMessageParent" , "expediteur", "destinataire", "idDossier", sujet,  "contenu", "createdAt")
+		VALUES (:idMessageParent, :expediteur, :destinataire, :idDossier, :sujet, :contenu, :createdAt) RETURNING "id"</sql>
+	    <param name="idMessageParent" paramType="SCALAR" sqlType="INTEGER" />
+	    <param name="expediteur" paramType="SCALAR" sqlType="INTEGER" />
+	    <param name="destinataire" paramType="SCALAR" sqlType="INTEGER" />
+	    <param name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+	    <param name="sujet" paramType="SCALAR" sqlType="STRING" />
+	    <param name="contenu" paramType="SCALAR" sqlType="STRING" />
+	    <param name="createdAt" paramType="SCALAR" sqlType="TIMESTAMP" />
+	    <result outputType="json">{"message":{"id":"$id"}}</result>
+  	</query>
+</data>
