@@ -22,7 +22,6 @@
       <with-param name="dateNaissance" query-param="dateNaissance" />
       <with-param name="lieuNaissance" query-param="lieuNaissance" />
       <with-param name="situationMatrimonial" query-param="situationMatrimonial" />
-      <with-param name="idPieceIdentite" query-param="idPieceIdentite" />
       <with-param name="sexe" query-param="sexe" />
       <with-param name="societe_mandataire" query-param="societe_mandataire" />
       <with-param name="idadresse" query-param="idadresse" />
@@ -444,13 +443,7 @@
   </query>
   <query id="getPersonProfil" useConfig="personneDS">
     <sql>
-    	SELECT * FROM public.personne personne 
-    	LEFT JOIN public.adresse adresse ON personne.idadresse = adresse."idAdresse" 
-    	LEFT JOIN public.role role ON role.id_role = personne.idrole 
-    	LEFT JOIN public."pieceIdentite" identite ON identite.id = personne."idPieceIdentite" 
-    	LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" 
-    	LEFT JOIN public."situationMatrimoniale" sma ON sma."idSituationMatrimonial" = personne."situationMatrimonial"
-    	WHERE "idPersonne"=:idPersonne
+    	SELECT * FROM public.personne personne LEFT JOIN public.adresse adresse ON personne.idadresse = adresse."idAdresse" LEFT JOIN public.role role ON role.id_role = personne.idrole LEFT JOIN public."pieceIdentite" identite ON identite.id = personne."idPieceIdentite" LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" WHERE "idPersonne"=:idPersonne
 	</sql>
     <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">
@@ -488,10 +481,6 @@
 	    	"prenomConjoint":"$prenomConjoint",
 	    	"mailConjoint":"$mailConjoint",
 	    	"telConjoint":"$telConjoint"
-	    },
-	    "maritalSituation":{
-	    	"libelleSituationMatrimonial":"$libelleSituationMatrimonial",
-	    	"codeSituationMatrimonial":"$codeSituationMatrimonial"
 	    }
 	    }}
 	</result>
