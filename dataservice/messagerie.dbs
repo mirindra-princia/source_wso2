@@ -36,4 +36,47 @@
 	    <param name="contenu" paramType="SCALAR" sqlType="STRING" optional="false"/>
 	    <result outputType="json">{"message":{"id":"$id"}}</result>
   	</query>
+  	
+  	<resource method="GET" path="agentTopics">
+	    <description>get topics list</description>
+	    <call-query href="agentTopics"/>
+  	</resource>
+  	<query id="agentTopics" useConfig="messagerieDS">
+	    <sql>SELECT * FROM public.message WHERE sujet IS NOT NULL ORDER BY "createdAt" DESC</sql>
+	    <result outputType="json">{"data": {
+		    "messages": [{
+	   			"id":$id,
+	   			"idMessageParent":$idMessageParent,
+	   			"sujet": "$sujet",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"contenu": "$contenu",
+	   			"expediteur": "$expediteur",
+	   			"destinataire": "$destinataire"
+		   	}]
+	    }}</result>
+  	</query>
+  	
+  	<resource method="GET" path="userTopics/{uid}">
+	    <description>user topics list</description>
+	    <call-query href="userTopics">
+	      <with-param name="uid" query-param="uid" />
+	    </call-query>
+  	</resource>
+  	<query id="userTopics" useConfig="messagerieDS">
+	    <sql>SELECT * FROM public.message WHERE expediteur = :uid AND sujet IS NOT NULL ORDER BY "createdAt" DESC</sql>
+	    <param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
+	    <result outputType="json">{"data": {
+		    "messages": [{
+	   			"id":$id,
+	   			"idMessageParent":$idMessageParent,
+	   			"sujet": "$sujet",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"contenu": "$contenu",
+	   			"expediteur": "$expediteur",
+	   			"destinataire": "$destinataire"
+		   	}]
+	    }}</result>
+  		</query>
 </data>
