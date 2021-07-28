@@ -782,4 +782,20 @@
       <with-param name="mailConjoint" query-param="mailConjoint" />
     </call-query>
   </resource>
+  <query id="personRole" useConfig="personneDS">
+    <sql>SELECT * FROM public.personne personne LEFT JOIN public.role role ON role.id_role = personne.idrole WHERE "idUtilisateur"=:uid</sql>
+    <param type="IN" name="uid" sqlType="STRING" paramType="SCALAR" />
+    <result outputType="json">{"role": {
+	   			"id_role":$id_role,
+	   			"libelle_role":"$libelle_role",
+	   			"id_parent": $id_parent
+		   	}
+	    }</result>
+  </query>
+  <resource method="GET" path="personRole/{uid}">
+    <description />
+    <call-query href="personRole">
+      <with-param name="uid" query-param="uid" />
+    </call-query>
+  </resource>
 </data>
