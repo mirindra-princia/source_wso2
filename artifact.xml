@@ -23,4 +23,7 @@
     <artifact name="messagerie" groupId="com.example.edbm_dematerialisation.dataservice" version="1.0.0" type="service/dataservice" serverRole="DataServicesServer">
         <file>dataservice/messagerie.dbs</file>
     </artifact>
+    <artifact name="utilisateur" groupId="com.example.edbm_dematerialisation.dataservice" version="1.0.0" type="service/dataservice" serverRole="DataServicesServer">
+        <file>dataservice/utilisateur.dbs</file>
+    </artifact>
 </artifacts>

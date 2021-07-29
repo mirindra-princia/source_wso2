@@ -26,12 +26,12 @@
   	</resource>
   	<query id="addMessage" useConfig="messagerieDS">
 	    <sql>INSERT INTO public.message(
-		 "idMessageParent" , "expediteur", "destinataire", "idDossier", sujet,  "contenu", "createdAt")
-		VALUES (:idMessageParent, :expediteur, :destinataire, :idDossier, :sujet, :contenu, :createdAt) RETURNING "id"</sql>
+		 "idMessageParent" , "expediteur", "destinataire", "idDossier", sujet,  "contenu")
+		VALUES (:idMessageParent, :expediteur, :destinataire, :idDossier, :sujet, :contenu) RETURNING "id"</sql>
 	    <param name="idMessageParent" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
-	    <param name="expediteur" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
-	    <param name="destinataire" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
-	    <param name="idDossier" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+	    <param name="expediteur" paramType="SCALAR" sqlType="STRING" optional="true"/>
+	    <param name="destinataire" paramType="SCALAR" sqlType="STRING" optional="true"/>
+	    <param name="idDossier" paramType="SCALAR" sqlType="INTEGER" optional="false"/>
 	    <param name="sujet" paramType="SCALAR" sqlType="STRING" optional="true"/>
 	    <param name="contenu" paramType="SCALAR" sqlType="STRING" optional="false"/>
 	    <result outputType="json">{"message":{"id":"$id"}}</result>
