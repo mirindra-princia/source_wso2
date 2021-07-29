@@ -77,6 +77,29 @@
 	   			"expediteur": "$expediteur",
 	   			"destinataire": "$destinataire"
 		   	}]
+	    }}
+	    </result>
+  	</query>
+  	<resource method="GET" path="messages/{topicId}">
+	    <description>messages list</description>
+	    <call-query href="messages">
+	      <with-param name="topicId" query-param="topicId" />
+	    </call-query>
+  	</resource>
+  	<query id="messages" useConfig="messagerieDS">
+	    <sql>SELECT * FROM public.message WHERE "idMessageParent" = :topicId ORDER BY "createdAt" DESC</sql>
+	    <param type="IN" name="topicId" paramType="SCALAR" sqlType="INTEGER" />
+	    <result outputType="json">{"data": {
+		    "messages": [{
+	   			"id":$id,
+	   			"idMessageParent":$idMessageParent,
+	   			"sujet": "$sujet",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"contenu": "$contenu",
+	   			"expediteur": "$expediteur",
+	   			"destinataire": "$destinataire"
+		   	}]
 	    }}</result>
   		</query>
 </data>
