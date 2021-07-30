@@ -39,7 +39,7 @@
     <param type="IN" name="id" sqlType="STRING" paramType="SCALAR" />
     <result outputType="json">{"classeActivite":{"id":"$id", "libelleClasseActivite_fr":"$libelleClasseActivite_fr"}}</result>
   </query>
-   <!-- <config id="siteInformationDS">
+  <!--  <config id="siteInformationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/siteWebInformation</property>
     <property name="username">devedbmdb</property>

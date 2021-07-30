@@ -1,6 +1,12 @@
 <data name="personne" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.personneDS" transports="http https">
   <description />
-  <config id="personneDS">
+  <!-- <config id="personneDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/personne</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
+  </config> -->
+   <config id="personneDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/personne</property>
     <property name="username">postgres</property>
@@ -420,7 +426,7 @@
     <param type="IN" name="idGreffeRCS" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="qualite" paramType="SCALAR" sqlType="STRING" optional="false" />
     <param type="IN" name="STAT" paramType="SCALAR" sqlType="BIGINT" optional="false" />
-    <param type="IN" name="capitalSocial" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="capitalSocial" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="idPersonneMorale" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="denominationSocial" paramType="SCALAR" sqlType="STRING" optional="false" />
