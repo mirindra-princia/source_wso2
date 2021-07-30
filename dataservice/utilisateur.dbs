@@ -1,0 +1,33 @@
+<data name="utilisateur" serviceNamespace="" serviceGroup="" transports="http https">
+  <description />
+  <config id="utilisateurDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/utilisateur</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config>
+  <resource method="GET" path="agents">
+    <description>get agent list</description>
+    <call-query href="agents"> 
+    	<with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="agents" useConfig="utilisateurDS">
+    <sql>select entity.id as userid, entity.first_name, entity.last_name, entity.email, entity.username, entity.enabled, entity.email_verified, gp.id, gp.name from public.user_group_membership gpm join public.user_entity entity on entity.id = gpm.user_id join public.keycloak_group gp on gp.id = gpm.group_id where entity.id=ANY(:ids::text[])</sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING"/>
+    <result outputType="json">{"data": {
+		    "agents": [{
+	   			"id":$userid,
+	   			"firstName":$first_name,
+	   			"lastName": "$last_name",
+	   			"email": $email,
+	   			"username": "$username",
+	   			"enabled": "$enabled",
+	   			"emailVerified": "$email_verified",
+	   			"role": {
+	   				"libelle_role": "$name"
+	   			}
+		   	}]
+	    }}</result>
+  </query>
+</data>

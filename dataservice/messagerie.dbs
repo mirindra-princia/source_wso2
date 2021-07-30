@@ -1,0 +1,105 @@
+<data name="messagerie" serviceNamespace="" serviceGroup="" transports="https http">
+    <description/>
+    <config id="messagerieDS">
+    	<property name="driverClassName">org.postgresql.Driver</property>
+	    <property name="url">jdbc:postgresql://localhost:5432/messagerie</property>
+	    <property name="username">postgres</property>
+	    <property name="password">postgres</property>
+   	</config>
+	<!--  <config id="societeDS">
+	  <property name="driverClassName">org.postgresql.Driver</property>
+	  <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/messagerie</property>
+	  <property name="username">devedbmdb</property>
+	  <property name="password">devedbmdb</property>
+	</config> -->
+	
+	<resource method="POST" path="addMessage">
+	    <description>add message</description>
+	    <call-query href="addMessage">
+	      <with-param name="idMessageParent" query-param="idMessageParent" />
+	      <with-param name="expediteur" query-param="expediteur" />
+	      <with-param name="destinataire" query-param="destinataire" />
+	      <with-param name="idDossier" query-param="idDossier" />
+	      <with-param name="sujet" query-param="sujet" />
+	      <with-param name="contenu" query-param="contenu" />
+	    </call-query>
+  	</resource>
+  	<query id="addMessage" useConfig="messagerieDS">
+	    <sql>INSERT INTO public.message(
+		 "idMessageParent" , "expediteur", "destinataire", "idDossier", sujet,  "contenu")
+		VALUES (:idMessageParent, :expediteur, :destinataire, :idDossier, :sujet, :contenu) RETURNING "id"</sql>
+	    <param name="idMessageParent" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+	    <param name="expediteur" paramType="SCALAR" sqlType="STRING" optional="true"/>
+	    <param name="destinataire" paramType="SCALAR" sqlType="STRING" optional="true"/>
+	    <param name="idDossier" paramType="SCALAR" sqlType="INTEGER" optional="false"/>
+	    <param name="sujet" paramType="SCALAR" sqlType="STRING" optional="true"/>
+	    <param name="contenu" paramType="SCALAR" sqlType="STRING" optional="false"/>
+	    <result outputType="json">{"message":{"id":"$id"}}</result>
+  	</query>
+  	
+  	<resource method="GET" path="agentTopics">
+	    <description>get topics list</description>
+	    <call-query href="agentTopics"/>
+  	</resource>
+  	<query id="agentTopics" useConfig="messagerieDS">
+	    <sql>SELECT * FROM public.message WHERE sujet IS NOT NULL ORDER BY "createdAt" DESC</sql>
+	    <result outputType="json">{"data": {
+		    "messages": [{
+	   			"id":$id,
+	   			"idMessageParent":$idMessageParent,
+	   			"sujet": "$sujet",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"contenu": "$contenu",
+	   			"expediteur": "$expediteur",
+	   			"destinataire": "$destinataire"
+		   	}]
+	    }}</result>
+  	</query>
+  	
+  	<resource method="GET" path="userTopics/{uid}">
+	    <description>user topics list</description>
+	    <call-query href="userTopics">
+	      <with-param name="uid" query-param="uid" />
+	    </call-query>
+  	</resource>
+  	<query id="userTopics" useConfig="messagerieDS">
+	    <sql>SELECT * FROM public.message WHERE expediteur = :uid AND sujet IS NOT NULL ORDER BY "createdAt" DESC</sql>
+	    <param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
+	    <result outputType="json">{"data": {
+		    "messages": [{
+	   			"id":$id,
+	   			"idMessageParent":$idMessageParent,
+	   			"sujet": "$sujet",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"contenu": "$contenu",
+	   			"expediteur": "$expediteur",
+	   			"destinataire": "$destinataire"
+		   	}]
+	    }}
+	    </result>
+  	</query>
+  	<resource method="GET" path="messages/{topicId}">
+	    <description>messages list</description>
+	    <call-query href="messages">
+	      <with-param name="topicId" query-param="topicId" />
+	    </call-query>
+  	</resource>
+  	<query id="messages" useConfig="messagerieDS">
+	    <sql>SELECT * FROM public.message WHERE "idMessageParent" = :topicId ORDER BY "createdAt" DESC</sql>
+	    <param type="IN" name="topicId" paramType="SCALAR" sqlType="INTEGER" />
+	    <result outputType="json">{"data": {
+		    "messages": [{
+	   			"id":$id,
+	   			"idMessageParent":$idMessageParent,
+	   			"sujet": "$sujet",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"contenu": "$contenu",
+	   			"expediteur": "$expediteur",
+	   			"destinataire": "$destinataire"
+		   	}]
+	    }}</result>
+  		</query>
+</data>
