@@ -101,5 +101,25 @@
 	   			"destinataire": "$destinataire"
 		   	}]
 	    }}</result>
-  		</query>
+  	</query>
+  	<resource method="GET" path="message/{id}">
+	    <description>get message</description>
+	    <call-query href="message">
+	      <with-param name="id" query-param="id" />
+	    </call-query>
+  	</resource>
+  	<query id="message" useConfig="messagerieDS">
+	    <sql>SELECT * FROM public.message WHERE id = :id</sql>
+	    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+	    <result outputType="json">{"message": {
+	   			"id":$id,
+	   			"idMessageParent":$idMessageParent,
+	   			"sujet": "$sujet",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"contenu": "$contenu",
+	   			"expediteur": "$expediteur",
+	   			"destinataire": "$destinataire"
+	    }}</result>
+  	</query>
 </data>
