@@ -2,9 +2,6 @@
     <artifact name="localisation" groupId="com.example.edbm_dematerialisation.dataservice" version="1.0.0" type="service/dataservice" serverRole="DataServicesServer">
         <file>dataservice/localisation.dbs</file>
     </artifact>
-    <artifact name="personne" groupId="com.example.edbm_dematerialisation.dataservice" version="1.0.0" type="service/dataservice" serverRole="DataServicesServer">
-        <file>dataservice/personne.dbs</file>
-    </artifact>
     <artifact name="societe" groupId="com.example.edbm_dematerialisation.dataservice" version="1.0.0" type="service/dataservice" serverRole="DataServicesServer">
         <file>dataservice/societe.dbs</file>
     </artifact>
@@ -25,5 +22,8 @@
     </artifact>
     <artifact name="utilisateur" groupId="com.example.edbm_dematerialisation.dataservice" version="1.0.0" type="service/dataservice" serverRole="DataServicesServer">
         <file>dataservice/utilisateur.dbs</file>
+    </artifact>
+    <artifact name="personne" groupId="com.example.edbm_dematerialisation.dataservice" version="1.0.0" type="service/dataservice" serverRole="DataServicesServer">
+        <file>dataservice/personne.dbs</file>
     </artifact>
 </artifacts>
