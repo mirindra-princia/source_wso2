@@ -12,6 +12,7 @@
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config> -->
+  
   <query id="addPerson" useConfig="personneDS">
     <sql>INSERT INTO public.personne(nom,prenom,"nomPere", "nomMere", "dateNaissance", "lieuNaissance", "situationMatrimonial", 
 	    "idPieceIdentite", sexe, societe_mandataire, idadresse, idrole, tel,e_mail,"idUtilisateur", engagement, civilite, 
@@ -374,8 +375,6 @@
             "STAT":"$STAT", 
             "capitalSocial":"$capitalSocial", 
             "denominationSocial":"$denominationSocial",
-            "descriptifApportEnNature":"$descriptifApportEnNature",
-            "montantApportEnNature":"$montantApportEnNature",
             "adresse": {
                         "idAdresse":"$idAdresse",
                         "idFokontany":"$idFokontany",
