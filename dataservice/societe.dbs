@@ -6,7 +6,7 @@
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config> -->
-   <config id="societeDS">
+  <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
     <property name="username">devedbmdb</property>
@@ -725,4 +725,15 @@
       <with-param name="idAdresse" query-param="idAdresse" />
     </call-query>
   </resource>
+  <resource method="GET" path="user/{idPersonne}/folderIds">
+    <description />
+    <call-query href="userFolders">
+      <with-param name="idPersonne" query-param="idPersonne" />
+    </call-query>
+  </resource>
+  <query id="userFolders" useConfig="societeDS">
+    <sql>SELECT "idDossier" FROM public.societe WHERE "idDossier" IS NOT NULL AND "idPersonne" = :idPersonne</sql>
+    <param type="IN" name="idPersonne " paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"data":{"folderIds":[{"idDossier":"$idDossier"}]}}</result>
+  </query>
 </data>
