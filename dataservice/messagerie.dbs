@@ -65,25 +65,33 @@
 	    }}</result>
   	</query>
   	
-  	<resource method="GET" path="userTopics/{uid}">
+  	<resource method="GET" path="user/topics">
 	    <description>user topics list</description>
 	    <call-query href="userTopics">
 	      <with-param name="uid" query-param="uid" />
+	      <with-param name="ids" query-param="ids" />
 	    </call-query>
   	</resource>
   	<query id="userTopics" useConfig="messagerieDS">
-	    <sql>SELECT * FROM public.message WHERE expediteur = :uid AND sujet IS NOT NULL ORDER BY "createdAt" DESC</sql>
+	    <sql>
+		    SELECT 
+				mes.id, mes.sujet, mes."idDossier", mes.expediteur, 
+				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where (m.id = mes.id or m."idMessageParent" = mes.id) and m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :uid) ) ELSE 0 END unread,
+				CASE WHEN EXISTS (select "createdAt" from public.message m where m."idMessageParent" = mes.id) THEN (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id) ELSE mes."createdAt" END "createdAt",
+				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
+			FROM public.message mes WHERE sujet IS NOT NULL AND "idDossier"=ANY(:ids::int[]) ORDER BY "createdAt" DESC
+	    </sql>
 	    <param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
+	    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING" />
 	    <result outputType="json">{"data": {
 		    "messages": [{
 	   			"id":$id,
-	   			"idMessageParent":$idMessageParent,
 	   			"sujet": "$sujet",
 	   			"idDossier": $idDossier,
 	   			"createdAt": "$createdAt",
 	   			"contenu": "$contenu",
 	   			"expediteur": "$expediteur",
-	   			"destinataire": "$destinataire"
+	   			"unread": $unread
 		   	}]
 	    }}
 	    </result>
