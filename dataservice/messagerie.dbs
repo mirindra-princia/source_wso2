@@ -6,7 +6,7 @@
 	    <property name="username">postgres</property>
 	    <property name="password">postgres</property>
    	</config> -->
-	 <config id="societeDS">
+	<config id="messagerieDS">
 	  <property name="driverClassName">org.postgresql.Driver</property>
 	  <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/messagerie</property>
 	  <property name="username">devedbmdb</property>
@@ -36,23 +36,31 @@
 	    <param name="contenu" paramType="SCALAR" sqlType="STRING" optional="false"/>
 	    <result outputType="json">{"message":{"id":"$id"}}</result>
   	</query>
-  	
-  	<resource method="GET" path="agentTopics">
+  	<resource method="GET" path="agent/{uid}/topics">
 	    <description>get topics list</description>
-	    <call-query href="agentTopics"/>
+	    <call-query href="agentTopics">
+	    	<with-param name="uid" query-param="uid" />
+	    </call-query>
   	</resource>
   	<query id="agentTopics" useConfig="messagerieDS">
-	    <sql>SELECT * FROM public.message WHERE sujet IS NOT NULL ORDER BY "createdAt" DESC</sql>
+	    <sql>
+	    	SELECT 
+	    		mes.id, mes.sujet, mes."idDossier", mes.expediteur, 
+				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where (m.id = mes.id or m."idMessageParent" = mes.id) and m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :uid) ) ELSE 0 END unread,
+				CASE WHEN EXISTS (select "createdAt" from public.message m where m."idMessageParent" = mes.id) THEN (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id) ELSE mes."createdAt" END "createdAt",
+				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
+			FROM public.message mes WHERE sujet IS NOT NULL ORDER BY "createdAt" DESC
+		</sql>
+		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
 	    <result outputType="json">{"data": {
 		    "messages": [{
 	   			"id":$id,
-	   			"idMessageParent":$idMessageParent,
 	   			"sujet": "$sujet",
 	   			"idDossier": $idDossier,
 	   			"createdAt": "$createdAt",
 	   			"contenu": "$contenu",
 	   			"expediteur": "$expediteur",
-	   			"destinataire": "$destinataire"
+	   			"unread": $unread
 		   	}]
 	    }}</result>
   	</query>
@@ -120,6 +128,35 @@
 	   			"contenu": "$contenu",
 	   			"expediteur": "$expediteur",
 	   			"destinataire": "$destinataire"
+	    }}</result>
+  	</query>
+  	<resource method="POST" path="message/seen">
+	    <description>mark message as seen</description>
+	    <call-query href="message_seen">
+	      <with-param name="idMessage" query-param="idMessage" />
+	      <with-param name="idUtilisateur" query-param="idUtilisateur" />
+	    </call-query>
+  	</resource>
+  	<query id="message_seen" useConfig="messagerieDS">
+	    <sql>INSERT INTO public."messageLu"("idMessage","idUtilisateur") VALUES (:idMessage, :idUtilisateur)</sql>
+	    <param type="IN" name="idMessage" paramType="SCALAR" sqlType="INTEGER" />
+	    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" />
+  	</query>
+  	<resource method="GET" path="message/seen/{idMessage}/{idUtilisateur}">
+	    <description>check message seen</description>
+	    <call-query href="message_seen_check">
+	      <with-param name="idMessage" query-param="idMessage" />
+	      <with-param name="idUtilisateur" query-param="idUtilisateur" />
+	    </call-query>
+  	</resource>
+  	<query id="message_seen_check" useConfig="messagerieDS">
+	    <sql>SELECT * FROM public."messageLu" WHERE "idMessage" = :idMessage AND "idUtilisateur" = :idUtilisateur</sql>
+	    <param type="IN" name="idMessage" paramType="SCALAR" sqlType="INTEGER" />
+	    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" />
+	    <result outputType="json">{"messageLu": {
+	   			"idMessage":$idMessage,
+	   			"idUtilisateur":$idUtilisateur,
+	   			"seenAt": "$seenAt"
 	    }}</result>
   	</query>
 </data>
