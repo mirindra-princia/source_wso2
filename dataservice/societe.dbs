@@ -8,7 +8,7 @@
   </config> -->
     <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config>
