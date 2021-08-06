@@ -1,10 +1,16 @@
 <data name="societe" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.societeDS" transports="http https">
   <description />
-  <config id="societeDS">
+ <!--  <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/societe</property>
     <property name="username">postgres</property>
     <property name="password">postgres</property>
+  </config> -->
+    <config id="societeDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
   </config>
   <resource method="POST" path="addSocietyForm">
     <description>add society from online form</description>
@@ -333,6 +339,36 @@
       <with-param name="idPersonne" query-param="idPersonne" />
     </call-query>
   </resource>
+  <resource method="PUT" path="updateNIF">
+    <description />
+    <call-query href="updateNIF">
+      <with-param name="idSociete" query-param="idSociete" />
+      <with-param name="NIF" query-param="NIF" />
+      <with-param name="dateNIF" query-param="dateNIF" />
+    </call-query>
+  </resource>
+  <resource method="PUT" path="updateSTAT">
+    <description />
+    <call-query href="updateSTAT">
+      <with-param name="STAT" query-param="STAT" />
+      <with-param name="idSociete" query-param="idSociete" />
+      <with-param name="dateSTAT " query-param="dateSTAT " />
+    </call-query>
+  </resource>
+  <resource method="PUT" path="updateRCS">
+    <description />
+    <call-query href="updateRCS">
+      <with-param name="RCS" query-param="RCS" />
+      <with-param name="idSociete" query-param="idSociete" />
+      <with-param name="dateRCS " query-param="dateRCS " />
+    </call-query>
+  </resource>
+  <resource method="PUT" path="updateUBI">
+    <description />
+    <call-query href="updateUBI">
+      <with-param name="ubi" query-param="ubi" />
+    </call-query>
+  </resource>
   <query id="addSociety" useConfig="societeDS">
     <sql>INSERT INTO public.societe(
 	 "denominationSocial" , "activitePrincipal", "formeJuridique", "dateStatut", capital,  "activiteImportExport", "activiteIndustrielCollecteur",  "objetSocial", "activiteGrossiste", "autreActiviteReglemente", "choixImposition", "nombreAssociePersPhysique", "nombreAssociePersMorale", "nombreDirigeant", "idPersonne","idSiegeSocial","idFormeJuridique",tva)
@@ -586,7 +622,8 @@
         "RCS":"$RCS",
         "dateSTAT":"$dateSTAT",
         "dateRCS":"$dateRCS",
-        "labelDevise":"$labelDevise"
+        "labelDevise":"$labelDevise",
+        "ubi":"$ubi"
     }
 }</result>
   </query>
@@ -767,5 +804,32 @@
     <sql>SELECT "idDossier" FROM public.societe WHERE "idDossier" IS NOT NULL AND "idPersonne" = :idPersonne</sql>
     <param type="IN" name="idPersonne " paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <result outputType="json">{"data":{"folderIds":[{"idDossier":"$idDossier"}]}}</result>
+  </query>
+  <query id="updateNIF" useConfig="societeDS">
+    <sql>UPDATE public.societe
+	SET  "NIF"=:NIF, "dateNIF"=:dateNIF  WHERE "idSociete"=:idSociete;</sql>
+    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="NIF" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="dateNIF" paramType="SCALAR" sqlType="STRING" optional="false" />
+  </query>
+  <query id="updateSTAT" useConfig="societeDS">
+    <sql>UPDATE public.societe
+	SET  "STAT"=:STAT, "dateSTAT"=:dateSTAT  WHERE "idSociete"=:idSociete;</sql>
+    <param type="IN" name="STAT" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="dateSTAT " paramType="SCALAR" sqlType="STRING" optional="false" />
+  </query>
+  <query id="updateRCS" useConfig="societeDS">
+    <sql>UPDATE public.societe
+	SET  "RCS"=:RCS,"dateRCS"=:dateRCS WHERE "idSociete"=:idSociete;</sql>
+    <param type="IN" name="RCS" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="dateRCS " paramType="SCALAR" sqlType="STRING" optional="false" />
+  </query>
+  <query id="updateUBI" useConfig="societeDS">
+    <sql>UPDATE public.societe
+	SET  "ubi"=:ubi WHERE "idSociete"=:idSociete;</sql>
+    <param type="IN" name="ubi" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
   </query>
 </data>
