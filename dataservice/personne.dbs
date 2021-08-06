@@ -200,13 +200,27 @@
 	    }}
 	</result>
   </query>
+  <resource path="addPersonCompany" method="POST">
+    <description />
+    <call-query href="addPersonCompany">
+      <with-param name="nomSociete" query-param="nomSociete" />
+      <with-param name="idAdresseSociete" query-param="idAdresseSociete" />
+      <with-param name="telSociete" query-param="telSociete" />
+      <with-param name="capital" query-param="capital" />
+      <with-param name="idDevise" query-param="idDevise" />
+      <with-param name="rcs" query-param="rcs" />
+    </call-query>
+  </resource>
   <query id="addPersonCompany" useConfig="personneDS">
     <sql>
-    	INSERT INTO public."personneSociete"("nomSociete", "idAdresseSociete", "telSociete") VALUES (:nomSociete, :idAdresseSociete, :telSociete) RETURNING "idPersonneSociete"
+    	INSERT INTO public."personneSociete"("nomSociete", "idAdresseSociete", "telSociete", "capital", "idDevise", "rcs") VALUES (:nomSociete, :idAdresseSociete, :telSociete, :capital, :idDevise, :rcs) RETURNING "idPersonneSociete"
 	</sql>
     <param type="IN" name="nomSociete" paramType="SCALAR" sqlType="STRING" optional="false" />
     <param type="IN" name="idAdresseSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="telSociete" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="capital" paramType="SCALAR" sqlType="DOUBLE" optional="true" />
+    <param type="IN" name="idDevise" paramType="SCALAR" sqlType="INTEGER" optional="true" />
+    <param type="IN" name="rcs" paramType="SCALAR" sqlType="STRING" optional="true" />
     <result outputType="json">{"personneSociete":{"idPersonneSociete":$idPersonneSociete}}</result>
   </query>
   <query id="updatePersonCompany" useConfig="personneDS">
@@ -570,14 +584,6 @@
     <description />
     <call-query href="getPersonCompany">
       <with-param name="id" query-param="id" />
-    </call-query>
-  </resource>
-  <resource path="addPersonCompany" method="POST">
-    <description />
-    <call-query href="addPersonCompany">
-      <with-param name="nomSociete" query-param="nomSociete" />
-      <with-param name="idAdresseSociete" query-param="idAdresseSociete" />
-      <with-param name="telSociete" query-param="telSociete" />
     </call-query>
   </resource>
   <resource path="updatePersonCompany" method="PUT">
