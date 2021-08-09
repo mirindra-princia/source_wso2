@@ -1,18 +1,18 @@
 <data name="messagerie" serviceNamespace="" serviceGroup="" transports="https http">
     <description/>
-<!--     <config id="messagerieDS">
+    <config id="messagerieDS">
     	<property name="driverClassName">org.postgresql.Driver</property>
 	    <property name="url">jdbc:postgresql://localhost:5432/messagerie</property>
 	    <property name="username">postgres</property>
 	    <property name="password">postgres</property>
-   	</config> -->
+   	</config>
 
-	<config id="messagerieDS">
- 	 <property name="driverClassName">org.postgresql.Driver</property>
-	  <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/messagerie</property>
-	  <property name="username">devedbmdb</property>
-	  <property name="password">devedbmdb</property>
-	</config> 
+<!-- 	<config id="messagerieDS"> -->
+<!--  	 <property name="driverClassName">org.postgresql.Driver</property> -->
+<!-- 	  <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/messagerie</property> -->
+<!-- 	  <property name="username">devedbmdb</property> -->
+<!-- 	  <property name="password">devedbmdb</property> -->
+<!-- 	</config>  -->
 	
 	<resource method="POST" path="addMessage">
 	    <description>add message</description>
@@ -166,6 +166,27 @@
 	   			"idMessage":$idMessage,
 	   			"idUtilisateur":$idUtilisateur,
 	   			"seenAt": "$seenAt"
+	    }}</result>
+  	</query>
+  	<resource method="GET" path="/unread-count/folder/{folderId}/{idUtilisateur}">
+	    <description>count folder's unread</description>
+	    <call-query href="unread_folder">
+	      <with-param name="folderId" query-param="folderId" />
+	      <with-param name="idUtilisateur" query-param="idUtilisateur" />
+	    </call-query>
+  	</resource>
+  	<query id="unread_folder" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT 
+				mes.id, 
+				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where (m.id = mes.id or m."idMessageParent" = mes.id) and m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :idUtilisateur) ) ELSE 0 END unread
+			FROM public.message mes WHERE sujet IS NOT NULL AND "idDossier"= :folderId
+	    </sql>
+	    <param type="IN" name="folderId" paramType="SCALAR" sqlType="INTEGER" />
+	    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" />
+	    <result outputType="json">{"messageLu": {
+	    		"id": $id,
+	   			"unread": $unread
 	    }}</result>
   	</query>
 </data>
