@@ -189,4 +189,30 @@
 	   			"unread": $unread
 	    }}</result>
   	</query>
+  	<resource method="GET" path="/topics/users">
+	    <description>users topics</description>
+	    <call-query href="users_topics">
+	      <with-param name="idDossier" query-param="idDossier" />
+	      <with-param name="ids" query-param="ids" />
+	    </call-query>
+  	</resource>
+  	<query id="users_topics" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT * FROM public.message WHERE sujet IS NOT NULL AND id=ANY(:ids::text[])
+	    </sql>
+	    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+	    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING" />
+	    <result outputType="json">{"data":{
+	    	"messages": [{
+	   			"id":$id,
+	   			"idMessageParent":$idMessageParent,
+	   			"sujet": "$sujet",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"contenu": "$contenu",
+	   			"expediteur": "$expediteur",
+	   			"destinataire": "$destinataire"
+	    	}]}
+	    }</result>
+  	</query>
 </data>
