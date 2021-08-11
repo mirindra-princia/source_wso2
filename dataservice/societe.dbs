@@ -861,4 +861,15 @@
 	FROM public."statutInteroperabilite" WHERE  "RCS"=1 and "INSTAT"=1 and "DGI"=1 and "EDBM"=0;</sql>
     <result outputType="json">{"status":{"company":[{"idSociete":"$idSociete"}]}}</result>
   </query>
+  <resource path="/relative-corporates/{corporate}" method="GET">
+    <description>relative corporates</description>
+    <call-query href="relativeCorporate">
+      <with-param name="corporate" query-param="corporate" />
+    </call-query>
+  </resource>
+  <query id="relativeCorporate" useConfig="societeDS">
+    <sql>SELECT "denominationSocial" FROM public.societe WHERE LOWER("denominationSocial") LIKE CONCAT(:corporate,'%')</sql>
+    <param type="IN" name="corporate" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data":{"corporates":[{"denomination":"$denominationSocial"}]}}</result>
+  </query>
 </data>
