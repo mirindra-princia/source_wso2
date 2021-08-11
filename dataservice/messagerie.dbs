@@ -1,11 +1,11 @@
 <data name="messagerie" serviceNamespace="" serviceGroup="" transports="https http">
     <description/>
-<!--     <config id="messagerieDS">
-    	<property name="driverClassName">org.postgresql.Driver</property>
-	    <property name="url">jdbc:postgresql://localhost:5432/messagerie</property>
-	    <property name="username">postgres</property>
-	    <property name="password">postgres</property>
-   	</config> -->
+<!--     <config id="messagerieDS"> -->
+<!--     	<property name="driverClassName">org.postgresql.Driver</property> -->
+<!-- 	    <property name="url">jdbc:postgresql://localhost:5432/messagerie</property> -->
+<!-- 	    <property name="username">postgres</property> -->
+<!-- 	    <property name="password">postgres</property> -->
+<!--    	</config> -->
 
 	<config id="messagerieDS">
  	 <property name="driverClassName">org.postgresql.Driver</property>
@@ -167,5 +167,52 @@
 	   			"idUtilisateur":$idUtilisateur,
 	   			"seenAt": "$seenAt"
 	    }}</result>
+  	</query>
+  	<resource method="GET" path="/unread-count/folder/{folderId}/{idUtilisateur}">
+	    <description>count folder's unread</description>
+	    <call-query href="unread_folder">
+	      <with-param name="folderId" query-param="folderId" />
+	      <with-param name="idUtilisateur" query-param="idUtilisateur" />
+	    </call-query>
+  	</resource>
+  	<query id="unread_folder" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT 
+				mes.id, 
+				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where (m.id = mes.id or m."idMessageParent" = mes.id) and m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :idUtilisateur) ) ELSE 0 END unread
+			FROM public.message mes WHERE sujet IS NOT NULL AND "idDossier"= :folderId
+	    </sql>
+	    <param type="IN" name="folderId" paramType="SCALAR" sqlType="INTEGER" />
+	    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" />
+	    <result outputType="json">{"messageLu": {
+	    		"id": $id,
+	   			"unread": $unread
+	    }}</result>
+  	</query>
+  	<resource method="GET" path="/topics/users">
+	    <description>users topics</description>
+	    <call-query href="users_topics">
+	      <with-param name="idDossier" query-param="idDossier" />
+	      <with-param name="ids" query-param="ids" />
+	    </call-query>
+  	</resource>
+  	<query id="users_topics" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT * FROM public.message WHERE sujet IS NOT NULL AND expediteur=ANY(:ids::text[])
+	    </sql>
+	    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+	    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING" />
+	    <result outputType="json">{"data":{
+	    	"messages": [{
+	   			"id":$id,
+	   			"idMessageParent":$idMessageParent,
+	   			"sujet": "$sujet",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"contenu": "$contenu",
+	   			"expediteur": "$expediteur",
+	   			"destinataire": "$destinataire"
+	    	}]}
+	    }</result>
   	</query>
 </data>
