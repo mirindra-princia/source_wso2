@@ -1,18 +1,18 @@
 <data name="messagerie" serviceNamespace="" serviceGroup="" transports="https http">
     <description/>
-    <config id="messagerieDS">
-    	<property name="driverClassName">org.postgresql.Driver</property>
-	    <property name="url">jdbc:postgresql://localhost:5432/messagerie</property>
-	    <property name="username">postgres</property>
-	    <property name="password">postgres</property>
-   	</config>
+<!--     <config id="messagerieDS"> -->
+<!--     	<property name="driverClassName">org.postgresql.Driver</property> -->
+<!-- 	    <property name="url">jdbc:postgresql://localhost:5432/messagerie</property> -->
+<!-- 	    <property name="username">postgres</property> -->
+<!-- 	    <property name="password">postgres</property> -->
+<!--    	</config> -->
 
-<!-- 	<config id="messagerieDS"> -->
-<!--  	 <property name="driverClassName">org.postgresql.Driver</property> -->
-<!-- 	  <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/messagerie</property> -->
-<!-- 	  <property name="username">devedbmdb</property> -->
-<!-- 	  <property name="password">devedbmdb</property> -->
-<!-- 	</config>  -->
+	<config id="messagerieDS">
+ 	 <property name="driverClassName">org.postgresql.Driver</property>
+	  <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/messagerie</property>
+	  <property name="username">devedbmdb</property>
+	  <property name="password">devedbmdb</property>
+	</config> 
 	
 	<resource method="POST" path="addMessage">
 	    <description>add message</description>
@@ -198,7 +198,7 @@
   	</resource>
   	<query id="users_topics" useConfig="messagerieDS">
 	    <sql>
-	    	SELECT * FROM public.message WHERE sujet IS NOT NULL AND id=ANY(:ids::text[])
+	    	SELECT * FROM public.message WHERE sujet IS NOT NULL AND expediteur=ANY(:ids::text[])
 	    </sql>
 	    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
 	    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING" />
