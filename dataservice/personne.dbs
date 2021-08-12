@@ -133,7 +133,7 @@
   </query>
   <query id="getPersonProfil" useConfig="personneDS">
     <sql>
-    	SELECT * FROM public.personne personne LEFT JOIN public.adresse adresse ON personne.idadresse = adresse."idAdresse" LEFT JOIN public.role role ON role.id_role = personne.idrole LEFT JOIN public."pieceIdentite" identite ON identite.id = personne."idPieceIdentite" LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" WHERE "idPersonne"=:idPersonne
+    	SELECT * FROM public.personne personne LEFT JOIN public.adresse adresse ON personne.idadresse = adresse."idAdresse" LEFT JOIN public.role role ON role.id_role = personne.idrole LEFT JOIN public."pieceIdentite" identite ON identite.id = personne."idPieceIdentite" LEFT JOIN public."typePieceIdentite" tpi ON tpi."idTypePiece" = identite."idTypePiece" LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" WHERE "idPersonne"=:idPersonne
 	</sql>
     <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">
@@ -162,7 +162,11 @@
 	    	"dateDelivrancePiece": "$dateDelivrancePiece",
 	    	"lieuDelivrancePiece": "$lieuDelivrancePiece",
 	    	"numeroPiece": "$numeroPiece",
-	    	"idTypePiece": "$idTypePiece"
+	    	"idTypePiece": "$idTypePiece",
+	    	"typePieceIdentite": {
+	    		"idTypePiece": $idTypePiece,
+	    		"nomTypePiece": "$nomTypePiece"
+	    	}
 	    },
 	    "conjoint":{
 	   		 "idAdresse":"$idAdresse",
