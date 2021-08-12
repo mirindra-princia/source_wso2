@@ -1,20 +1,242 @@
 <data transports="http https" serviceGroup="mg.gov.edbm.societe.dossierSoumissionDS" serviceNamespace="" name="dossierSoumission">
   <description />
- <!--  <config id="dossierSomissionDS">
+  <config id="dossierSomissionDS">
     <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/dossier_somission</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config> -->
-
-
- <config id="dossierSomissionDS">
- <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property>
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config>
-
+  <resource method="POST" path="addFolderNumber">
+    <description />
+    <call-query href="addNumeroDossier">
+      <with-param name="numeroDossier" query-param="numeroDossier" />
+      <with-param name="idIpAdress" query-param="idIpAdress" />
+    </call-query>
+  </resource>
+  <resource method="PUT" path="updateLienDossier">
+    <description />
+    <call-query href="updateLienDossier">
+      <with-param name="lienDossier" query-param="lienDossier" />
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource method="POST" path="addDocument">
+    <description />
+    <call-query href="addDocument">
+      <with-param name="nomDocument" query-param="nomDocument" />
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="idTypeDocument" query-param="idTypeDocument" />
+      <with-param name="path" query-param="path" />
+    </call-query>
+  </resource>
+  <resource method="POST" path="addLinkDocument">
+    <description />
+    <call-query href="addLinkDocument">
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="idSociete" query-param="idSociete" />
+      <with-param name="lienConsultationFormulaire" query-param="lienConsultationFormulaire" />
+      <with-param name="lienEditionFormulaire" query-param="lienEditionFormulaire" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="verifyLink">
+    <description />
+    <call-query href="verifyLink">
+      <with-param name="type" query-param="type" />
+      <with-param name="pod" query-param="pod" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="getFolderIdByLink">
+    <description />
+    <call-query href="getfolderIdByLink">
+      <with-param name="type_link" query-param="type_link" />
+      <with-param name="pod" query-param="pod" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="getListDocumentById">
+    <description />
+    <call-query href="getListDocumentById">
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="getInformationDossier">
+    <description />
+    <call-query href="getInformationDossier">
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource method="PUT" path="updateStatutNouveau">
+    <description />
+    <call-query href="updateStatutNouveau">
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="value" query-param="value" />
+    </call-query>
+  </resource>
+  <resource method="PUT" path="updateStatutMAJ">
+    <description />
+    <call-query href="updateStatutMAJ">
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="value" query-param="value" />
+    </call-query>
+  </resource>
+  <resource method="PUT" path="updateStatutDossier">
+    <description />
+    <call-query href="updateStatutDossier">
+      <with-param name="idStatutDossier" query-param="idStatutDossier" />
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="getstatistiqueTotal">
+    <description />
+    <call-query href="statistiqueTotal">
+      <with-param name="idStatutDossier" query-param="idStatutDossier" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="getListFolderDESC">
+    <description>folder's list desc</description>
+    <call-query href="listFolderDESC">
+      <with-param name="limit" query-param="limit" />
+      <with-param name="offset" query-param="offset" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="getListFolderASC">
+    <description>folder's list asc</description>
+    <call-query href="listFolderASC">
+      <with-param name="limit" query-param="limit" />
+      <with-param name="offset" query-param="offset" />
+    </call-query>
+  </resource>
+  <resource method="POST" path="addComment">
+    <description />
+    <call-query href="addComment">
+      <with-param name="idGroup" query-param="idGroup" />
+      <with-param name="commentaire" query-param="commentaire" />
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="idUtilisateur" query-param="idUtilisateur" />
+      <with-param name="idStatutCommentaire" query-param="idStatutCommentaire" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="getCommentList/{idEntite}">
+    <description />
+    <call-query href="commentListByGroup">
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="idEntite" query-param="idEntite" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="getCommentListAll">
+    <description />
+    <call-query href="commentListAll">
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource method="POST" path="addRdv">
+    <description>ajout rendez-vous</description>
+    <call-query href="addRdv">
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="dateRendezVous" query-param="dateRendezVous" />
+      <with-param name="idUtilisateur" query-param="idUtilisateur" />
+      <with-param name="heureRdv" query-param="heureRdv" />
+    </call-query>
+  </resource>
+  <resource method="POST" path="addFolderValidationStatus">
+    <description>add FolderValidationStatus</description>
+    <call-query href="addFolderValidationStatus">
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="idStatutValidation" query-param="idStatutValidation" />
+    </call-query>
+  </resource>
+  <resource method="DELETE" path="deleteFolderValidationStatus">
+    <description>Supprimer un statut validation Dossier</description>
+    <call-query href="deleteFolderValidationStatus">
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="idStatutValidation" query-param="idStatutValidation" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="getlistFolderValidationStatus">
+    <description />
+    <call-query href="listFolderValidationStatus">
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="getlistAllValidationStatus">
+    <description />
+    <call-query href="listAllValidationStatus" />
+  </resource>
+  <resource method="GET" path="getListRdv">
+    <description>liste des rendez d'un dossier</description>
+    <call-query href="listRdv">
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="listStatutDepot">
+    <description />
+    <call-query href="listStatutDepot" />
+  </resource>
+  <resource method="PUT" path="setFolderDepositStatus">
+    <description />
+    <call-query href="setFolderDepositStatus">
+      <with-param name="idStatutDepot" query-param="idStatutDepot" />
+      <with-param name="idDossier " query-param="idDossier " />
+    </call-query>
+  </resource>
+  <resource method="POST" path="addIpAdress">
+    <description />
+    <call-query href="addIpAdress">
+      <with-param name="blacklist" query-param="blacklist" />
+      <with-param name="ipAdress" query-param="ipAdress" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="checkBlackList">
+    <description />
+    <call-query href="isBlacklist">
+      <with-param name="ipAdress" query-param="ipAdress" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="getStatistiqueOthers/{idStatutDossier}">
+    <description>Statistique nouveau,terminer etc..</description>
+    <call-query href="statistiqueDossierNouveauTermine">
+      <with-param name="idStatutDossier" query-param="idStatutDossier" />
+    </call-query>
+  </resource>
+  <resource method="POST" path="addFolderIdIpAdress">
+    <description />
+    <call-query href="addFolderIdIpAdress">
+      <with-param name="idIpAdress" query-param="idIpAdress" />
+    </call-query>
+  </resource>
+  <resource method="POST" path="insertAnEmptyFolder">
+    <description />
+    <call-query href="insertAnEmptyFolder">
+      <with-param name="idIpAdress" query-param="idIpAdress" />
+      <with-param name="step" query-param="step" />
+    </call-query>
+  </resource>
+  <resource method="PUT" path="updateStep">
+    <description />
+    <call-query href="updateStep">
+      <with-param name="step" query-param="step" />
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource method="DELETE" path="deleteDocument">
+    <description />
+    <call-query href="deleteDocument">
+      <with-param name="path" query-param="path" />
+    </call-query>
+  </resource>
+  <resource method="PUT" path="setFolderNumber">
+    <description />
+    <call-query href="setFolderNumber">
+      <with-param name="numeroDossier" query-param="numeroDossier" />
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource method="PUT" path="setFolderProgress">
+    <description />
+    <call-query href="setFolderProgress">
+      <with-param name="idProgression" query-param="idProgression" />
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
   <query id="addNumeroDossier" useConfig="dossierSomissionDS">
     <sql>INSERT INTO public.dossier(
 	 "numeroDossier","idIpAdress")
@@ -258,221 +480,18 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
 	WHERE "path"=:path</sql>
     <param type="IN" name="path" paramType="SCALAR" sqlType="STRING" optional="false" />
   </query>
-  <resource method="POST" path="addFolderNumber">
-    <description />
-    <call-query href="addNumeroDossier">
-      <with-param name="numeroDossier" query-param="numeroDossier" />
-      <with-param name="idIpAdress" query-param="idIpAdress" />
-    </call-query>
-  </resource>
-  <resource method="PUT" path="updateLienDossier">
-    <description />
-    <call-query href="updateLienDossier">
-      <with-param name="lienDossier" query-param="lienDossier" />
-      <with-param name="idDossier" query-param="idDossier" />
-    </call-query>
-  </resource>
-  <resource method="POST" path="addDocument">
-    <description />
-    <call-query href="addDocument">
-      <with-param name="nomDocument" query-param="nomDocument" />
-      <with-param name="idDossier" query-param="idDossier" />
-      <with-param name="idTypeDocument" query-param="idTypeDocument" />
-      <with-param name="path" query-param="path" />
-    </call-query>
-  </resource>
-  <resource method="POST" path="addLinkDocument">
-    <description />
-    <call-query href="addLinkDocument">
-      <with-param name="idDossier" query-param="idDossier" />
-      <with-param name="idSociete" query-param="idSociete" />
-      <with-param name="lienConsultationFormulaire" query-param="lienConsultationFormulaire" />
-      <with-param name="lienEditionFormulaire" query-param="lienEditionFormulaire" />
-    </call-query>
-  </resource>
-  <resource method="GET" path="verifyLink">
-    <description />
-    <call-query href="verifyLink">
-      <with-param name="type" query-param="type" />
-      <with-param name="pod" query-param="pod" />
-    </call-query>
-  </resource>
-  <resource method="GET" path="getFolderIdByLink">
-    <description />
-    <call-query href="getfolderIdByLink">
-      <with-param name="type_link" query-param="type_link" />
-      <with-param name="pod" query-param="pod" />
-    </call-query>
-  </resource>
-  <resource method="GET" path="getListDocumentById">
-    <description />
-    <call-query href="getListDocumentById">
-      <with-param name="idDossier" query-param="idDossier" />
-    </call-query>
-  </resource>
-  <resource method="GET" path="getInformationDossier">
-    <description />
-    <call-query href="getInformationDossier">
-      <with-param name="idDossier" query-param="idDossier" />
-    </call-query>
-  </resource>
-  <resource method="PUT" path="updateStatutNouveau">
-    <description />
-    <call-query href="updateStatutNouveau">
-      <with-param name="idDossier" query-param="idDossier" />
-      <with-param name="value" query-param="value" />
-    </call-query>
-  </resource>
-  <resource method="PUT" path="updateStatutMAJ">
-    <description />
-    <call-query href="updateStatutMAJ">
-      <with-param name="idDossier" query-param="idDossier" />
-      <with-param name="value" query-param="value" />
-    </call-query>
-  </resource>
-  <resource method="PUT" path="updateStatutDossier">
-    <description />
-    <call-query href="updateStatutDossier">
-      <with-param name="idStatutDossier" query-param="idStatutDossier" />
-      <with-param name="idDossier" query-param="idDossier" />
-    </call-query>
-  </resource>
-  <resource method="GET" path="getstatistiqueTotal">
-    <description />
-    <call-query href="statistiqueTotal">
-      <with-param name="idStatutDossier" query-param="idStatutDossier" />
-    </call-query>
-  </resource>
-  <resource method="GET" path="getListFolderDESC">
-    <description>folder's list desc</description>
-    <call-query href="listFolderDESC">
-      <with-param name="limit" query-param="limit" />
-      <with-param name="offset" query-param="offset" />
-    </call-query>
-  </resource>
-  <resource method="GET" path="getListFolderASC">
-    <description>folder's list asc</description>
-    <call-query href="listFolderASC">
-      <with-param name="limit" query-param="limit" />
-      <with-param name="offset" query-param="offset" />
-    </call-query>
-  </resource>
-  <resource method="POST" path="addComment">
-    <description />
-    <call-query href="addComment">
-      <with-param name="idGroup" query-param="idGroup" />
-      <with-param name="commentaire" query-param="commentaire" />
-      <with-param name="idDossier" query-param="idDossier" />
-      <with-param name="idUtilisateur" query-param="idUtilisateur" />
-      <with-param name="idStatutCommentaire" query-param="idStatutCommentaire" />
-    </call-query>
-  </resource>
-  <resource method="GET" path="getCommentList/{idEntite}">
-    <description />
-    <call-query href="commentListByGroup">
-      <with-param name="idDossier" query-param="idDossier" />
-      <with-param name="idEntite" query-param="idEntite" />
-    </call-query>
-  </resource>
-  <resource method="GET" path="getCommentListAll">
-    <description />
-    <call-query href="commentListAll">
-      <with-param name="idDossier" query-param="idDossier" />
-    </call-query>
-  </resource>
-  <resource method="POST" path="addRdv">
-    <description>ajout rendez-vous</description>
-    <call-query href="addRdv">
-      <with-param name="idDossier" query-param="idDossier" />
-      <with-param name="dateRendezVous" query-param="dateRendezVous" />
-      <with-param name="idUtilisateur" query-param="idUtilisateur" />
-      <with-param name="heureRdv" query-param="heureRdv" />
-    </call-query>
-  </resource>
-  <resource method="POST" path="addFolderValidationStatus">
-    <description>add FolderValidationStatus</description>
-    <call-query href="addFolderValidationStatus">
-      <with-param name="idDossier" query-param="idDossier" />
-      <with-param name="idStatutValidation" query-param="idStatutValidation" />
-    </call-query>
-  </resource>
-  <resource method="DELETE" path="deleteFolderValidationStatus">
-    <description>Supprimer un statut validation Dossier</description>
-    <call-query href="deleteFolderValidationStatus">
-      <with-param name="idDossier" query-param="idDossier" />
-      <with-param name="idStatutValidation" query-param="idStatutValidation" />
-    </call-query>
-  </resource>
-  <resource method="GET" path="getlistFolderValidationStatus">
-    <description />
-    <call-query href="listFolderValidationStatus">
-      <with-param name="idDossier" query-param="idDossier" />
-    </call-query>
-  </resource>
-  <resource method="GET" path="getlistAllValidationStatus">
-    <description />
-    <call-query href="listAllValidationStatus" />
-  </resource>
-  <resource method="GET" path="getListRdv">
-    <description>liste des rendez d'un dossier</description>
-    <call-query href="listRdv">
-      <with-param name="idDossier" query-param="idDossier" />
-    </call-query>
-  </resource>
-  <resource method="GET" path="listStatutDepot">
-    <description />
-    <call-query href="listStatutDepot" />
-  </resource>
-  <resource method="PUT" path="setFolderDepositStatus">
-    <description />
-    <call-query href="setFolderDepositStatus">
-      <with-param name="idStatutDepot" query-param="idStatutDepot" />
-      <with-param name="idDossier " query-param="idDossier " />
-    </call-query>
-  </resource>
-  <resource method="POST" path="addIpAdress">
-    <description />
-    <call-query href="addIpAdress">
-      <with-param name="blacklist" query-param="blacklist" />
-      <with-param name="ipAdress" query-param="ipAdress" />
-    </call-query>
-  </resource>
-  <resource method="GET" path="checkBlackList">
-    <description />
-    <call-query href="isBlacklist">
-      <with-param name="ipAdress" query-param="ipAdress" />
-    </call-query>
-  </resource>
-  <resource method="GET" path="getStatistiqueOthers/{idStatutDossier}">
-    <description>Statistique nouveau,terminer etc..</description>
-    <call-query href="statistiqueDossierNouveauTermine">
-      <with-param name="idStatutDossier" query-param="idStatutDossier" />
-    </call-query>
-  </resource>
-  <resource method="POST" path="addFolderIdIpAdress">
-    <description />
-    <call-query href="addFolderIdIpAdress">
-      <with-param name="idIpAdress" query-param="idIpAdress" />
-    </call-query>
-  </resource>
-  <resource method="POST" path="insertAnEmptyFolder">
-    <description />
-    <call-query href="insertAnEmptyFolder">
-      <with-param name="idIpAdress" query-param="idIpAdress" />
-      <with-param name="step" query-param="step" />
-    </call-query>
-  </resource>
-  <resource method="PUT" path="updateStep">
-    <description />
-    <call-query href="updateStep">
-      <with-param name="step" query-param="step" />
-      <with-param name="idDossier" query-param="idDossier" />
-    </call-query>
-  </resource>
-  <resource method="DELETE" path="deleteDocument">
-    <description />
-    <call-query href="deleteDocument">
-      <with-param name="path" query-param="path" />
-    </call-query>
-  </resource>
+  <query id="setFolderNumber" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.dossier
+	SET   "numeroDossier"=:numeroDossier
+	WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="numeroDossier" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+  </query>
+  <query id="setFolderProgress" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.dossier
+	SET   "idProgression"=:idProgression 
+	WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="idProgression" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+  </query>
 </data>
