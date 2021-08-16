@@ -1,7 +1,6 @@
 <data transports="http https" serviceGroup="mg.gov.edbm.societe.societeDS" serviceNamespace="" name="societe">
   <description />
-
-<!--   <config id="societeDS">
+ <!--  <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/societe</property>
     <property name="username">postgres</property>
@@ -13,377 +12,6 @@
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config>
-  <resource path="addSocietyForm" method="POST">
-    <description>add society from online form</description>
-    <call-query href="addSociety">
-      <with-param name="   denominationSocial " query-param="   denominationSocial " />
-      <with-param name=" formeJuridique" query-param=" formeJuridique" />
-      <with-param name=" dateStatut" query-param=" dateStatut" />
-      <with-param name="  activiteImportExport" query-param="  activiteImportExport" />
-      <with-param name=" activiteIndustrielCollecteur" query-param=" activiteIndustrielCollecteur" />
-      <with-param name="  objetSocial" query-param="  objetSocial" />
-      <with-param name=" activiteGrossiste" query-param=" activiteGrossiste" />
-      <with-param name=" autreActiviteReglemente" query-param=" autreActiviteReglemente" />
-      <with-param name=" choixImposition" query-param=" choixImposition" />
-      <with-param name=" nombreAssociePersPhysique" query-param=" nombreAssociePersPhysique" />
-      <with-param name=" nombreAssociePersMorale" query-param=" nombreAssociePersMorale" />
-      <with-param name=" nombreDirigeant" query-param=" nombreDirigeant" />
-      <with-param name=" idPersonne" query-param=" idPersonne" />
-      <with-param name=" capital" query-param=" capital" />
-      <with-param name="idSiegeSocial" query-param="idSiegeSocial" />
-      <with-param name=" activitePrincipal" query-param=" activitePrincipal" />
-      <with-param name="idFormeJuridique" query-param="idFormeJuridique" />
-      <with-param name="tva" query-param="tva" />
-    </call-query>
-  </resource>
-  <resource path="addAdressSociety" method="POST">
-    <description />
-    <call-query href="addAdress">
-      <with-param name="idFokontany" query-param="idFokontany" />
-      <with-param name="idCommune" query-param="idCommune" />
-      <with-param name="idDistrict" query-param="idDistrict" />
-      <with-param name="idProvince" query-param="idProvince" />
-      <with-param name="idRegion" query-param="idRegion" />
-      <with-param name="adresse" query-param="adresse" />
-      <with-param name="idArrondissement" query-param="idArrondissement" />
-      <with-param name="codePays" query-param="codePays" />
-      <with-param name="idVille" query-param="idVille" />
-      <with-param name="longitude" query-param="longitude" />
-      <with-param name="latitude" query-param="latitude" />
-    </call-query>
-  </resource>
-  <resource path="addSiegeSocial" method="POST">
-    <description />
-    <call-query href="addSiegeSocial">
-      <with-param name="dureebail" query-param="dureebail" />
-      <with-param name="montantBail" query-param="montantBail" />
-      <with-param name="adresseSiegeSocial" query-param="adresseSiegeSocial" />
-      <with-param name="idTypeBailleur" query-param="idTypeBailleur" />
-      <with-param name="idTypeContrat" query-param="idTypeContrat" />
-      <with-param name="autorisationProp" query-param="autorisationProp" />
-      <with-param name="siegePrincipal" query-param="siegePrincipal" />
-      <with-param name="idBailleurPersonneMoral" query-param="idBailleurPersonneMoral" />
-      <with-param name="idBailleurPersonne" query-param="idBailleurPersonne" />
-    </call-query>
-  </resource>
-  <resource path="getTypeContrat" method="GET">
-    <description />
-    <call-query href="listTypeContrat" />
-  </resource>
-  <resource path="getTypeBailleur" method="GET">
-    <description />
-    <call-query href="getListTypeBailleur" />
-  </resource>
-  <resource path="setSocetyFolder" method="PUT">
-    <description />
-    <call-query href="setSocietyFolder">
-      <with-param name="idDossier" query-param="idDossier" />
-      <with-param name="idSociete" query-param="idSociete" />
-    </call-query>
-  </resource>
-  <resource path="getSocietyByFolderId" method="GET">
-    <description />
-    <call-query href="getSocietyByFolderId">
-      <with-param name="idDossier" query-param="idDossier" />
-    </call-query>
-  </resource>
-  <resource path="getSiegeSocial" method="GET">
-    <description />
-    <call-query href="getSiegeSocial">
-      <with-param name="idSiege" query-param="idSiege" />
-    </call-query>
-  </resource>
-  <resource path="getAddressById" method="GET">
-    <description />
-    <call-query href="getAddressById">
-      <with-param name="idAdresse" query-param="idAdresse" />
-    </call-query>
-  </resource>
-  <resource path="updateSociety" method="PUT">
-    <description />
-    <call-query href="updateSociety">
-      <with-param name="   denominationSocial " query-param="   denominationSocial " />
-      <with-param name=" formeJuridique" query-param=" formeJuridique" />
-      <with-param name=" dateStatut" query-param=" dateStatut" />
-      <with-param name="  activiteImportExport" query-param="  activiteImportExport" />
-      <with-param name=" activiteIndustrielCollecteur" query-param=" activiteIndustrielCollecteur" />
-      <with-param name="  objetSocial" query-param="  objetSocial" />
-      <with-param name=" activiteGrossiste" query-param=" activiteGrossiste" />
-      <with-param name=" autreActiviteReglemente" query-param=" autreActiviteReglemente" />
-      <with-param name=" choixImposition" query-param=" choixImposition" />
-      <with-param name=" nombreAssociePersPhysique" query-param=" nombreAssociePersPhysique" />
-      <with-param name=" nombreAssociePersMorale" query-param=" nombreAssociePersMorale" />
-      <with-param name=" nombreDirigeant" query-param=" nombreDirigeant" />
-      <with-param name=" idPersonne" query-param=" idPersonne" />
-      <with-param name=" capital" query-param=" capital" />
-      <with-param name="idSiegeSocial" query-param="idSiegeSocial" />
-      <with-param name=" activitePrincipal" query-param=" activitePrincipal" />
-      <with-param name="idFormeJuridique" query-param="idFormeJuridique" />
-      <with-param name="idSociete" query-param="idSociete" />
-      <with-param name="tva" query-param="tva" />
-    </call-query>
-  </resource>
-  <resource path="updateAdress" method="PUT">
-    <description />
-    <call-query href="updateAdress">
-      <with-param name="idFokontany" query-param="idFokontany" />
-      <with-param name="idCommune" query-param="idCommune" />
-      <with-param name="idDistrict" query-param="idDistrict" />
-      <with-param name="idProvince" query-param="idProvince" />
-      <with-param name="idRegion" query-param="idRegion" />
-      <with-param name="adresse" query-param="adresse" />
-      <with-param name="idArrondissement" query-param="idArrondissement" />
-      <with-param name="codePays" query-param="codePays" />
-      <with-param name="idVille" query-param="idVille" />
-      <with-param name="idAdresse" query-param="idAdresse" />
-      <with-param name="longitude" query-param="longitude" />
-      <with-param name="latitude" query-param="latitude" />
-    </call-query>
-  </resource>
-  <resource path="updateSiegeSocial" method="PUT">
-    <description />
-    <call-query href="updateSiegeSocial">
-      <with-param name="dureebail" query-param="dureebail" />
-      <with-param name="adresseSiegeSocial" query-param="adresseSiegeSocial" />
-      <with-param name="idTypeBailleur" query-param="idTypeBailleur" />
-      <with-param name="idTypeContrat" query-param="idTypeContrat" />
-      <with-param name="autorisationProp" query-param="autorisationProp" />
-      <with-param name="siegePrincipal" query-param="siegePrincipal" />
-      <with-param name="idBailleurPersonneMoral" query-param="idBailleurPersonneMoral" />
-      <with-param name="idBailleurPersonne" query-param="idBailleurPersonne" />
-      <with-param name="montantBail" query-param="montantBail" />
-      <with-param name="idSiege" query-param="idSiege" />
-    </call-query>
-  </resource>
-  <resource path="addCompany" method="POST">
-    <description>adding company 3rd iteration </description>
-    <call-query href="addCompany">
-      <with-param name="formeJuridique" query-param="formeJuridique" />
-      <with-param name="idFormeJuridique" query-param="idFormeJuridique" />
-      <with-param name="denominationSocial" query-param="denominationSocial" />
-      <with-param name="nomCommercial" query-param="nomCommercial" />
-      <with-param name="sigle" query-param="sigle" />
-      <with-param name="objetSocial" query-param="objetSocial" />
-      <with-param name="idSecteurActivite" query-param="idSecteurActivite" />
-      <with-param name="activitePrincipal" query-param="activitePrincipal" />
-      <with-param name="activiteImportExport" query-param="activiteImportExport" />
-      <with-param name="activiteIndustrielCollecteur" query-param="activiteIndustrielCollecteur" />
-      <with-param name="activiteGrossiste" query-param="activiteGrossiste" />
-      <with-param name="capital" query-param="capital" />
-      <with-param name="montantPartSocial" query-param="montantPartSocial" />
-      <with-param name="choixImposition" query-param="choixImposition" />
-      <with-param name="tva" query-param="tva" />
-      <with-param name="duree" query-param="duree" />
-      <with-param name="finExerciceSocial" query-param="finExerciceSocial" />
-      <with-param name="dateStatut" query-param="dateStatut" />
-      <with-param name="idPersonne" query-param="idPersonne" />
-      <with-param name="idDossier" query-param="idDossier" />
-      <with-param name="idDevise" query-param="idDevise" />
-      <with-param name="idDevisePartAssocie" query-param="idDevisePartAssocie" />
-    </call-query>
-  </resource>
-  <resource path="updateCompany" method="PUT">
-    <description>update Company 3rd iteration</description>
-    <call-query href="updateCompany">
-      <with-param name="formeJuridique" query-param="formeJuridique" />
-      <with-param name="idFormeJuridique" query-param="idFormeJuridique" />
-      <with-param name="denominationSocial" query-param="denominationSocial" />
-      <with-param name="nomCommercial" query-param="nomCommercial" />
-      <with-param name="sigle" query-param="sigle" />
-      <with-param name="objetSocial" query-param="objetSocial" />
-      <with-param name="idSecteurActivite" query-param="idSecteurActivite" />
-      <with-param name="activitePrincipal" query-param="activitePrincipal" />
-      <with-param name="activiteImportExport" query-param="activiteImportExport" />
-      <with-param name="activiteIndustrielCollecteur" query-param="activiteIndustrielCollecteur" />
-      <with-param name="activiteGrossiste" query-param="activiteGrossiste" />
-      <with-param name="capital" query-param="capital" />
-      <with-param name="montantPartSocial" query-param="montantPartSocial" />
-      <with-param name="choixImposition" query-param="choixImposition" />
-      <with-param name="tva" query-param="tva" />
-      <with-param name="duree" query-param="duree" />
-      <with-param name="finExerciceSocial" query-param="finExerciceSocial" />
-      <with-param name="idSociete" query-param="idSociete" />
-      <with-param name="dateStatut" query-param="dateStatut" />
-      <with-param name="idSiegeSocial" query-param="idSiegeSocial" />
-      <with-param name="idDevise" query-param="idDevise" />
-      <with-param name="idDevisePartAssocie" query-param="idDevisePartAssocie" />
-    </call-query>
-  </resource>
-  <resource path="getCompany" method="GET">
-    <description>getCompany for update 3rd iteration</description>
-    <call-query href="getCompany">
-      <with-param name="idSociete" query-param="idSociete" />
-    </call-query>
-  </resource>
-  <resource path="addCompanyAssociate" method="POST">
-    <description />
-    <call-query href="addCompanyAssociate">
-      <with-param name="idSociete" query-param="idSociete" />
-      <with-param name="idAssocie" query-param="idAssocie" />
-      <with-param name="isDefault" query-param="isDefault" />
-    </call-query>
-  </resource>
-  <resource path="addAssociate" method="POST">
-    <description />
-    <call-query href="addAssociate">
-      <with-param name="partCapitalAssocie" query-param="partCapitalAssocie" />
-      <with-param name="idPersonne" query-param="idPersonne" />
-      <with-param name="engagement" query-param="engagement" />
-      <with-param name="idTypeAssocie" query-param="idTypeAssocie" />
-      <with-param name="apportNature" query-param="apportNature" />
-      <with-param name="idPersonneMoral" query-param="idPersonneMoral" />
-      <with-param name="idStatutSociete" query-param="idStatutSociete" />
-      <with-param name="gerantStatutaire" query-param="gerantStatutaire" />
-      <with-param name="idDevise" query-param="idDevise" />
-      <with-param name="descriptifApportEnNature" query-param="descriptifApportEnNature" />
-      <with-param name="idDeviseMontantApportEnNature" query-param="idDeviseMontantApportEnNature" />
-      <with-param name="montantApportEnNature" query-param="montantApportEnNature" />
-    </call-query>
-  </resource>
-  <resource path="getCompanyInformationByPersonId" method="GET">
-    <description />
-    <call-query href="getCompanyInformationByPersonId">
-      <with-param name="idPersonne" query-param="idPersonne" />
-    </call-query>
-  </resource>
-  <resource path="deleteCompany" method="DELETE">
-    <description />
-    <call-query href="deleteCompany">
-      <with-param name="idSociete" query-param="idSociete" />
-    </call-query>
-  </resource>
-  <resource path="getActivitySector" method="GET">
-    <description />
-    <call-query href="getActivitySector" />
-  </resource>
-  <resource path="getAssociateByCompanyId" method="GET">
-    <description />
-    <call-query href="getAssociateByCompanyId">
-      <with-param name="idSociete " query-param="idSociete " />
-    </call-query>
-  </resource>
-  <resource path="getExploitationPlace" method="GET">
-    <description />
-    <call-query href="getExploitationPlace">
-      <with-param name="siegePrincipal" query-param="siegePrincipal" />
-    </call-query>
-  </resource>
-  <resource path="getGreffeCode" method="GET">
-    <description />
-    <call-query href="getGreffeCode">
-      <with-param name="idAdresse" query-param="idAdresse" />
-    </call-query>
-  </resource>
-  <resource path="getBusinessPlaces" method="GET">
-    <description />
-    <call-query href="getBusinessPlaces">
-      <with-param name="id" query-param="id" />
-    </call-query>
-  </resource>
-  <resource path="getDefaultAssociateByCompanyId" method="GET">
-    <description />
-    <call-query href="getDefaultAssociateByCompanyId">
-      <with-param name="idSociete " query-param="idSociete " />
-    </call-query>
-  </resource>
-  <resource path="deleteCompanyAssociate" method="DELETE">
-    <description />
-    <call-query href="deleteCompanyAssociate">
-      <with-param name="idAssocie" query-param="idAssocie" />
-    </call-query>
-  </resource>
-  <resource path="deleteAssociate" method="DELETE">
-    <description />
-    <call-query href="deleteAssociate">
-      <with-param name="idAssocie" query-param="idAssocie" />
-    </call-query>
-  </resource>
-  <resource path="getAssociateById" method="GET">
-    <description />
-    <call-query href="getAssociateById">
-      <with-param name="idAssocie" query-param="idAssocie" />
-    </call-query>
-  </resource>
-  <resource path="updateAssociate" method="PUT">
-    <description />
-    <call-query href="updateAssociate">
-      <with-param name="idAssocie" query-param="idAssocie" />
-      <with-param name="partCapitalAssocie" query-param="partCapitalAssocie" />
-      <with-param name="idPersonne" query-param="idPersonne" />
-      <with-param name="engagement" query-param="engagement" />
-      <with-param name="idTypeAssocie" query-param="idTypeAssocie" />
-      <with-param name="apportNature" query-param="apportNature" />
-      <with-param name="idPersonneMoral" query-param="idPersonneMoral" />
-      <with-param name="idStatutSociete" query-param="idStatutSociete" />
-      <with-param name="gerantStatutaire" query-param="gerantStatutaire" />
-      <with-param name="descriptifApportEnNature" query-param="descriptifApportEnNature" />
-      <with-param name="montantApportEnNature" query-param="montantApportEnNature" />
-      <with-param name="idDeviseMontantApportEnNature" query-param="idDeviseMontantApportEnNature" />
-      <with-param name="idDevise" query-param="idDevise" />
-    </call-query>
-  </resource>
-  <resource path="deleteSocialPlace" method="DELETE">
-    <description />
-    <call-query href="deleteSocialPlace">
-      <with-param name="idSiege" query-param="idSiege" />
-    </call-query>
-  </resource>
-  <resource path="deleteAdress" method="DELETE">
-    <description />
-    <call-query href="deleteAdress">
-      <with-param name="idAdresse" query-param="idAdresse" />
-    </call-query>
-  </resource>
-  <resource path="user/{idPersonne}/folderIds" method="GET">
-    <description />
-    <call-query href="userFolders">
-      <with-param name="idPersonne" query-param="idPersonne" />
-    </call-query>
-  </resource>
-  <resource path="updateNIF" method="PUT">
-    <description />
-    <call-query href="updateNIF">
-      <with-param name="idSociete" query-param="idSociete" />
-      <with-param name="NIF" query-param="NIF" />
-      <with-param name="dateNIF" query-param="dateNIF" />
-    </call-query>
-  </resource>
-  <resource path="updateSTAT" method="PUT">
-    <description />
-    <call-query href="updateSTAT">
-      <with-param name="STAT" query-param="STAT" />
-      <with-param name="idSociete" query-param="idSociete" />
-      <with-param name="dateSTAT " query-param="dateSTAT " />
-    </call-query>
-  </resource>
-  <resource path="updateRCS" method="PUT">
-    <description />
-    <call-query href="updateRCS">
-      <with-param name="RCS" query-param="RCS" />
-      <with-param name="idSociete" query-param="idSociete" />
-      <with-param name="dateRCS " query-param="dateRCS " />
-    </call-query>
-  </resource>
-  <resource path="updateUBI" method="PUT">
-    <description />
-    <call-query href="updateUBI">
-      <with-param name="ubi" query-param="ubi" />
-    </call-query>
-  </resource>
-  <resource path="addStatutInteroperabilite" method="POST">
-    <description />
-    <call-query href="statutInteroperabilite">
-      <with-param name="idSociete" query-param="idSociete" />
-      <with-param name="INSTAT" query-param="INSTAT" />
-      <with-param name="RCS" query-param="RCS" />
-      <with-param name="DGI" query-param="DGI" />
-      <with-param name="EDBM" query-param="EDBM" />
-    </call-query>
-  </resource>
-  <resource path="getCreatedCompanyId" method="GET">
-    <description />
-    <call-query href="getCreatedCompanyId" />
-  </resource>
   <query id="addSociety" useConfig="societeDS">
     <sql>INSERT INTO public.societe(
 	 "denominationSocial" , "activitePrincipal", "formeJuridique", "dateStatut", capital,  "activiteImportExport", "activiteIndustrielCollecteur",  "objetSocial", "activiteGrossiste", "autreActiviteReglemente", "choixImposition", "nombreAssociePersPhysique", "nombreAssociePersMorale", "nombreDirigeant", "idPersonne","idSiegeSocial","idFormeJuridique",tva)
@@ -862,15 +490,441 @@
 	FROM public."statutInteroperabilite" WHERE  "RCS"=1 and "INSTAT"=1 and "DGI"=1 and "EDBM"=0;</sql>
     <result outputType="json">{"status":{"company":[{"idSociete":"$idSociete"}]}}</result>
   </query>
-  <resource path="/relative-corporates/{corporate}" method="GET">
-    <description>relative corporates</description>
-    <call-query href="relativeCorporate">
-      <with-param name="corporate" query-param="corporate" />
+  <query id="setEdbmInterStatus" useConfig="societeDS">
+    <sql>UPDATE public."statutInteroperabilite"
+	SET   "EDBM"=:status
+	WHERE "idSociete"=:idSociete </sql>
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="status" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+  </query>
+  <query id="setInstatInterStatus" useConfig="societeDS">
+    <sql>UPDATE public."statutInteroperabilite"
+	SET "INSTAT"=:status WHERE "idSociete"=:idSociete</sql>
+    <param type="IN" name="status" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+  </query>
+  <query id="setDgiInterStatus" useConfig="societeDS">
+    <sql>UPDATE public."statutInteroperabilite"
+	SET "DGI"=:status WHERE "idSociete"=:idSociete</sql>
+    <param type="IN" name="status" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+  </query>
+  <query id="setRcsInterStatus" useConfig="societeDS">
+    <sql>UPDATE public."statutInteroperabilite"
+	SET "RCS"=:status WHERE "idSociete"=:idSociete</sql>
+    <param type="IN" name="status" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+  </query>
+  <query id="listCreatedSociety" useConfig="societeDS">
+    <sql>select * from public.societe where "idPersonne"=:idPersonne and "dateCreation" is not null and ubi is not null</sql>
+    <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="limit" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"societies":{"society":[{"denominationSocial":"$denominationSocial","ubi":"$ubi","dateCreation":"$dateCreation","idDossier":"$idDossier"}]}}</result>
+  </query>
+  <resource path="addSocietyForm" method="POST">
+    <description>add society from online form</description>
+    <call-query href="addSociety">
+      <with-param name="   denominationSocial " query-param="   denominationSocial " />
+      <with-param name=" formeJuridique" query-param=" formeJuridique" />
+      <with-param name=" dateStatut" query-param=" dateStatut" />
+      <with-param name="  activiteImportExport" query-param="  activiteImportExport" />
+      <with-param name=" activiteIndustrielCollecteur" query-param=" activiteIndustrielCollecteur" />
+      <with-param name="  objetSocial" query-param="  objetSocial" />
+      <with-param name=" activiteGrossiste" query-param=" activiteGrossiste" />
+      <with-param name=" autreActiviteReglemente" query-param=" autreActiviteReglemente" />
+      <with-param name=" choixImposition" query-param=" choixImposition" />
+      <with-param name=" nombreAssociePersPhysique" query-param=" nombreAssociePersPhysique" />
+      <with-param name=" nombreAssociePersMorale" query-param=" nombreAssociePersMorale" />
+      <with-param name=" nombreDirigeant" query-param=" nombreDirigeant" />
+      <with-param name=" idPersonne" query-param=" idPersonne" />
+      <with-param name=" capital" query-param=" capital" />
+      <with-param name="idSiegeSocial" query-param="idSiegeSocial" />
+      <with-param name=" activitePrincipal" query-param=" activitePrincipal" />
+      <with-param name="idFormeJuridique" query-param="idFormeJuridique" />
+      <with-param name="tva" query-param="tva" />
     </call-query>
   </resource>
-  <query id="relativeCorporate" useConfig="societeDS">
-    <sql>SELECT "denominationSocial" FROM public.societe WHERE LOWER("denominationSocial") LIKE CONCAT(:corporate,'%')</sql>
-    <param type="IN" name="corporate" sqlType="STRING" paramType="SCALAR" optional="false" />
-    <result outputType="json">{"data":{"corporates":[{"denomination":"$denominationSocial"}]}}</result>
-  </query>
+  <resource path="addAdressSociety" method="POST">
+    <description />
+    <call-query href="addAdress">
+      <with-param name="idFokontany" query-param="idFokontany" />
+      <with-param name="idCommune" query-param="idCommune" />
+      <with-param name="idDistrict" query-param="idDistrict" />
+      <with-param name="idProvince" query-param="idProvince" />
+      <with-param name="idRegion" query-param="idRegion" />
+      <with-param name="adresse" query-param="adresse" />
+      <with-param name="idArrondissement" query-param="idArrondissement" />
+      <with-param name="codePays" query-param="codePays" />
+      <with-param name="idVille" query-param="idVille" />
+      <with-param name="longitude" query-param="longitude" />
+      <with-param name="latitude" query-param="latitude" />
+    </call-query>
+  </resource>
+  <resource path="addSiegeSocial" method="POST">
+    <description />
+    <call-query href="addSiegeSocial">
+      <with-param name="dureebail" query-param="dureebail" />
+      <with-param name="montantBail" query-param="montantBail" />
+      <with-param name="adresseSiegeSocial" query-param="adresseSiegeSocial" />
+      <with-param name="idTypeBailleur" query-param="idTypeBailleur" />
+      <with-param name="idTypeContrat" query-param="idTypeContrat" />
+      <with-param name="autorisationProp" query-param="autorisationProp" />
+      <with-param name="siegePrincipal" query-param="siegePrincipal" />
+      <with-param name="idBailleurPersonneMoral" query-param="idBailleurPersonneMoral" />
+      <with-param name="idBailleurPersonne" query-param="idBailleurPersonne" />
+    </call-query>
+  </resource>
+  <resource path="getTypeContrat" method="GET">
+    <description />
+    <call-query href="listTypeContrat" />
+  </resource>
+  <resource path="getTypeBailleur" method="GET">
+    <description />
+    <call-query href="getListTypeBailleur" />
+  </resource>
+  <resource path="setSocetyFolder" method="PUT">
+    <description />
+    <call-query href="setSocietyFolder">
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
+  <resource path="getSocietyByFolderId" method="GET">
+    <description />
+    <call-query href="getSocietyByFolderId">
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource path="getSiegeSocial" method="GET">
+    <description />
+    <call-query href="getSiegeSocial">
+      <with-param name="idSiege" query-param="idSiege" />
+    </call-query>
+  </resource>
+  <resource path="getAddressById" method="GET">
+    <description />
+    <call-query href="getAddressById">
+      <with-param name="idAdresse" query-param="idAdresse" />
+    </call-query>
+  </resource>
+  <resource path="updateSociety" method="PUT">
+    <description />
+    <call-query href="updateSociety">
+      <with-param name="   denominationSocial " query-param="   denominationSocial " />
+      <with-param name=" formeJuridique" query-param=" formeJuridique" />
+      <with-param name=" dateStatut" query-param=" dateStatut" />
+      <with-param name="  activiteImportExport" query-param="  activiteImportExport" />
+      <with-param name=" activiteIndustrielCollecteur" query-param=" activiteIndustrielCollecteur" />
+      <with-param name="  objetSocial" query-param="  objetSocial" />
+      <with-param name=" activiteGrossiste" query-param=" activiteGrossiste" />
+      <with-param name=" autreActiviteReglemente" query-param=" autreActiviteReglemente" />
+      <with-param name=" choixImposition" query-param=" choixImposition" />
+      <with-param name=" nombreAssociePersPhysique" query-param=" nombreAssociePersPhysique" />
+      <with-param name=" nombreAssociePersMorale" query-param=" nombreAssociePersMorale" />
+      <with-param name=" nombreDirigeant" query-param=" nombreDirigeant" />
+      <with-param name=" idPersonne" query-param=" idPersonne" />
+      <with-param name=" capital" query-param=" capital" />
+      <with-param name="idSiegeSocial" query-param="idSiegeSocial" />
+      <with-param name=" activitePrincipal" query-param=" activitePrincipal" />
+      <with-param name="idFormeJuridique" query-param="idFormeJuridique" />
+      <with-param name="idSociete" query-param="idSociete" />
+      <with-param name="tva" query-param="tva" />
+    </call-query>
+  </resource>
+  <resource path="updateAdress" method="PUT">
+    <description />
+    <call-query href="updateAdress">
+      <with-param name="idFokontany" query-param="idFokontany" />
+      <with-param name="idCommune" query-param="idCommune" />
+      <with-param name="idDistrict" query-param="idDistrict" />
+      <with-param name="idProvince" query-param="idProvince" />
+      <with-param name="idRegion" query-param="idRegion" />
+      <with-param name="adresse" query-param="adresse" />
+      <with-param name="idArrondissement" query-param="idArrondissement" />
+      <with-param name="codePays" query-param="codePays" />
+      <with-param name="idVille" query-param="idVille" />
+      <with-param name="idAdresse" query-param="idAdresse" />
+      <with-param name="longitude" query-param="longitude" />
+      <with-param name="latitude" query-param="latitude" />
+    </call-query>
+  </resource>
+  <resource path="updateSiegeSocial" method="PUT">
+    <description />
+    <call-query href="updateSiegeSocial">
+      <with-param name="dureebail" query-param="dureebail" />
+      <with-param name="adresseSiegeSocial" query-param="adresseSiegeSocial" />
+      <with-param name="idTypeBailleur" query-param="idTypeBailleur" />
+      <with-param name="idTypeContrat" query-param="idTypeContrat" />
+      <with-param name="autorisationProp" query-param="autorisationProp" />
+      <with-param name="siegePrincipal" query-param="siegePrincipal" />
+      <with-param name="idBailleurPersonneMoral" query-param="idBailleurPersonneMoral" />
+      <with-param name="idBailleurPersonne" query-param="idBailleurPersonne" />
+      <with-param name="montantBail" query-param="montantBail" />
+      <with-param name="idSiege" query-param="idSiege" />
+    </call-query>
+  </resource>
+  <resource path="addCompany" method="POST">
+    <description>adding company 3rd iteration </description>
+    <call-query href="addCompany">
+      <with-param name="formeJuridique" query-param="formeJuridique" />
+      <with-param name="idFormeJuridique" query-param="idFormeJuridique" />
+      <with-param name="denominationSocial" query-param="denominationSocial" />
+      <with-param name="nomCommercial" query-param="nomCommercial" />
+      <with-param name="sigle" query-param="sigle" />
+      <with-param name="objetSocial" query-param="objetSocial" />
+      <with-param name="idSecteurActivite" query-param="idSecteurActivite" />
+      <with-param name="activitePrincipal" query-param="activitePrincipal" />
+      <with-param name="activiteImportExport" query-param="activiteImportExport" />
+      <with-param name="activiteIndustrielCollecteur" query-param="activiteIndustrielCollecteur" />
+      <with-param name="activiteGrossiste" query-param="activiteGrossiste" />
+      <with-param name="capital" query-param="capital" />
+      <with-param name="montantPartSocial" query-param="montantPartSocial" />
+      <with-param name="choixImposition" query-param="choixImposition" />
+      <with-param name="tva" query-param="tva" />
+      <with-param name="duree" query-param="duree" />
+      <with-param name="finExerciceSocial" query-param="finExerciceSocial" />
+      <with-param name="dateStatut" query-param="dateStatut" />
+      <with-param name="idPersonne" query-param="idPersonne" />
+      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="idDevise" query-param="idDevise" />
+      <with-param name="idDevisePartAssocie" query-param="idDevisePartAssocie" />
+    </call-query>
+  </resource>
+  <resource path="updateCompany" method="PUT">
+    <description>update Company 3rd iteration</description>
+    <call-query href="updateCompany">
+      <with-param name="formeJuridique" query-param="formeJuridique" />
+      <with-param name="idFormeJuridique" query-param="idFormeJuridique" />
+      <with-param name="denominationSocial" query-param="denominationSocial" />
+      <with-param name="nomCommercial" query-param="nomCommercial" />
+      <with-param name="sigle" query-param="sigle" />
+      <with-param name="objetSocial" query-param="objetSocial" />
+      <with-param name="idSecteurActivite" query-param="idSecteurActivite" />
+      <with-param name="activitePrincipal" query-param="activitePrincipal" />
+      <with-param name="activiteImportExport" query-param="activiteImportExport" />
+      <with-param name="activiteIndustrielCollecteur" query-param="activiteIndustrielCollecteur" />
+      <with-param name="activiteGrossiste" query-param="activiteGrossiste" />
+      <with-param name="capital" query-param="capital" />
+      <with-param name="montantPartSocial" query-param="montantPartSocial" />
+      <with-param name="choixImposition" query-param="choixImposition" />
+      <with-param name="tva" query-param="tva" />
+      <with-param name="duree" query-param="duree" />
+      <with-param name="finExerciceSocial" query-param="finExerciceSocial" />
+      <with-param name="idSociete" query-param="idSociete" />
+      <with-param name="dateStatut" query-param="dateStatut" />
+      <with-param name="idSiegeSocial" query-param="idSiegeSocial" />
+      <with-param name="idDevise" query-param="idDevise" />
+      <with-param name="idDevisePartAssocie" query-param="idDevisePartAssocie" />
+    </call-query>
+  </resource>
+  <resource path="getCompany" method="GET">
+    <description>getCompany for update 3rd iteration</description>
+    <call-query href="getCompany">
+      <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
+  <resource path="addCompanyAssociate" method="POST">
+    <description />
+    <call-query href="addCompanyAssociate">
+      <with-param name="idSociete" query-param="idSociete" />
+      <with-param name="idAssocie" query-param="idAssocie" />
+      <with-param name="isDefault" query-param="isDefault" />
+    </call-query>
+  </resource>
+  <resource path="addAssociate" method="POST">
+    <description />
+    <call-query href="addAssociate">
+      <with-param name="partCapitalAssocie" query-param="partCapitalAssocie" />
+      <with-param name="idPersonne" query-param="idPersonne" />
+      <with-param name="engagement" query-param="engagement" />
+      <with-param name="idTypeAssocie" query-param="idTypeAssocie" />
+      <with-param name="apportNature" query-param="apportNature" />
+      <with-param name="idPersonneMoral" query-param="idPersonneMoral" />
+      <with-param name="idStatutSociete" query-param="idStatutSociete" />
+      <with-param name="gerantStatutaire" query-param="gerantStatutaire" />
+      <with-param name="idDevise" query-param="idDevise" />
+      <with-param name="descriptifApportEnNature" query-param="descriptifApportEnNature" />
+      <with-param name="idDeviseMontantApportEnNature" query-param="idDeviseMontantApportEnNature" />
+      <with-param name="montantApportEnNature" query-param="montantApportEnNature" />
+    </call-query>
+  </resource>
+  <resource path="getCompanyInformationByPersonId" method="GET">
+    <description />
+    <call-query href="getCompanyInformationByPersonId">
+      <with-param name="idPersonne" query-param="idPersonne" />
+    </call-query>
+  </resource>
+  <resource path="deleteCompany" method="DELETE">
+    <description />
+    <call-query href="deleteCompany">
+      <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
+  <resource path="getActivitySector" method="GET">
+    <description />
+    <call-query href="getActivitySector" />
+  </resource>
+  <resource path="getAssociateByCompanyId" method="GET">
+    <description />
+    <call-query href="getAssociateByCompanyId">
+      <with-param name="idSociete " query-param="idSociete " />
+    </call-query>
+  </resource>
+  <resource path="getExploitationPlace" method="GET">
+    <description />
+    <call-query href="getExploitationPlace">
+      <with-param name="siegePrincipal" query-param="siegePrincipal" />
+    </call-query>
+  </resource>
+  <resource path="getGreffeCode" method="GET">
+    <description />
+    <call-query href="getGreffeCode">
+      <with-param name="idAdresse" query-param="idAdresse" />
+    </call-query>
+  </resource>
+  <resource path="getBusinessPlaces" method="GET">
+    <description />
+    <call-query href="getBusinessPlaces">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <resource path="getDefaultAssociateByCompanyId" method="GET">
+    <description />
+    <call-query href="getDefaultAssociateByCompanyId">
+      <with-param name="idSociete " query-param="idSociete " />
+    </call-query>
+  </resource>
+  <resource path="deleteCompanyAssociate" method="DELETE">
+    <description />
+    <call-query href="deleteCompanyAssociate">
+      <with-param name="idAssocie" query-param="idAssocie" />
+    </call-query>
+  </resource>
+  <resource path="deleteAssociate" method="DELETE">
+    <description />
+    <call-query href="deleteAssociate">
+      <with-param name="idAssocie" query-param="idAssocie" />
+    </call-query>
+  </resource>
+  <resource path="getAssociateById" method="GET">
+    <description />
+    <call-query href="getAssociateById">
+      <with-param name="idAssocie" query-param="idAssocie" />
+    </call-query>
+  </resource>
+  <resource path="updateAssociate" method="PUT">
+    <description />
+    <call-query href="updateAssociate">
+      <with-param name="idAssocie" query-param="idAssocie" />
+      <with-param name="partCapitalAssocie" query-param="partCapitalAssocie" />
+      <with-param name="idPersonne" query-param="idPersonne" />
+      <with-param name="engagement" query-param="engagement" />
+      <with-param name="idTypeAssocie" query-param="idTypeAssocie" />
+      <with-param name="apportNature" query-param="apportNature" />
+      <with-param name="idPersonneMoral" query-param="idPersonneMoral" />
+      <with-param name="idStatutSociete" query-param="idStatutSociete" />
+      <with-param name="gerantStatutaire" query-param="gerantStatutaire" />
+      <with-param name="descriptifApportEnNature" query-param="descriptifApportEnNature" />
+      <with-param name="montantApportEnNature" query-param="montantApportEnNature" />
+      <with-param name="idDeviseMontantApportEnNature" query-param="idDeviseMontantApportEnNature" />
+      <with-param name="idDevise" query-param="idDevise" />
+    </call-query>
+  </resource>
+  <resource path="deleteSocialPlace" method="DELETE">
+    <description />
+    <call-query href="deleteSocialPlace">
+      <with-param name="idSiege" query-param="idSiege" />
+    </call-query>
+  </resource>
+  <resource path="deleteAdress" method="DELETE">
+    <description />
+    <call-query href="deleteAdress">
+      <with-param name="idAdresse" query-param="idAdresse" />
+    </call-query>
+  </resource>
+  <resource path="user/{idPersonne}/folderIds" method="GET">
+    <description />
+    <call-query href="userFolders">
+      <with-param name="idPersonne" query-param="idPersonne" />
+    </call-query>
+  </resource>
+  <resource path="updateNIF" method="PUT">
+    <description />
+    <call-query href="updateNIF">
+      <with-param name="idSociete" query-param="idSociete" />
+      <with-param name="NIF" query-param="NIF" />
+      <with-param name="dateNIF" query-param="dateNIF" />
+    </call-query>
+  </resource>
+  <resource path="updateSTAT" method="PUT">
+    <description />
+    <call-query href="updateSTAT">
+      <with-param name="STAT" query-param="STAT" />
+      <with-param name="idSociete" query-param="idSociete" />
+      <with-param name="dateSTAT " query-param="dateSTAT " />
+    </call-query>
+  </resource>
+  <resource path="updateRCS" method="PUT">
+    <description />
+    <call-query href="updateRCS">
+      <with-param name="RCS" query-param="RCS" />
+      <with-param name="idSociete" query-param="idSociete" />
+      <with-param name="dateRCS " query-param="dateRCS " />
+    </call-query>
+  </resource>
+  <resource path="updateUBI" method="PUT">
+    <description />
+    <call-query href="updateUBI">
+      <with-param name="ubi" query-param="ubi" />
+    </call-query>
+  </resource>
+  <resource path="addStatutInteroperabilite" method="POST">
+    <description />
+    <call-query href="statutInteroperabilite">
+      <with-param name="idSociete" query-param="idSociete" />
+      <with-param name="INSTAT" query-param="INSTAT" />
+      <with-param name="RCS" query-param="RCS" />
+      <with-param name="DGI" query-param="DGI" />
+      <with-param name="EDBM" query-param="EDBM" />
+    </call-query>
+  </resource>
+  <resource path="getCreatedCompanyId" method="GET">
+    <description />
+    <call-query href="getCreatedCompanyId" />
+  </resource>
+  <resource path="setInstatInterStatus" method="PUT">
+    <description />
+    <call-query href="setInstatInterStatus">
+      <with-param name="status" query-param="status" />
+      <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
+  <resource path="setEdbmInterStatus" method="PUT">
+    <description />
+    <call-query href="setEdbmInterStatus">
+      <with-param name="idSociete" query-param="idSociete" />
+      <with-param name="status" query-param="status" />
+    </call-query>
+  </resource>
+  <resource path="setRcsInterStatus" method="PUT">
+    <description />
+    <call-query href="setRcsInterStatus">
+      <with-param name="status" query-param="status" />
+      <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
+  <resource path="setDgiInterStatus" method="PUT">
+    <description />
+    <call-query href="setDgiInterStatus">
+      <with-param name="status" query-param="status" />
+      <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
+  <resource path="getCreatedCompany" method="GET">
+    <description />
+    <call-query href="listCreatedSociety">
+      <with-param name="idPersonne" query-param="idPersonne" />
+      <with-param name="limit" query-param="limit" />
+    </call-query>
+  </resource>
 </data>
