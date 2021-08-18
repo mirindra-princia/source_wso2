@@ -1,123 +1,130 @@
-<data name="document" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.documentDS" transports="http https">
+<data transports="http https" serviceGroup="mg.gov.edbm.societe.documentDS" serviceNamespace="" name="document">
   <description />
-  <resource path="listdocumentToUploadByLegalStatus" method="GET">
-    <description />
-    <call-query href="documentToUploadByLegalStatus">
-      <with-param name="idFormeJuridique" query-param="idFormeJuridique" />
-    </call-query>
-  </resource>
-  <resource path="listdocumentToUploadByAssociate" method="GET">
-    <description />
-    <call-query href="documentToUploadByAssociate" />
-  </resource>
-  <resource path="listdocumentToUploadByLeader" method="GET">
-    <description />
-    <call-query href="documentToUploadByLeader" />
-  </resource>
-  <resource path="listdocumentToUploadByActivity" method="GET">
-    <description />
-    <call-query href="documentToUploadByActivity" />
-  </resource>
-  <resource path="listdocumentToUploadByWholesalerActivity" method="GET">
-    <description />
-    <call-query href="documentToUploadByWholesalerActivity" />
-  </resource>
-  <resource path="listdocumentToUploadByTheHeadOffice" method="GET">
-    <description>list of document o upload for the head office without user selection</description>
-    <call-query href="documentToUploadByTheHeadOffice" />
-  </resource>
-  <resource path="listdocumentToUploadByTheHeadOfficeWithBailleurId" method="GET">
-    <description />
-    <call-query href="documentToUploadByTheHeadOfficeWhithBailleurId">
-      <with-param name="idTypeBailleur" query-param="idTypeBailleur" />
-    </call-query>
-  </resource>
-  <resource path="listdocumentToUploadByTheHeadOfficeWithContratId" method="GET">
-    <description />
-    <call-query href="documentToUploadByTheHeadOfficeWhithContratId">
-      <with-param name="idTypeContrat" query-param="idTypeContrat" />
-    </call-query>
-  </resource>
-  <query id="documentToUploadByLegalStatus" useConfig="documentDS">
-    <sql>SELECT "idFormeJuridique",public.document."idDocument", "nomDocument", "iProcedure", "nbUploader", "nbDeposer", "paramUpload", "paramDeposer"
-	FROM public."documentFormeJuridique",public.document WHERE "idFormeJuridique"=:idFormeJuridique AND "iProcedure"=1 AND public."documentFormeJuridique"."idDocument"= public.document."idDocument" ;</sql>
-    <param type="IN" name="idFormeJuridique" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idFormeJuridique":"$idFormeJuridique","nomDocument":"$nomDocument","iProcedure":"$iProcedure", "nbUploader":"$nbUploader","nbDeposer":"$nbDeposer","paramUpload":"$paramUpload","paramDeposer":"$paramDeposer","idDocument":"$idDocument"}]}}</result>
-  </query>
-  <query id="documentToUploadByAssociate" useConfig="documentDS">
-    <sql>SELECT "nomDocument",public.document."idDocument", "nbUploader", "nbDeposer", "paramUpload", "paramDeposer"
-	FROM public."documentAssociePersMorale",public.document WHERE public."documentAssociePersMorale"."idDocument"=public.document."idDocument";</sql>
-    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer","paramUpload":"$paramUpload","paramDeposer":"$paramDeposer"}]}}</result>
-  </query>
-  <query id="documentToUploadByLeader" useConfig="documentDS">
-    <sql>SELECT public.document."idDocument","nomDocument", "nbUploader", "nbDeposer", "paramUpload", "paramDeposer"
-	FROM public."documentDirigeant",public.document WHERE public."documentDirigeant"."idDocument"=public.document."idDocument";</sql>
-    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer","paramUpload":"$paramUpload","paramDeposer":"$paramDeposer"}]}}</result>
-  </query>
-  <query id="documentToUploadByActivity" useConfig="documentDS">
-    <sql>SELECT public.document."idDocument","nomDocument", "nbUploader", "nbDeposer"
-	FROM public."documentActivite",public.document WHERE public."documentActivite"."idDocument"=public.document."idDocument";</sql>
-    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer"}]}}</result>
-  </query>
-  <query id="documentToUploadByWholesalerActivity" useConfig="documentDS">
-    <sql>SELECT public.document."idDocument","nomDocument", "nbUploader", "nbDeposer"
-	FROM public."documentActiviteGrossiste",public.document WHERE public."documentActiviteGrossiste"."idDocument"=public.document."idDocument";</sql>
-    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer"}]}}</result>
-  </query>
-  <query id="documentToUploadByTheHeadOffice" useConfig="documentDS">
-    <sql>SELECT public.document."idDocument","nomDocument", "nbUploader", "nbDeposer"
-	FROM public."documentSiegeSocial",public.document WHERE public."documentSiegeSocial"."idDocument"=public.document."idDocument" AND  "idTypeContrat" is null AND "idTypeBailleur" is null;	
-</sql>
-    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer"}]}}</result>
-  </query>
-  <query id="documentToUploadByTheHeadOfficeWhithBailleurId" useConfig="documentDS">
-    <sql>SELECT public.document."idDocument","nomDocument", "nbUploader", "nbDeposer"
-	FROM public."documentSiegeSocial",public.document WHERE public."documentSiegeSocial"."idDocument"=public.document."idDocument"  AND "idTypeBailleur"=:idTypeBailleur
-	
-	
-</sql>
-    <param type="IN" name="idTypeBailleur" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer"}]}}</result>
-  </query>
-  <query id="documentToUploadByTheHeadOfficeWhithContratId" useConfig="documentDS">
-    <sql>SELECT public.document."idDocument","nomDocument", "nbUploader", "nbDeposer"
-	FROM public."documentSiegeSocial",public.document WHERE public."documentSiegeSocial"."idDocument"=public.document."idDocument"  AND "idTypeContrat"=:idTypeContrat
-	
-	
-</sql>
-    <param type="IN" name="idTypeContrat" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer"}]}}</result>
-  </query>
-  <query id="documentToUploadByMandataire" useConfig="documentDS">
-    <sql>SELECT public.document."idDocument", "nomDocument", "nbUploader", "nbDeposer"
-	FROM public."documentMandataire",public.document WHERE public.document."idDocument"=public."documentMandataire"."idDocument" ;</sql>
-    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer"}]}}</result>
-  </query>
-  <resource path="listdocumentToUploadByMandataire" method="GET">
-    <description />
-    <call-query href="documentToUploadByMandataire" />
-  </resource>
-  <query id="documentToUploadByRegularActiviy" useConfig="documentDS">
-    <sql>SELECT public.document."idDocument", "nomDocument"
-	FROM public."documentActiviteReglemente",public.document WHERE public.document."idDocument"=public."documentActiviteReglemente"."idDocument";</sql>
-    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument"}]}}</result>
-  </query>
-  <resource path="listdocumentToUploadByRegularActiviy" method="GET">
-    <description />
-    <call-query href="documentToUploadByRegularActiviy" />
-  </resource>
-  <config id="documentDS">
+ <!--   <config id="documentDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/document</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config> -->
+   <config id="documentDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/document</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config>
- <!--  <config id="documentDS">
-	 <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/document</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config> -->
-
-
+  <resource method="GET" path="listdocumentToUploadByLegalStatus">
+    <description />
+    <call-query href="documentToUploadByLegalStatus">
+      <with-param name="idFormeJuridique" query-param="idFormeJuridique" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="listdocumentToUploadByAssociate">
+    <description />
+    <call-query href="documentToUploadByAssociate" />
+  </resource>
+  <resource method="GET" path="listdocumentToUploadByLeader">
+    <description />
+    <call-query href="documentToUploadByLeader" />
+  </resource>
+  <resource method="GET" path="listdocumentToUploadByActivity">
+    <description />
+    <call-query href="documentToUploadByActivity" />
+  </resource>
+  <resource method="GET" path="listdocumentToUploadByWholesalerActivity">
+    <description />
+    <call-query href="documentToUploadByWholesalerActivity" />
+  </resource>
+  <resource method="GET" path="listdocumentToUploadByTheHeadOffice">
+    <description>list of document o upload for the head office without user selection</description>
+    <call-query href="documentToUploadByTheHeadOffice" />
+  </resource>
+  <resource method="GET" path="listdocumentToUploadByTheHeadOfficeWithBailleurId">
+    <description />
+    <call-query href="documentToUploadByTheHeadOfficeWhithBailleurId">
+      <with-param name="idTypeBailleur" query-param="idTypeBailleur" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="listdocumentToUploadByTheHeadOfficeWithContratId">
+    <description />
+    <call-query href="documentToUploadByTheHeadOfficeWhithContratId">
+      <with-param name="idTypeContrat" query-param="idTypeContrat" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="listdocumentToUploadByMandataire">
+    <description />
+    <call-query href="documentToUploadByMandataire" />
+  </resource>
+  <resource method="GET" path="listdocumentToUploadByRegularActiviy">
+    <description />
+    <call-query href="documentToUploadByRegularActiviy" />
+  </resource>
+  <query useConfig="documentDS" id="documentToUploadByLegalStatus">
+    <sql>SELECT "idFormeJuridique",public.document."idDocument", "nomDocument", "iProcedure", "nbUploader", "nbDeposer", "paramUpload", "paramDeposer"
+	FROM public."documentFormeJuridique",public.document WHERE "idFormeJuridique"=:idFormeJuridique AND "iProcedure"=1 AND public."documentFormeJuridique"."idDocument"= public.document."idDocument" ;</sql>
+    <param type="IN" name="idFormeJuridique" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idFormeJuridique":"$idFormeJuridique","nomDocument":"$nomDocument","iProcedure":"$iProcedure", "nbUploader":"$nbUploader","nbDeposer":"$nbDeposer","paramUpload":"$paramUpload","paramDeposer":"$paramDeposer","idDocument":"$idDocument"}]}}</result>
+  </query>
+  <query useConfig="documentDS" id="documentToUploadByAssociate">
+    <sql>SELECT "nomDocument",public.document."idDocument", "nbUploader", "nbDeposer", "paramUpload", "paramDeposer"
+	FROM public."documentAssociePersMorale",public.document WHERE public."documentAssociePersMorale"."idDocument"=public.document."idDocument";</sql>
+    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer","paramUpload":"$paramUpload","paramDeposer":"$paramDeposer"}]}}</result>
+  </query>
+  <query useConfig="documentDS" id="documentToUploadByLeader">
+    <sql>SELECT public.document."idDocument","nomDocument", "nbUploader", "nbDeposer", "paramUpload", "paramDeposer"
+	FROM public."documentDirigeant",public.document WHERE public."documentDirigeant"."idDocument"=public.document."idDocument";</sql>
+    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer","paramUpload":"$paramUpload","paramDeposer":"$paramDeposer"}]}}</result>
+  </query>
+  <query useConfig="documentDS" id="documentToUploadByActivity">
+    <sql>SELECT public.document."idDocument","nomDocument", "nbUploader", "nbDeposer"
+	FROM public."documentActivite",public.document WHERE public."documentActivite"."idDocument"=public.document."idDocument";</sql>
+    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer"}]}}</result>
+  </query>
+  <query useConfig="documentDS" id="documentToUploadByWholesalerActivity">
+    <sql>SELECT public.document."idDocument","nomDocument", "nbUploader", "nbDeposer"
+	FROM public."documentActiviteGrossiste",public.document WHERE public."documentActiviteGrossiste"."idDocument"=public.document."idDocument";</sql>
+    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer"}]}}</result>
+  </query>
+  <query useConfig="documentDS" id="documentToUploadByTheHeadOffice">
+    <sql>SELECT public.document."idDocument","nomDocument", "nbUploader", "nbDeposer"
+	FROM public."documentSiegeSocial",public.document WHERE public."documentSiegeSocial"."idDocument"=public.document."idDocument" AND  "idTypeContrat" is null AND "idTypeBailleur" is null;	
+</sql>
+    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer"}]}}</result>
+  </query>
+  <query useConfig="documentDS" id="documentToUploadByTheHeadOfficeWhithBailleurId">
+    <sql>SELECT public.document."idDocument","nomDocument", "nbUploader", "nbDeposer"
+	FROM public."documentSiegeSocial",public.document WHERE public."documentSiegeSocial"."idDocument"=public.document."idDocument"  AND "idTypeBailleur"=:idTypeBailleur
+	
+	
+</sql>
+    <param type="IN" name="idTypeBailleur" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer"}]}}</result>
+  </query>
+  <query useConfig="documentDS" id="documentToUploadByTheHeadOfficeWhithContratId">
+    <sql>SELECT public.document."idDocument","nomDocument", "nbUploader", "nbDeposer"
+	FROM public."documentSiegeSocial",public.document WHERE public."documentSiegeSocial"."idDocument"=public.document."idDocument"  AND "idTypeContrat"=:idTypeContrat
+	
+	
+</sql>
+    <param type="IN" name="idTypeContrat" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer"}]}}</result>
+  </query>
+  <query useConfig="documentDS" id="documentToUploadByMandataire">
+    <sql>SELECT public.document."idDocument", "nomDocument", "nbUploader", "nbDeposer"
+	FROM public."documentMandataire",public.document WHERE public.document."idDocument"=public."documentMandataire"."idDocument" ;</sql>
+    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer"}]}}</result>
+  </query>
+  <query useConfig="documentDS" id="documentToUploadByRegularActiviy">
+    <sql>SELECT public.document."idDocument", "nomDocument"
+	FROM public."documentActiviteReglemente",public.document WHERE public.document."idDocument"=public."documentActiviteReglemente"."idDocument";</sql>
+    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument"}]}}</result>
+  </query>
+  <query useConfig="documentDS" id="documentToSave">
+    <sql>SELECT public."documentEnregistrement"."idDocument","nomDocument"
+	FROM public."documentEnregistrement" LEFT JOIN public.document on public.document."idDocument"=public."documentEnregistrement"."idDocument" ;</sql>
+    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument"}]}}</result>
+  </query>
+  <resource method="GET" path="listdocumentToSave">
+    <description />
+    <call-query href="documentToSave" />
+  </resource>
 </data>
