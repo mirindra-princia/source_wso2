@@ -432,6 +432,27 @@
       <with-param name="idDocument" query-param="idDocument" />
     </call-query>
   </resource>
+  <resource method="PUT" path="updatePathNif">
+    <description />
+    <call-query href="updatePathNif">
+      <with-param name="id" query-param="id" />
+      <with-param name="pathNif" query-param="pathNif" />
+    </call-query>
+  </resource>
+  <resource method="PUT" path="updatePathRcs">
+    <description />
+    <call-query href="updatePathRcs">
+      <with-param name="id" query-param="id" />
+      <with-param name="pathRcs" query-param="pathRcs" />
+    </call-query>
+  </resource>
+  <resource method="PUT" path="updatePathStat">
+    <description />
+    <call-query href="updatePathInstat">
+      <with-param name="id" query-param="id" />
+      <with-param name="pathStat" query-param="pathStat" />
+    </call-query>
+  </resource>
   <query id="addSociety" useConfig="societeDS">
     <sql>INSERT INTO public.societe(
 	 "denominationSocial" , "activitePrincipal", "formeJuridique", "dateStatut", capital,  "activiteImportExport", "activiteIndustrielCollecteur",  "objetSocial", "activiteGrossiste", "autreActiviteReglemente", "choixImposition", "nombreAssociePersPhysique", "nombreAssociePersMorale", "nombreDirigeant", "idPersonne","idSiegeSocial","idFormeJuridique",tva)
@@ -952,20 +973,20 @@
   </query>
   <query id="updatePathNif" useConfig="societeDS">
     <sql>UPDATE public.justificatif
-	SET  "pathNif"=:pathNif	WHERE id=:id;</sql>
+	SET  "pathNif"=:pathNif	WHERE id=:id</sql>
     <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="pathNif" paramType="SCALAR" sqlType="STRING" optional="false" />
   </query>
   <query id="updatePathRcs" useConfig="societeDS">
     <sql>UPDATE public.justificatif
-	SET "pathRcs"=:pathRcs	WHERE id=:id;</sql>
+	SET "pathRcs"=:pathRcs	WHERE id=:id</sql>
     <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="pathRcs" paramType="SCALAR" sqlType="STRING" optional="false" />
   </query>
-  <query id="updadePathInstat" useConfig="societeDS">
+  <query id="updatePathInstat" useConfig="societeDS">
     <sql>UPDATE public.justificatif
 	SET "pathStat"=:pathStat
-	WHERE id=:id;</sql>
+	WHERE id=:id</sql>
     <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="pathStat" paramType="SCALAR" sqlType="STRING" optional="false" />
   </query>
@@ -981,25 +1002,4 @@
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="idDocument" paramType="SCALAR" sqlType="INTEGER" optional="false" />
   </query>
-  <resource method="PUT" path="updatePathNif">
-    <description />
-    <call-query href="updatePathNif">
-      <with-param name="id" query-param="id" />
-      <with-param name="pathNif" query-param="pathNif" />
-    </call-query>
-  </resource>
-  <resource method="PUT" path="updatePathRcs">
-    <description />
-    <call-query href="updatePathRcs">
-      <with-param name="id" query-param="id" />
-      <with-param name="pathRcs" query-param="pathRcs" />
-    </call-query>
-  </resource>
-  <resource method="PUT" path="updatePathStat">
-    <description />
-    <call-query href="updadePathInstat">
-      <with-param name="id" query-param="id" />
-      <with-param name="pathStat" query-param="pathStat" />
-    </call-query>
-  </resource>
 </data>
