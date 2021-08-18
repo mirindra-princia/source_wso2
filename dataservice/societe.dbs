@@ -960,7 +960,7 @@
     <sql>select * from public.societe where "idPersonne"=:idPersonne and "dateCreation" is not null and ubi is not null</sql>
     <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <result outputType="json">{"societies":{"society":[{"denominationSocial":"$denominationSocial","ubi":"$ubi","dateCreation":"$dateCreation","idDossier":"$idDossier"}]}}</result>
+    <result outputType="json">{"societies":{"society":[{"denominationSocial":"$denominationSocial","ubi":"$ubi","dateCreation":"$dateCreation","idDossier":"$idDossier","idSociete":"$idSociete"}]}}</result>
   </query>
   <query id="insertEmptyJustificatif" useConfig="societeDS">
     <sql>INSERT INTO public.justificatif(
@@ -973,13 +973,15 @@
   </query>
   <query id="updatePathNif" useConfig="societeDS">
     <sql>UPDATE public.justificatif
-	SET  "pathNif"=:pathNif	WHERE id=:id</sql>
+	SET "pathNif"= :pathNif
+	WHERE id= :id</sql>
     <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="pathNif" paramType="SCALAR" sqlType="STRING" optional="false" />
   </query>
   <query id="updatePathRcs" useConfig="societeDS">
     <sql>UPDATE public.justificatif
-	SET "pathRcs"=:pathRcs	WHERE id=:id</sql>
+	SET "pathRcs"= :pathRcs
+	WHERE id= :id</sql>
     <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="pathRcs" paramType="SCALAR" sqlType="STRING" optional="false" />
   </query>
