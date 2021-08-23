@@ -1,6 +1,12 @@
 <data name="societe" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.societeDS" transports="http https">
   <description />
-  <config id="societeDS">
+<!--   <config id="societeDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/societe</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config> -->
+    <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
     <property name="username">devedbmdb</property>
@@ -451,6 +457,18 @@
     <call-query href="updatePathInstat">
       <with-param name="id" query-param="id" />
       <with-param name="pathStat" query-param="pathStat" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="getSavedStatuses">
+    <description />
+    <call-query href="getSavedStatuses">
+      <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
+  <resource method="GET" path="checkStatusTable">
+    <description />
+    <call-query href="checkStatusTable">
+      <with-param name="idSociete" query-param="idSociete" />
     </call-query>
   </resource>
   <query id="addSociety" useConfig="societeDS">
@@ -1003,5 +1021,17 @@
     <param type="IN" name="montantDroit" paramType="SCALAR" sqlType="DOUBLE" optional="false" />
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="idDocument" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+  </query>
+  <query id="getSavedStatuses" useConfig="societeDS">
+    <sql>SELECT id, "dateEnregistrement", "numeroRegistre", "numeroEnregistrement", "idUtilisateurAgent", "montantDroit", public."enregistrementFiscale"."idSociete", "idDocument",public.societe."NIF" FROM public."enregistrementFiscale" LEFT JOIN public.societe on public.societe."idSociete"=public."enregistrementFiscale"."idSociete"
+	  WHERE public."enregistrementFiscale"."idSociete"=:idSociete</sql>
+    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"statuses":{"status":[{"id":"$id","idSociete":"$idSociete","dateEnregistrement":"$dateEnregistrement","numeroRegistre":"$numeroRegistre","idUtilisateurAgent":"$idUtilisateurAgent","montantDroit":"$montantDroit","idDocument":"$idDocument","NIF":"$NIF"}]}
+}</result>
+  </query>
+  <query id="checkStatusTable" useConfig="societeDS">
+    <sql>SELECT * FROM public."statutInteroperabilite" WHERE "idSociete"=:idSociete</sql>
+    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"company":{"companies":[{"idSociete":"$idSociete"}]}}</result>
   </query>
 </data>

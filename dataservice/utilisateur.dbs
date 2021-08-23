@@ -1,7 +1,7 @@
 <data name="utilisateur" serviceNamespace="" serviceGroup="" transports="http https">
   <description />
 
-<!--   <config id="utilisateurDS">
+ <!--  <config id="utilisateurDS">
  	 <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/utilisateur</property>
     <property name="username">postgres</property>
