@@ -28,6 +28,17 @@
     <param type="IN" name="idFormeJuridiqueSi" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"legalStatusMapping":{"idFormeJuridiqueSi":"$idFormeJuridiqueSi", "idFormeJuridiqueRncs":"$idFormeJuridiqueRncs"}}</result>
   </query>
+  <resource path="getLegalStatus" method="GET">
+    <description />
+    <call-query href="getLegalStatus">
+      <with-param name="idFormeJuridique" query-param="idFormeJuridique" />
+    </call-query>
+  </resource>
+  <query id="getLegalStatus" useConfig="siteInformationDS">
+    <sql>SELECT * FROM public.legal_status_lists status WHERE status.id=:idFormeJuridique</sql>
+    <param type="IN" name="idFormeJuridique" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{"legalStatus":{"id":$id, "status":"$STATUS"}}</result>
+  </query>
   <resource path="getClasseActivite" method="GET">
     <description />
     <call-query href="getClasseActivite">
