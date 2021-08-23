@@ -1041,4 +1041,15 @@
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <result outputType="json">{"company":{"companies":[{"idSociete":"$idSociete"}]}}</result>
   </query>
+  <resource method="GET" path="getActiviteReglemente">
+    <description>get activity reglemente by id</description>
+    <call-query href="getActiviteReglemente">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="getActiviteReglemente" useConfig="societeDS">
+    <sql>SELECT * FROM public."secteurActivite" activity WHERE activity."idSecteurActivite" =:id</sql>
+    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"activity":{"libelleSecteurActivite":"$libelleSecteurActivite","idSecteurActivite":"$idSecteurActivite"}}</result>
+  </query>
 </data>
