@@ -6,7 +6,7 @@
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config> -->
-    <config id="societeDS">
+  <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
     <property name="username">devedbmdb</property>
@@ -725,7 +725,8 @@
         "dateSTAT":"$dateSTAT",
         "dateRCS":"$dateRCS",
         "labelDevise":"$labelDevise",
-        "ubi":"$ubi"
+        "ubi":"$ubi",
+        "activiteSecondaire": "$activiteSecondaire"
     }
 }</result>
   </query>
@@ -1033,5 +1034,16 @@
     <sql>SELECT * FROM public."statutInteroperabilite" WHERE "idSociete"=:idSociete</sql>
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <result outputType="json">{"company":{"companies":[{"idSociete":"$idSociete"}]}}</result>
+  </query>
+  <resource method="GET" path="getActiviteReglemente">
+    <description>get activity reglemente by id</description>
+    <call-query href="getActiviteReglemente">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="getActiviteReglemente" useConfig="societeDS">
+    <sql>SELECT * FROM public."secteurActivite" activity WHERE activity."idSecteurActivite" =:id</sql>
+    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"activity":{"libelleSecteurActivite":"$libelleSecteurActivite","idSecteurActivite":"$idSecteurActivite"}}</result>
   </query>
 </data>

@@ -133,13 +133,17 @@
   </query>
   <query id="getPersonProfil" useConfig="personneDS">
     <sql>
-    	SELECT * FROM public.personne personne LEFT JOIN public.adresse adresse ON personne.idadresse = adresse."idAdresse" LEFT JOIN public.role role ON role.id_role = personne.idrole LEFT JOIN public."pieceIdentite" identite ON identite.id = personne."idPieceIdentite" LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" WHERE "idPersonne"=:idPersonne
+    	SELECT * FROM public.personne personne LEFT JOIN public.adresse adresse ON personne.idadresse = adresse."idAdresse" LEFT JOIN public.role role ON role.id_role = personne.idrole LEFT JOIN public."pieceIdentite" identite ON identite.id = personne."idPieceIdentite" LEFT JOIN public."typePieceIdentite" tpi ON tpi."idTypePiece" = identite."idTypePiece" LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" LEFT JOIN public.nationalite ON nationalite.code = personne.nationalite WHERE "idPersonne"=:idPersonne
 	</sql>
     <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">
 		{"data":{"idPersonne":"$idPersonne", "nom":"$nom","prenom":"$prenom","nomPere":"$nomPere", "nomMere":"$nomMere", "dateNaissance":"$dateNaissance", "lieuNaissance":"$lieuNaissance", "situationMatrimonial":"$situationMatrimonial", 
 	    "idPieceIdentite":"$idPieceIdentite", "sexe":"$sexe", "societe_mandataire":"$societe_mandataire", "idadresse":"$idadresse", "idrole":"$idrole", "tel":"$tel","e_mail":"$e_mail","idUtilisateur":"$idUtilisateur", "engagement":"$engagement", "civilite":"$civilite", 
-	    "idPersonneSociete":"$idPersonneSociete", "idConjoint":"$idConjoint", "tel2":"$tel2","nationalite":"$nationalite", 
+	    "idPersonneSociete":"$idPersonneSociete", "idConjoint":"$idConjoint", "tel2":"$tel2","nationalite":"$nationalite",
+	    "nationaliteModel": {
+	    	"code": "$code",
+	    	"libelle": "$libelle"
+	    },
 	    "adresse": {
 	    	"idAdresse":"$idAdresse",
 	    	"idFokontany":"$idFokontany",
@@ -162,7 +166,11 @@
 	    	"dateDelivrancePiece": "$dateDelivrancePiece",
 	    	"lieuDelivrancePiece": "$lieuDelivrancePiece",
 	    	"numeroPiece": "$numeroPiece",
-	    	"idTypePiece": "$idTypePiece"
+	    	"idTypePiece": "$idTypePiece",
+	    	"typePieceIdentite": {
+	    		"idTypePiece": $idTypePiece,
+	    		"nomTypePiece": "$nomTypePiece"
+	    	}
 	    },
 	    "conjoint":{
 	   		 "idAdresse":"$idAdresse",
