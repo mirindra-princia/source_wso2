@@ -1,11 +1,11 @@
 <data name="document" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.documentDS" transports="http https">
   <description />
- <!--  <config id="documentDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/document</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config> -->
+<!--   <config id="documentDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/document</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
   <config id="documentDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/document</property>

@@ -1,7 +1,5 @@
 <data name="localisation" serviceGroup="mg.gov.edbm.societe.localisationDS" transports="http https">
   <description>Service adresse</description>
-
-
 <!--   <config id="localisationDS"> -->
 <!-- 	<property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/localisation</property> -->
