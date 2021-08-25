@@ -526,4 +526,44 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     	}]
     }}</result>
   </query>
+  <resource path="companyFacture" method="GET">
+    <description />
+    <call-query href="companyFacture">
+    	<with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <query id="companyFacture" useConfig="dossierSomissionDS">
+    <sql>SELECT fd.id, fd.label, fd."refValue", tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureDataDossier" fdd JOIN public."factureData" fd ON fd.id = fdd."idFactureData" JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" WHERE "idDossier" = :idDossier</sql>
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data":{"factureDatas":[{
+    	"id":$id,
+    	"label":"$label",
+    	"refValue": $refValue,
+    	"typeFacturation": {
+    			"id": $idTypeFacture,
+    			"label": "$typeFacture"
+    		}
+    	}]
+    }}</result>
+  </query>
+  <resource path="companyCustomFacture" method="GET">
+    <description />
+    <call-query href="companyCustomFacture">
+    	<with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <query id="companyCustomFacture" useConfig="dossierSomissionDS">
+    <sql>SELECT fdd.id, fdd.label, fdd.value, tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureDataDossier" fdd JOIN public."typeFacture" tf ON tf.id = fdd."idTypeFacture" WHERE fdd."idDossier" = :idDossier AND fdd."idFactureData" IS NULL</sql>
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data":{"factureDataDossier":[{
+    	"id":$id,
+    	"label":"$label",
+    	"value": $value,
+    	"typeFacturation": {
+    			"id": $idTypeFacture,
+    			"label": "$typeFacture"
+    		}
+    	}]
+    }}</result>
+  </query>
 </data>
