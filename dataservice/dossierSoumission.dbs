@@ -581,7 +581,7 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     </call-query>
   </resource>
   <query id="saveCompanyBill" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public."factureDataDossier"("idFactureData", "idDossier", "label", "value", "idTypeFacture") VALUES (:idFactureData, :idDossier, :label, :value, :idTypeFacture) RETURING id</sql>
+    <sql>INSERT INTO public."factureDataDossier"("idFactureData", "idDossier", "label", "value", "idTypeFacture") VALUES (:idFactureData, :idDossier, :label, :value, :idTypeFacture) RETURNING id</sql>
     <param type="IN" name="idFactureData" sqlType="INTEGER" paramType="SCALAR" optional="true" />
     <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <param type="IN" name="label" sqlType="STRING" paramType="SCALAR" optional="true" />
