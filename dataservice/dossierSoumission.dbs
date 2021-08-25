@@ -533,12 +533,15 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     </call-query>
   </resource>
   <query id="companyFacture" useConfig="dossierSomissionDS">
-    <sql>SELECT fd.id, fd.label, fd."refValue", tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureDataDossier" fdd JOIN public."factureData" fd ON fd.id = fdd."idFactureData" JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" WHERE "idDossier" = :idDossier</sql>
+    <sql>SELECT fdd.id, fd.id as "idFactureData", fd.label, fd."refValue", tf.label as "typeFacture", tf.id as "idTypeFacture", fdd."idFactureData" FROM public."factureDataDossier" fdd JOIN public."factureData" fd ON fd.id = fdd."idFactureData" JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" WHERE "idDossier" = :idDossier</sql>
     <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"factureDatas":[{
     	"id":$id,
-    	"label":"$label",
-    	"refValue": $refValue,
+    	"factureData": {
+    		"id": $idFactureData,
+    		"label":"$label",
+    		"refValue": $refValue,
+    	},
     	"typeFacturation": {
     			"id": $idTypeFacture,
     			"label": "$typeFacture"
@@ -553,17 +556,47 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     </call-query>
   </resource>
   <query id="companyCustomFacture" useConfig="dossierSomissionDS">
-    <sql>SELECT fdd.id, fdd.label, fdd.value, tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureDataDossier" fdd JOIN public."typeFacture" tf ON tf.id = fdd."idTypeFacture" WHERE fdd."idDossier" = :idDossier AND fdd."idFactureData" IS NULL</sql>
+    <sql>SELECT fdd.id, fdd.label, fdd.value, fdd."idFactureData", tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureDataDossier" fdd JOIN public."typeFacture" tf ON tf.id = fdd."idTypeFacture" WHERE fdd."idDossier" = :idDossier AND fdd."idFactureData" IS NULL</sql>
     <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"factureDataDossier":[{
     	"id":$id,
     	"label":"$label",
     	"value": $value,
+    	"idFactureData": $idFactureData,
     	"typeFacturation": {
     			"id": $idTypeFacture,
     			"label": "$typeFacture"
     		}
     	}]
     }}</result>
+  </query>
+  <resource path="saveCompanyBill" method="POST">
+    <description />
+    <call-query href="saveCompanyBill">
+    	<with-param name="idFactureData" query-param="idFactureData" />
+    	<with-param name="idDossier" query-param="idDossier" />
+    	<with-param name="label" query-param="label" />
+    	<with-param name="value" query-param="value" />
+    	<with-param name="idTypeFacture" query-param="idTypeFacture" />
+    </call-query>
+  </resource>
+  <query id="saveCompanyBill" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public."factureDataDossier"("idFactureData", "idDossier", "label", "value", "idTypeFacture") VALUES (:idFactureData, :idDossier, :label, :value, :idTypeFacture) RETURING id</sql>
+    <param type="IN" name="idFactureData" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="label" sqlType="STRING" paramType="SCALAR" optional="true" />
+    <param type="IN" name="value" sqlType="DOUBLE" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idTypeFacture" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"factureDataDossier":{"id": $id}}</result>
+  </query>
+  <resource path="removeCompanyBills" method="DELETE">
+    <description />
+    <call-query href="removeCompanyBills">
+    	<with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="removeCompanyBills" useConfig="dossierSomissionDS">
+    <sql>DELETE FROM public."factureDataDossier" WHERE id=ANY(:ids::int[])</sql>
+    <param type="IN" name="ids" sqlType="STRING" paramType="ARRAY" />
   </query>
 </data>
