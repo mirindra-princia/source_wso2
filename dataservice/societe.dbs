@@ -1,11 +1,11 @@
 <data name="societe" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.societeDS" transports="http https">
   <description />
-<!--   <config id="societeDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/societe</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config> -->
+<!--   <config id="societeDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/societe</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
   <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
@@ -1045,5 +1045,27 @@
     <sql>SELECT * FROM public."secteurActivite" activity WHERE activity."idSecteurActivite" =:id</sql>
     <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <result outputType="json">{"activity":{"libelleSecteurActivite":"$libelleSecteurActivite","idSecteurActivite":"$idSecteurActivite"}}</result>
+  </query>
+  <resource path="bailSum" method="GET">
+    <description />
+    <call-query href="bailSum">
+      <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
+  <query id="bailSum" useConfig="societeDS">
+    <sql>SELECT (ss."montantBail" * ss.dureebail) as account, ss."idSiege" FROM public."siegeSocial" ss JOIN public.societe ON societe."idSiegeSocial" = ss."idSiege" WHERE societe."idSociete" = :idSociete</sql>
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"socialPlace":{"idSiege":$idSiege, "account": $account}}</result>
+  </query>
+  <resource path="exploitationBailSum" method="GET">
+    <description />
+    <call-query href="exploitationBailSum">
+      <with-param name="idSiege" query-param="idSiege" />
+    </call-query>
+  </resource>
+  <query id="exploitationBailSum" useConfig="societeDS">
+    <sql>SELECT sum(("montantBail" * dureebail)) as account FROM public."siegeSocial" WHERE "siegePrincipal" = :idSiege</sql>
+    <param type="IN" name="idSiege" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"exploitation":{"account": $account}}</result>
   </query>
 </data>
