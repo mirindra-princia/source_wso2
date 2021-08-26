@@ -1033,7 +1033,7 @@
   <query id="checkStatusTable" useConfig="societeDS">
     <sql>SELECT * FROM public."statutInteroperabilite" WHERE "idSociete"=:idSociete</sql>
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <result outputType="json">{"company":{"companies":[{"idSociete":"$idSociete"}]}}</result>
+    <result outputType="json">{"company":{"idSociete":"$idSociete", "rcs": $RCS, "instat": $INSTAT}}</result>
   </query>
   <resource method="GET" path="getActiviteReglemente">
     <description>get activity reglemente by id</description>
@@ -1067,5 +1067,19 @@
     <sql>SELECT sum(("montantBail" * dureebail)) as account FROM public."siegeSocial" WHERE "siegePrincipal" = :idSiege</sql>
     <param type="IN" name="idSiege" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"exploitation":{"account": $account}}</result>
+  </query>
+  <resource method="GET" path="enregistrementFiscale/{idSociete}">
+    <description />
+    <call-query href="enregistrementFiscale">
+      <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
+  <query id="enregistrementFiscale" useConfig="societeDS">
+    <sql>SELECT * FROM public."enregistrementFiscale" WHERE "idSociete" = :idSociete</sql>
+    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"data":{
+    	"enregistrementFiscaux":[{"id":$id, "dateEnregistrement":"$dateEnregistrement", "numeroRegistre":"$numeroRegistre", "numeroEnregistrement":"$numeroEnregistrement", "montantDroit":$montantDroit, "idDocument": $idDocument}]
+    	}}
+    </result>
   </query>
 </data>
