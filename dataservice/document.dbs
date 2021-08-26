@@ -60,7 +60,7 @@
   </resource>
   <resource path="listdocumentToSave" method="GET">
     <description />
-    <call-query href="documentToSave" />
+    <call-query href="documentToSave"/>
   </resource>
   <resource path="getDocumentLabel" method="GET">
     <description />
@@ -130,7 +130,7 @@
   <query id="documentToSave" useConfig="documentDS">
     <sql>SELECT public."documentEnregistrement"."idDocument","nomDocument"
 	FROM public."documentEnregistrement" LEFT JOIN public.document on public.document."idDocument"=public."documentEnregistrement"."idDocument" ;</sql>
-    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument"}]}}</result>
+    <result outputType="json">{"data":{"listeDocuments":[{"idDocument":"$idDocument","nomDocument":"$nomDocument"}]}}</result>
   </query>
   <query id="getDocumentLabel" useConfig="documentDS">
     <sql>SELECT "idDocument", "nomDocument"
