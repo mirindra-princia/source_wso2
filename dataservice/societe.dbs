@@ -459,12 +459,6 @@
       <with-param name="pathStat" query-param="pathStat" />
     </call-query>
   </resource>
-  <resource method="GET" path="getSavedStatuses">
-    <description />
-    <call-query href="getSavedStatuses">
-      <with-param name="idSociete" query-param="idSociete" />
-    </call-query>
-  </resource>
   <resource method="GET" path="checkStatusTable">
     <description />
     <call-query href="checkStatusTable">
@@ -1023,13 +1017,6 @@
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="idDocument" paramType="SCALAR" sqlType="INTEGER" optional="false" />
   </query>
-  <query id="getSavedStatuses" useConfig="societeDS">
-    <sql>SELECT id, "dateEnregistrement", "numeroRegistre", "numeroEnregistrement", "idUtilisateurAgent", "montantDroit", public."enregistrementFiscale"."idSociete", "idDocument",public.societe."NIF" FROM public."enregistrementFiscale" LEFT JOIN public.societe on public.societe."idSociete"=public."enregistrementFiscale"."idSociete"
-	  WHERE public."enregistrementFiscale"."idSociete"=:idSociete</sql>
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <result outputType="json">{"statuses":{"status":[{"id":"$id","idSociete":"$idSociete","dateEnregistrement":"$dateEnregistrement","numeroRegistre":"$numeroRegistre","idUtilisateurAgent":"$idUtilisateurAgent","montantDroit":"$montantDroit","idDocument":"$idDocument","NIF":"$NIF"}]}
-}</result>
-  </query>
   <query id="checkStatusTable" useConfig="societeDS">
     <sql>SELECT * FROM public."statutInteroperabilite" WHERE "idSociete"=:idSociete</sql>
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
@@ -1075,10 +1062,10 @@
     </call-query>
   </resource>
   <query id="enregistrementFiscale" useConfig="societeDS">
-    <sql>SELECT * FROM public."enregistrementFiscale" WHERE "idSociete" = :idSociete</sql>
+    <sql>SELECT id, "dateEnregistrement", "numeroRegistre", "numeroEnregistrement", "idUtilisateurAgent", "montantDroit", public."enregistrementFiscale"."idSociete", "idDocument",public.societe."NIF" FROM public."enregistrementFiscale" LEFT JOIN public.societe ON public.societe."idSociete"=public."enregistrementFiscale"."idSociete" WHERE public."enregistrementFiscale"."idSociete"=:idSociete</sql>
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <result outputType="json">{"data":{
-    	"enregistrementFiscaux":[{"id":$id, "dateEnregistrement":"$dateEnregistrement", "numeroRegistre":"$numeroRegistre", "numeroEnregistrement":"$numeroEnregistrement", "montantDroit":$montantDroit, "idDocument": $idDocument}]
+    	"enregistrementFiscaux":[{"id":$id, "dateEnregistrement":"$dateEnregistrement", "numeroRegistre":"$numeroRegistre", "numeroEnregistrement":"$numeroEnregistrement", "montantDroit":$montantDroit, "idDocument": $idDocument, "NIF":"$NIF"}]
     	}}
     </result>
   </query>
