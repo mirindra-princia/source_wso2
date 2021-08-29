@@ -246,4 +246,39 @@
 	   			"unread": $unread
 	    }}</result>
   	</query>
+  	<resource method="GET" path="user/topics/navigation">
+	    <description>user topics list with navigation</description>
+	    <call-query href="userTopicsNavigation">
+	      <with-param name="uid" query-param="uid" />
+	      <with-param name="ids" query-param="ids" />
+	      <with-param name="limit" query-param="limit" />
+      	  <with-param name="offset" query-param="offset" />
+	    </call-query>
+  	</resource>
+  	<query id="userTopicsNavigation" useConfig="messagerieDS">
+	    <sql>
+		    SELECT 
+				mes.id, mes.sujet, mes."idDossier", mes.expediteur, 
+				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where (m.id = mes.id or m."idMessageParent" = mes.id) and m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :uid) ) ELSE 0 END unread,
+				CASE WHEN EXISTS (select "createdAt" from public.message m where m."idMessageParent" = mes.id) THEN (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id) ELSE mes."createdAt" END "createdAt",
+				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
+			FROM public.message mes WHERE sujet IS NOT NULL AND "idDossier"=ANY(:ids::int[]) ORDER BY "createdAt" DESC limit :limit offset :offset
+	    </sql>
+	    <param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
+	    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING" />
+	    <param type="IN" name="limit" sqlType="INTEGER" paramType="SCALAR" />
+    	<param type="IN" name="offset" sqlType="INTEGER" paramType="SCALAR" />
+	    <result outputType="json">{"data": {
+		    "messages": [{
+	   			"id":$id,
+	   			"sujet": "$sujet",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"contenu": "$contenu",
+	   			"expediteur": "$expediteur",
+	   			"unread": $unread
+		   	}]
+	    }}
+	    </result>
+  	</query>
 </data>
