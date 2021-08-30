@@ -610,8 +610,54 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     <sql>SELECT * FROM public."impressionDocument" WHERE "idDossier"=:idDossier</sql>
     <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"data":{
-    		"factureDataDossier": [{"id": $id, "path": "$path", "idDossier": $idDossier, "corporate": "$corporate"}]
+    		"printDoc": [{"id": $id, "path": "$path", "idDossier": $idDossier, "corporate": "$corporate"}]
     	}}
     </result>
+  </query>
+  <resource path="printDocument/corporate/{corporate}/{idDossier}" method="GET">
+    <description />
+    <call-query href="printDocumentCorporate">
+    	<with-param name="corporate" query-param="corporate" />
+    	<with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <query id="printDocumentCorporate" useConfig="dossierSomissionDS">
+    <sql>SELECT * FROM public."impressionDocument" WHERE "idDossier"=:idDossier AND corporate = :corporate</sql>
+    <param type="IN" name="corporate" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{"data":{
+    		"printDoc": [{"id": $id, "path": "$path", "idDossier": $idDossier, "corporate": "$corporate"}]
+    	}}
+    </result>
+  </query>
+  <resource path="printDocument" method="POST">
+    <description />
+    <call-query href="printDocument">
+    	<with-param name="idDossier" query-param="idDossier" />
+    	<with-param name="path" query-param="path" />
+    	<with-param name="corporate" query-param="corporate" />
+    </call-query>
+  </resource>
+  <query id="printDocument" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public."impressionDocument" (path, "idDossier", corporate) VALUES (:path, :idDossier, :corporate) RETURNING id</sql>
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="path" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="corporate" sqlType="STRING" paramType="SCALAR" />
+    <result outputType="json">{"printDoc":{"id": $id}}</result>
+  </query>
+  <resource path="updatePrintDocument" method="PUT">
+    <description />
+    <call-query href="updatePrintDocument">
+    	<with-param name="idDossier" query-param="idDossier" />
+    	<with-param name="corporate" query-param="corporate" />
+    	<with-param name="path" query-param="path" />
+    </call-query>
+  </resource>
+  <query id="updatePrintDocument" useConfig="dossierSomissionDS">
+    <sql>UPDATE public."impressionDocument" SET path = :path WHERE "idDossier" = :idDossier AND corporate = :corporate RETURNING id</sql>
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="corporate" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="path" sqlType="STRING" paramType="SCALAR" />
+    <result outputType="json">{"printDoc":{"id": $id}}</result>
   </query>
 </data>
