@@ -600,4 +600,18 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     <sql>DELETE FROM public."factureDataDossier" WHERE id=ANY(:ids::int[])</sql>
     <param type="IN" name="ids" sqlType="STRING" paramType="ARRAY" />
   </query>
+  <resource path="printDocuments/{idDossier}" method="GET">
+    <description />
+    <call-query href="printDocuments">
+    	<with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <query id="printDocuments" useConfig="dossierSomissionDS">
+    <sql>SELECT * FROM public."impressionDocument" WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{"data":{
+    		"factureDataDossier": [{"id": $id, "path": "$path", "idDossier": $idDossier, "corporate": "$corporate"}]
+    	}}
+    </result>
+  </query>
 </data>
