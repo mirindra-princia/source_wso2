@@ -262,10 +262,19 @@
     common.name as c_name, common.id as c_id, 
     district.name as d_name, district.id as d_id, 
     region.name as r_name, region.id as r_id, 
-    province.name as p_name, province.id as p_id, 
+    province.name as p_name, province.id as p_id,
+    district_mapping."idDistrictRncs",
     common_mapping."idCommonRncs",
     region_mapping."idRegionRncs"
-	FROM public.borough,public.district,public.region left join public.region_mapping on region_mapping."idRegion" = region.id,public.province,public.fokontany, public.common left join public.common_mapping on common_mapping."idCommon" = common.id
+	FROM public.province
+	LEFT JOIN public.region ON region.province_id = province.id
+	LEFT JOIN public.district ON district.region_id = region.id
+	LEFT JOIN public.common ON common.district_id = district.id
+	LEFT JOIN public.borough ON borough.common_id = common.id
+	LEFT JOIN public.fokontany ON fokontany.borough_id = borough.id
+	LEFT JOIN public.district_mapping ON district_mapping."idDistrict" = district.id
+	LEFT JOIN public.region_mapping ON region_mapping."idRegion" = region.id
+	LEFT JOIN public.common_mapping ON common_mapping."idCommon" = common.id AND common_mapping."idRegionRncs" = region_mapping."idRegionRncs"
 	WHERE common.id= :idCommune AND district.id= :idDistrict AND region.id= :idRegion AND province.id= :idProvince AND borough.id= :idArrondissement AND fokontany.id= :idFokontany</sql>
     <param type="IN" name="idFokontany" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="idArrondissement " sqlType="INTEGER" paramType="SCALAR" />
@@ -290,6 +299,9 @@
     	"id": $d_id,
     	"name": "$d_name",
     	"region_id": $r_id
+    },
+    "districtMapping": {
+    	"idDistrictRncs":"$idDistrictRncs"
     },
     "commune":{
     	"id": $c_id,
