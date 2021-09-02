@@ -970,10 +970,10 @@
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
   </query>
   <query id="listCreatedSociety" useConfig="societeDS">
-    <sql>select * from public.societe where "idPersonne"=:idPersonne and "dateCreation" is not null and ubi is not null</sql>
+    <sql>select * from public.societe left join devise on devise."idDevise"=societe."idDevise" where "idPersonne"=:idPersonne and "dateCreation" is not null and ubi is not null is not null and "NIF" is not null and "STAT" is not null</sql>
     <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <result outputType="json">{"societies":{"society":[{"denominationSocial":"$denominationSocial","ubi":"$ubi","dateCreation":"$dateCreation","idDossier":"$idDossier","idSociete":"$idSociete"}]}}</result>
+    <result outputType="json">{"societies":{"society":[{"denominationSocial":"$denominationSocial","ubi":"$ubi","dateCreation":"$dateCreation","idDossier":"$idDossier","idSociete":"$idSociete","formeJuridique":"$formeJuridique","capital":"$capital","labelDeviseCapital":"$labelDevise"}]}}</result>
   </query>
   <query id="insertEmptyJustificatif" useConfig="societeDS">
     <sql>INSERT INTO public.justificatif(
