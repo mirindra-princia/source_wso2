@@ -359,8 +359,7 @@
     <result outputType="json">{"data": {"country":{"codePays":"$codePays", "nomPays":$nomPays, "idPaysRncs":"$idPaysRncs"}}}</result>
   </query>
   <query id="getAllCountry" useConfig="localisationDS">
-    <sql>SELECT "nomPays", "codePays"
-	FROM public.country;</sql>
+    <sql>SELECT "nomPays", "codePays" FROM public.country ORDER BY "nomPays" ASC</sql>
     <result outputType="json">{"countries":{"country":[{"nomPays":"$nomPays","codePays":"$codePays"}]}}</result>
   </query>
   <query id="getCommonOtherLabelById" useConfig="localisationDS">
