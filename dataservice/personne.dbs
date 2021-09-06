@@ -133,7 +133,15 @@
   </query>
   <query id="getPersonProfil" useConfig="personneDS">
     <sql>
-    	SELECT * FROM public.personne personne LEFT JOIN public.adresse adresse ON personne.idadresse = adresse."idAdresse" LEFT JOIN public.role role ON role.id_role = personne.idrole LEFT JOIN public."pieceIdentite" identite ON identite.id = personne."idPieceIdentite" LEFT JOIN public."typePieceIdentite" tpi ON tpi."idTypePiece" = identite."idTypePiece" LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" LEFT JOIN public.nationalite ON nationalite.code = personne.nationalite WHERE "idPersonne"=:idPersonne
+    	SELECT * FROM public.personne personne 
+    	LEFT JOIN public.adresse adresse ON personne.idadresse = adresse."idAdresse" 
+    	LEFT JOIN public.role role ON role.id_role = personne.idrole 
+    	LEFT JOIN public."pieceIdentite" identite ON identite.id = personne."idPieceIdentite" 
+    	LEFT JOIN public."typePieceIdentite" tpi ON tpi."idTypePiece" = identite."idTypePiece" 
+    	LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" 
+    	LEFT JOIN public.nationalite ON nationalite.code = personne.nationalite 
+    	LEFT JOIN public."situationMatrimoniale" sm ON sm."idSituationMatrimonial" = personne."situationMatrimonial"
+    	WHERE "idPersonne"=:idPersonne
 	</sql>
     <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">
@@ -173,12 +181,16 @@
 	    	}
 	    },
 	    "conjoint":{
-	   		 "idAdresse":"$idAdresse",
+	   		"idAdresse":"$idAdresse",
 	    	"idConjoint":"$idConjoint",
 	    	"nomConjoint":"$nomConjoint",
 	    	"prenomConjoint":"$prenomConjoint",
 	    	"mailConjoint":"$mailConjoint",
 	    	"telConjoint":"$telConjoint"
+	    },
+	    "maritalSituation": {
+	    	"libelleSituationMatrimonial": "$libelleSituationMatrimonial",
+	    	"codeSituationMatrimonial": "$codeSituationMatrimonial"
 	    }
 	    }}
 	</result>
@@ -386,8 +398,7 @@
     <result outputType="json">{"data":{"nationalityMapping":{"codePays":"$codePays","idNationaliteRncs":"$idNationaliteRncs"}}}</result>
   </query>
   <query id="getNationality" useConfig="personneDS">
-    <sql>SELECT code, libelle
-	FROM public.nationalite;</sql>
+    <sql>SELECT code, libelle FROM public.nationalite ORDER BY libelle ASC</sql>
     <result outputType="json">{"nationalities":{"nationality":[{"code":"$code","libelle":"$libelle"}]}}</result>
   </query>
   <query id="getSituationMatrimonial" useConfig="personneDS">
