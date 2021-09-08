@@ -803,13 +803,12 @@
     <result outputType="json">{"data":{"codeGreffe":{"code":$code, "idDistrict":$idDistrict}}}</result>
   </query>
   <query id="getBusinessPlaces" useConfig="societeDS">
-    <sql>select adresse.* from public."siegeSocial" ss 
+    <sql>select adresse.*, ss."idTypeBailleur", ss."idBailleurPersonne", ss."idBailleurPersonneMoral" from public."siegeSocial" ss 
     	join public.societe on societe."idSiegeSocial" = ss."siegePrincipal" 
     	join public.adresse on adresse."idAdresse" = ss."adresseSiegeSocial" 
     	where societe."idSociete" = :id</sql>
     <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
-    <result outputType="json">{"data":{"siegeSociales":[
-    {
+    <result outputType="json">{"data":{"siegeSociales":[{
     	"idAdresse":"$idAdresse",
     	"idFokontany":"$idFokontany",
     	"idCommune":"$idCommune",
@@ -819,7 +818,12 @@
     	"adresse":"$adresse",
     	"idProvince":"$idProvince",
     	"codePays":"$codePays",
-    	"idVille":"$idVille"
+    	"idVille":"$idVille",
+    	"bailleur": {
+    		"idTypeBailleur": $idTypeBailleur,
+    		"idBailleurPersonne": $idBailleurPersonne,
+    		"idBailleurPersonneMoral": $idBailleurPersonneMoral
+    	}
     }]}}</result>
   </query>
   <query id="getDefaultAssociateByCompanyId" useConfig="societeDS">
@@ -1069,4 +1073,33 @@
     	}}
     </result>
   </query>
+  
+  
+  <resource method="GET" path="companyAddressByCompanyId/{companyId}">
+    <description />
+    <call-query href="companyAddressByCompanyId">
+      <with-param name="companyId" query-param="companyId" />
+    </call-query>
+  </resource>
+  <query id="companyAddressByCompanyId" useConfig="societeDS">
+    <sql>SELECT adresse.* FROM public."siegeSocial" siege 
+    LEFT JOIN public.adresse ON adresse."idAdresse" = siege."adresseSiegeSocial"
+    LEFT JOIN public.societe ON societe."idSiegeSocial" = siege."idSiege"
+    WHERE societe."idSociete"= :companyId</sql>
+    <param type="IN" name="companyId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"adresse": {
+	    	"idAdresse":"$idAdresse",
+	    	"idFokontany":"$idFokontany",
+	    	"idCommune":"$idCommune",
+	    	"idRegion":"$idRegion",
+	    	"idDistrict":"$idDistrict",
+	    	"idArrondissement":"$idArrondissement",
+	    	"adresse":"$adresse",
+	    	"idProvince":"$idProvince",
+	    	"codePays":"$codePays",
+	    	"idVille":"$idVille"
+	    }}
+	</result>
+  </query>
+  
 </data>

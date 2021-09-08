@@ -62,6 +62,18 @@
     <result outputType="json">{"categorie":{"id":"$id", "descriptivesCategorie_fr":"$descriptivesCategorie_fr"}}</result>
   </query>
   
+  <resource path="categories" method="GET">
+    <description />
+    <call-query href="categories" />
+  </resource>
+  <query id="categories" useConfig="siteInformationDS">
+    <sql>SELECT id, "descriptivesCategorie_fr" FROM public."categorieActivite"</sql>
+    <result outputType="json">{"data": 
+    		{"categories": [{"id":$id, "descriptivesCategorie_fr":"$descriptivesCategorie_fr"}]}
+    	}
+    </result>
+  </query>
+  
   <config id="siteInformationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/siteWebInformation</property>
