@@ -626,7 +626,7 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     <param type="IN" name="corporate" sqlType="STRING" paramType="SCALAR" />
     <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"data":{
-    		"printDoc": [{"id": $id, "path": "$path", "idDossier": $idDossier, "corporate": "$corporate"}]
+    		"printDoc": [{"id": $id, "path": "$path", "idDossier": $idDossier, "corporate": "$corporate", "createdAt": $createdAt}]
     	}}
     </result>
   </query>
