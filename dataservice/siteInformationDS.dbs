@@ -1,12 +1,11 @@
 <data name="siteInformation" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.siteInformationDS" transports="https http">
   <description>site web d'information</description>
-    <config id="siteInformationDS">
+  <config id="siteInformationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/siteWebInformation</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config>
-  
 <!--  <config id="siteInformationDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/siteWebInformation</property> -->
@@ -91,8 +90,8 @@
     <call-query href="legalStatusList"/>
   </resource>
   <query id="legalStatusList" useConfig="siteInformationDS">
-    <sql>SELECT status.id, TRIM(status."STATUS"), TRIM(desc_status.legal_status_fr) as label FROM public.legal_status_lists status 
+    <sql>SELECT status.id, TRIM(status."STATUS") as acronym, TRIM(desc_status.legal_status_fr) as label FROM public.legal_status_lists status 
     	INNER JOIN public.components_card_status_card_statuses desc_status ON TRIM(desc_status.accronym_legal_status_fr) = TRIM(status."STATUS") OR TRIM(desc_status.acronym_legal_status_fr) = TRIM(status."STATUS")</sql>
-    <result outputType="json">{"data":{"legalStatus":[{"id":$id, "status":"$STATUS", "label":"$label"}]}}</result>
+    <result outputType="json">{"data":{"legalStatus":[{"id":$id, "status":"$acronym", "label":"$label"}]}}</result>
   </query>
 </data>
