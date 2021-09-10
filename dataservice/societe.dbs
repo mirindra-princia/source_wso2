@@ -390,13 +390,6 @@
       <with-param name="idSociete" query-param="idSociete" />
     </call-query>
   </resource>
-  <resource method="PUT" path="setEdbmInterStatus">
-    <description />
-    <call-query href="setEdbmInterStatus">
-      <with-param name="idSociete" query-param="idSociete" />
-      <with-param name="status" query-param="status" />
-    </call-query>
-  </resource>
   <resource method="PUT" path="setRcsInterStatus">
     <description />
     <call-query href="setRcsInterStatus">
@@ -944,15 +937,19 @@
     <param type="IN" name="EDBM" paramType="SCALAR" sqlType="INTEGER" optional="false" />
   </query>
   <query id="getCreatedCompanyId" useConfig="societeDS">
-    <sql>SELECT id, "idSociete"
-	FROM public."statutInteroperabilite" WHERE  "RCS"=1 and "INSTAT"=1 and "DGI"=1 and "EDBM"=0;</sql>
+    <sql>SELECT id, "idSociete" FROM public."statutInteroperabilite" WHERE  "RCS"=1 and "INSTAT"=1 and "DGI"=1 and "EDBM"=0;</sql>
     <result outputType="json">{"status":{"company":[{"idSociete":"$idSociete"}]}}</result>
   </query>
+  <resource method="PUT" path="setEdbmInterStatus">
+    <description />
+    <call-query href="setEdbmInterStatus">
+      <with-param name="idsSociete" query-param="idsSociete" />
+      <with-param name="status" query-param="status" />
+    </call-query>
+  </resource>
   <query id="setEdbmInterStatus" useConfig="societeDS">
-    <sql>UPDATE public."statutInteroperabilite"
-	SET   "EDBM"=:status
-	WHERE "idSociete"=:idSociete </sql>
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <sql>UPDATE public."statutInteroperabilite" SET "EDBM"=:status WHERE "idSociete"=ANY(:idsSociete::int[]) </sql>
+    <param type="IN" name="idsSociete" paramType="ARRAY" sqlType="STRING" optional="false" />
     <param type="IN" name="status" paramType="SCALAR" sqlType="INTEGER" optional="false" />
   </query>
   <query id="setInstatInterStatus" useConfig="societeDS">
