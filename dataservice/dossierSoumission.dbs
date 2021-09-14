@@ -389,7 +389,7 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
   </query>
   <query id="commentListAll" useConfig="dossierSomissionDS">
     <sql>SELECT "idEntite", commentaires, "dateCommentaire", "idDossier", "idUtilisateur", "idStatutCommentaire", "idCommentaire"
-	FROM public.commentaire WHERE  "idDossier"=:idDossier ORDER BY "dateCommentaire"  DESC</sql>
+	FROM public.commentaire WHERE  "idDossier"=:idDossier ORDER BY "dateCommentaire" DESC</sql>
     <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"comments":{"comment":[{"idEntite":"$idEntite", "commentaires":"$commentaires", "dateCommentaire":"$dateCommentaire", "idDossier":"$idDossier", "idUtilisateur":"$idUtilisateur", "idStatutCommentaire":"$idStatutCommentaire", "idCommentaire":"$idCommentaire"
 }]}}</result>
@@ -659,5 +659,16 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     <param type="IN" name="corporate" sqlType="STRING" paramType="SCALAR" />
     <param type="IN" name="path" sqlType="STRING" paramType="SCALAR" />
     <result outputType="json">{"printDoc":{"id": $id}}</result>
+  </query>
+  <resource path="lastCommentByCorporate/{idDossier}" method="GET">
+    <description />
+    <call-query href="lastCommentByCorporate">
+    	<with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <query id="lastCommentByCorporate" useConfig="dossierSomissionDS">
+  	<sql>SELECT com."idEntite", com."dateCommentaire", com."idStatutCommentaire" FROM (SELECT "idEntite", MAX("dateCommentaire") as "dateCommentaire" FROM public.commentaire WHERE "idDossier" = :idDossier GROUP BY "idEntite") tcom INNER JOIN public.commentaire com ON com."dateCommentaire" = tcom."dateCommentaire" AND com."idEntite" = tcom."idEntite"</sql>
+	<param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+	<result outputType="json">{"data":{"comments": [{"idEntite":"$idEntite", "dateCommentaire":"$dateCommentaire", "idStatutCommentaire":"$idStatutCommentaire"}]}}</result>
   </query>
 </data>
