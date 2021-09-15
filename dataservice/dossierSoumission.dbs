@@ -350,24 +350,20 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     <result outputType="json">{"statistiquesTotal":{"nombre":{"quantite":$nombre}}}</result>
   </query>
   <query id="listFolderDESC" useConfig="dossierSomissionDS">
-    <sql>SELECT "idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", "numeroDossier", updated_at, "idStatutDossier"
+    <sql>SELECT "idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", "numeroDossier", updated_at, "idStatutDossier", "idProgression"
 	FROM public.dossier order by "dateSoumission" desc limit :limit offset :offset</sql>
     <param type="IN" name="limit" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="offset" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">
-
-
-{"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission", "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",  "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier" }]}}</result>
+{"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission", "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",  "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier", "idProgression":$idProgression }]}}</result>
   </query>
   <query id="listFolderASC" useConfig="dossierSomissionDS">
-    <sql>SELECT "idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", "numeroDossier", updated_at, "idStatutDossier"
+    <sql>SELECT "idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", "numeroDossier", updated_at, "idStatutDossier", "idProgression"
 	FROM public.dossier order by "dateSoumission" asc limit :limit offset :offset</sql>
     <param type="IN" name="limit" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="offset" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">
-
-
-{"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission", "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",  "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier" }]}}</result>
+{"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission", "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",  "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier", "idProgression": $idProgression }]}}</result>
   </query>
   <query id="addComment" useConfig="dossierSomissionDS">
     <sql>INSERT INTO public.commentaire(
