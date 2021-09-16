@@ -69,9 +69,14 @@
     </call-query>
   </resource>
   <query id="documentToUploadByLegalStatus" useConfig="documentDS">
-    <sql>SELECT "idFormeJuridique",public.document."idDocument", "nomDocument", "iProcedure", "nbUploader", "nbDeposer", "paramUpload", "paramDeposer"
-	FROM public."documentFormeJuridique",public.document WHERE "idFormeJuridique"=:idFormeJuridique AND "iProcedure"=1 AND public."documentFormeJuridique"."idDocument"= public.document."idDocument" ;</sql>
+    <sql>SELECT dfj."idFormeJuridique", document."idDocument", "nomDocument", "iProcedure", "nbUploader", "nbDeposer", "paramUpload", "paramDeposer"
+	FROM public."documentFormeJuridique" dfj
+	LEFT JOIN public.document ON document."idDocument" = dfj."idDocument" WHERE dfj."idFormeJuridique" = :idFormeJuridique AND "iProcedure"=1;</sql>
     <param type="IN" name="idFormeJuridique" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{"data":{"documents": 
+    		[{"idFormeJuridique": $idFormeJuridique, "idDocument": $idDocument, "nomDocument": "$nomDocument", "iProcedure": $iProcedure, "nbUploader": $nbUploader, "nbDeposer": $nbDeposer, "paramUpload": "$paramUpload", "paramDeposer": "$paramDeposer"}]
+    	}}
+    </result>
   </query>
   <query id="documentToUploadByAssociate" useConfig="documentDS">
     <sql>SELECT "nomDocument",public.document."idDocument", "nbUploader", "nbDeposer", "paramUpload", "paramDeposer"
