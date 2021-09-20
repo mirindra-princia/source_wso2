@@ -730,7 +730,7 @@
     <param type="IN" name="idStatutSociete" paramType="ARRAY" sqlType="STRING" optional="false" />
     <param type="IN" name="gerantStatutaire" paramType="SCALAR" sqlType="INTEGER" optional="false" defaultValue="null" />
     <param type="IN" name="idDevise" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="descriptifApportEnNature" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="descriptifApportEnNature" paramType="SCALAR" sqlType="STRING" optional="true" />
     <param type="IN" name="idDeviseMontantApportEnNature" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="montantApportEnNature" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <result outputType="json">{"idAssocie":{"idAssocie":$idAssocie}}</result>
