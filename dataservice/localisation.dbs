@@ -388,4 +388,30 @@
     <param type="IN" name="idCity" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"cityOther":{"name":"$name","idCommonOther":"$idCommonOther"}}</result>
   </query>
+  
+  <resource path="getOtherAddressDetail/{idCity}" method="GET">
+    <description />
+    <call-query href="getOtherAddressDetail">
+      <with-param name="idCity" query-param="idCity" />
+    </call-query>
+  </resource>
+  <query id="getOtherAddressDetail" useConfig="localisationDS">
+    <sql> SELECT 
+	    common."idCommonOther" as common_id, common.name as common_name,
+	    city."idCity" as city_id, city.name as city_name
+		FROM public.city_other city 
+		LEFT JOIN public.common_other common ON common."idCommonOther" = city."idCommonOther"
+		WHERE city."idCity"= :idCity
+	</sql>
+    <param type="IN" name="idCity" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{"adresse":{
+    "commune":{
+    	"id": $common_id,
+    	"name": "$common_name"
+    },
+    "ville":{
+    	"id": $city_id,
+    	"name": "$city_name"
+    }}}</result>
+  </query>
 </data>
