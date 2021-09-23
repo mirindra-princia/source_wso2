@@ -79,9 +79,9 @@
     <call-query href="categories" />
   </resource>
   <query id="categories" useConfig="siteInformationDS">
-    <sql>SELECT id, "descriptivesCategorie_fr" FROM public."categorieActivite"</sql>
+    <sql>SELECT id, "descriptivesCategorie_fr", TRIM(note_fr) as note_fr FROM public."categorieActivite"</sql>
     <result outputType="json">{"data": 
-    		{"categories": [{"id":$id, "descriptivesCategorie_fr":"$descriptivesCategorie_fr"}]}
+    		{"categories": [{"id":$id, "descriptivesCategorie_fr":"$descriptivesCategorie_fr", "note_fr": "$note_fr"}]}
     	}
     </result>
   </query>
