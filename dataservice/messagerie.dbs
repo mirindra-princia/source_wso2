@@ -6,12 +6,12 @@
 <!-- 	    <property name="username">postgres</property> -->
 <!-- 	    <property name="password">postgres</property> -->
 <!--    	</config> -->
-		<config id="messagerieDS">
-	 	 <property name="driverClassName">org.postgresql.Driver</property>
-		  <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/messagerie</property>
-		  <property name="username">devedbmdb</property>
-		  <property name="password">devedbmdb</property>
-		</config> 
+	<config id="messagerieDS">
+ 	 <property name="driverClassName">org.postgresql.Driver</property>
+	  <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/messagerie</property>
+	  <property name="username">devedbmdb</property>
+	  <property name="password">devedbmdb</property>
+	</config> 
 	
 	<resource method="POST" path="addMessage">
 	    <description>add message</description>
@@ -49,7 +49,7 @@
 				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where (m.id = mes.id or m."idMessageParent" = mes.id) and m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :uid) ) ELSE 0 END unread,
 				CASE WHEN EXISTS (select "createdAt" from public.message m where m."idMessageParent" = mes.id) THEN (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id) ELSE mes."createdAt" END "createdAt",
 				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
-			FROM public.message mes WHERE sujet IS NOT NULL ORDER BY "createdAt" DESC
+			FROM public.message mes WHERE sujet IS NOT NULL AND expediteur IS NOT NULL ORDER BY "createdAt" DESC
 		</sql>
 		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
 	    <result outputType="json">{"data": {
@@ -80,7 +80,7 @@
 				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where m."idDossier"=ANY(:counterIds::int[]) AND (m.id = mes.id or m."idMessageParent" = mes.id) AND m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :counterUid)) ELSE 0 END unread,
 				CASE WHEN EXISTS (select "createdAt" from public.message m where m."idMessageParent" = mes.id) THEN (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id) ELSE mes."createdAt" END "createdAt",
 				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
-			FROM public.message mes WHERE sujet IS NOT NULL AND "idDossier"=ANY(:ids::int[]) AND expediteur != :uid ORDER BY "createdAt" DESC
+			FROM public.message mes WHERE sujet IS NOT NULL AND "idDossier"=ANY(:ids::int[]) AND (expediteur IS NULL OR expediteur != :uid) ORDER BY "createdAt" DESC
 	    </sql>
 	    <param type="IN" name="counterUid" paramType="SCALAR" sqlType="STRING" />
 	    <param type="IN" name="counterIds" paramType="ARRAY" sqlType="STRING" />
