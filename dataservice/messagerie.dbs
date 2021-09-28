@@ -200,7 +200,7 @@
   	</resource>
   	<query id="users_topics" useConfig="messagerieDS">
 	    <sql>
-	    	SELECT * FROM public.message WHERE sujet IS NOT NULL AND expediteur=ANY(:ids::text[])
+	    	SELECT * FROM public.message WHERE sujet IS NOT NULL AND "idDossier" = :idDossier AND expediteur=ANY(:ids::text[])
 	    </sql>
 	    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
 	    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING" />
