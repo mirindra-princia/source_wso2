@@ -40,10 +40,11 @@
     </call-query>
   </resource>
   <query id="agents_roles" useConfig="utilisateurDS">
-    <sql>select gp.name from public.user_group_membership gpm join public.user_entity entity on entity.id = gpm.user_id join public.keycloak_group gp on gp.id = gpm.group_id where entity.id= :uid</sql>
+    <sql>select gp.* from public.user_group_membership gpm join public.user_entity entity on entity.id = gpm.user_id join public.keycloak_group gp on gp.id = gpm.group_id where entity.id= :uid</sql>
     <param type="IN" name="uid" paramType="SCALAR" sqlType="STRING"/>
     <result outputType="json">{"data": {
 		    "roles": [{
+		    	"uid": "$id",
 	   			"libelle_role": "$name"
 		   	}]
 	    }}</result>
