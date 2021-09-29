@@ -311,10 +311,10 @@ from public."lienFormulaire" LIMIT 1
     <result outputType="json">{"documents":{"document":[{"nomDocument":"$nomDocument","idDossier":$idDossier,"nbDeposer":"$nbDeposer", "idTypeDocument":"$idTypeDocument", "idDocument":"$idDocument", path:"$path"}]}}</result>
   </query>
   <query id="getInformationDossier" useConfig="dossierSomissionDS">
-    <sql>SELECT public.dossier."idDossier", "lienDossier", "dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", updated_at, "idStatutDossier", "numeroDossier","lienEditionFormulaire",step,"idProgression","dateSoumission"
+    <sql>SELECT public.dossier."idDossier", "lienDossier", "dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", updated_at, "idStatutDossier", "numeroDossier","lienEditionFormulaire",step,"idProgression","dateSoumission", "createdAt"
 	FROM public.dossier left JOIN public."lienFormulaire" on public.dossier."idDossier"=public."lienFormulaire"."idDossier" where public.dossier."idDossier"=:idDossier</sql>
     <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"dossier":{"idDossier":$idDossier,"numeroDossier":$numeroDossier,"lienEditionFormulaire":"$lienEditionFormulaire","idStatutDepot":"$idStatutDepot","idStatutDossier":"$idStatutDossier","step":"$step","dateSoumission":"$dateSoumission","idProgression":"$idProgression"}}</result>
+    <result outputType="json">{"dossier":{"idDossier":$idDossier,"numeroDossier":"$numeroDossier","lienEditionFormulaire":"$lienEditionFormulaire","idStatutDepot":"$idStatutDepot","idStatutDossier":"$idStatutDossier","step":"$step","dateSoumission":"$dateSoumission","idProgression":"$idProgression", "createdAt":"$createdAt"}}</result>
   </query>
   <query id="updateStatutNouveau" useConfig="dossierSomissionDS">
     <sql>UPDATE public.statut SET nouveau=:value WHERE "idDossier"=:idDossier</sql>
@@ -350,20 +350,20 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     <result outputType="json">{"statistiquesTotal":{"nombre":{"quantite":$nombre}}}</result>
   </query>
   <query id="listFolderDESC" useConfig="dossierSomissionDS">
-    <sql>SELECT "idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", "numeroDossier", updated_at, "idStatutDossier", "idProgression"
+    <sql>SELECT "idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", "numeroDossier", updated_at, "idStatutDossier", "idProgression", "createdAt"
 	FROM public.dossier order by "dateSoumission" desc limit :limit offset :offset</sql>
     <param type="IN" name="limit" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="offset" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">
-{"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission", "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",  "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier", "idProgression":$idProgression }]}}</result>
+{"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission", "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",  "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier", "idProgression":$idProgression, "createdAt":"$createdAt" }]}}</result>
   </query>
   <query id="listFolderASC" useConfig="dossierSomissionDS">
-    <sql>SELECT "idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", "numeroDossier", updated_at, "idStatutDossier", "idProgression"
+    <sql>SELECT "idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", "numeroDossier", updated_at, "idStatutDossier", "idProgression", "createdAt"
 	FROM public.dossier order by "dateSoumission" asc limit :limit offset :offset</sql>
     <param type="IN" name="limit" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="offset" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">
-{"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission", "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",  "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier", "idProgression": $idProgression }]}}</result>
+{"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission", "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",  "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier", "idProgression": $idProgression, "createdAt":"$createdAt" }]}}</result>
   </query>
   <query id="addComment" useConfig="dossierSomissionDS">
     <sql>INSERT INTO public.commentaire(
@@ -663,21 +663,30 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     </call-query>
   </resource>
   <query id="lastCommentByCorporate" useConfig="dossierSomissionDS">
-  	<sql>SELECT com."idEntite", com."dateCommentaire", com."idStatutCommentaire" FROM (SELECT "idEntite", MAX("dateCommentaire") as "dateCommentaire" FROM public.commentaire WHERE "idDossier" = :idDossier GROUP BY "idEntite") tcom INNER JOIN public.commentaire com ON com."dateCommentaire" = tcom."dateCommentaire" AND com."idEntite" = tcom."idEntite"</sql>
+  	<sql>SELECT com."idEntite", com."dateCommentaire", com."idStatutCommentaire", com."updatedAtStatutCommentaire" FROM (SELECT "idEntite", MAX("dateCommentaire") as "dateCommentaire" FROM public.commentaire WHERE "idDossier" = :idDossier GROUP BY "idEntite") tcom INNER JOIN public.commentaire com ON com."dateCommentaire" = tcom."dateCommentaire" AND com."idEntite" = tcom."idEntite"</sql>
 	<param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-	<result outputType="json">{"data":{"comments": [{"idEntite":"$idEntite", "dateCommentaire":"$dateCommentaire", "idStatutCommentaire":"$idStatutCommentaire"}]}}</result>
+	<result outputType="json">{"data":{"comments": [{"idEntite":"$idEntite", "dateCommentaire":"$dateCommentaire", "idStatutCommentaire":"$idStatutCommentaire", "updatedAtStatutCommentaire": "$updatedAtStatutCommentaire"}]}}</result>
   </query>
   
   <resource path="updateStatusOfLastCommentByCorporates" method="PUT">
     <description />
     <call-query href="updateStatusOfLastCommentByCorporates">
     	<with-param name="idDossier" query-param="idDossier" />
-    	<with-param name="status" query-param="status" />
     </call-query>
   </resource>
   <query id="updateStatusOfLastCommentByCorporates" useConfig="dossierSomissionDS">
-  	<sql>UPDATE public.commentaire SET "idStatutCommentaire" = :status, "updatedAtStatutCommentaire" = CURRENT_TIMESTAMP WHERE "idCommentaire" IN (SELECT com."idCommentaire" FROM (SELECT "idEntite", MAX("dateCommentaire") as "dateCommentaire" FROM public.commentaire WHERE "idDossier" = :idDossier GROUP BY "idEntite") tcom INNER JOIN public.commentaire com ON com."dateCommentaire" = tcom."dateCommentaire" AND com."idEntite" = tcom."idEntite")</sql>
+  	<sql>UPDATE public.commentaire SET "updatedAtStatutCommentaire" = CURRENT_TIMESTAMP WHERE "idCommentaire" IN (SELECT com."idCommentaire" FROM (SELECT "idEntite", MAX("dateCommentaire") as "dateCommentaire" FROM public.commentaire WHERE "idDossier" = :idDossier GROUP BY "idEntite") tcom INNER JOIN public.commentaire com ON com."dateCommentaire" = tcom."dateCommentaire" AND com."idEntite" = tcom."idEntite")</sql>
 	<param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-	<param type="IN" name="status" sqlType="INTEGER" paramType="SCALAR" />
+  </query>
+  
+  <resource path="updateSubmitDate" method="PUT">
+    <description />
+    <call-query href="updateSubmitDate">
+    	<with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <query id="updateSubmitDate" useConfig="dossierSomissionDS">
+  	<sql>UPDATE public.dossier SET "dateSoumission" = CURRENT_TIMESTAMP WHERE "idDossier" = :idDossier</sql>
+	<param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
   </query>
 </data>

@@ -1109,4 +1109,99 @@
     <param type="IN" name="corporate" sqlType="STRING" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"corporates":[{"denomination":"$denominationSocial"}]}}</result>
   </query>
+  
+  <resource path="companyByDenomination/{denomination}" method="GET">
+    <description>company by denomination</description>
+    <call-query href="companyByDenomination">
+      <with-param name="denomination" query-param="denomination" />
+    </call-query>
+  </resource>
+  <query id="companyByDenomination" useConfig="societeDS">
+    <sql>SELECT societe.* FROM public.societe WHERE LOWER("denominationSocial") = LOWER(:denomination)</sql>
+    <param type="IN" name="denomination" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data":{
+    		"company": {
+    			"idSociete":$idSociete,
+		        "formeJuridique": "$formeJuridique",
+		        "idFormeJuridique": "$idFormeJuridique",
+		        "denominationSocial": "$denominationSocial",
+		        "nomCommercial": "$nomCommercial",
+		        "sigle": "$sigle",
+		        "objetSocial": "$objetSocial",
+		        "idSecteurActivite": "$idSecteurActivite",
+		        "activitePrincipal": "$activitePrincipal",
+		        "activiteImportExport": "$activiteImportExport",
+		        "activiteIndustrielCollecteur": "$activiteIndustrielCollecteur",
+		        "activiteGrossiste": "$activiteGrossiste",
+		        "capital":"$capital",
+		        "montantPartSocial": "$montantPartSocial",
+		        "dateStatut": "$dateStatut",
+		        "choixImposition": "$choixImposition",
+		        "tva":"$tva",
+		        "duree":"$duree",
+		        "finExerciceSocial": "$finExerciceSocial",
+		        "idPersonne": "$idPersonne",
+		        "idDossier": "$idDossier",
+		        "idSiegeSocial": "$idSiegeSocial",
+		        "idDevise": "$idDevise",
+		        "idDevisePartAssocie": "$idDevisePartAssocie",
+		        "NIF":"$NIF",
+		        "dateNIF":"$dateNIF",
+		        "STAT":"$STAT",
+		        "RCS":"$RCS",
+		        "dateSTAT":"$dateSTAT",
+		        "dateRCS":"$dateRCS",
+		        "ubi":"$ubi",
+		        "activiteSecondaire": "$activiteSecondaire"
+    		}
+    	}}
+    </result>
+  </query>
+  <resource path="companyByNif/{nif}" method="GET">
+    <description>company by nif</description>
+    <call-query href="companyByNif">
+      <with-param name="nif" query-param="nif" />
+    </call-query>
+  </resource>
+  <query id="companyByNif" useConfig="societeDS">
+    <sql>SELECT societe.* FROM public.societe WHERE "NIF" = :nif</sql>
+    <param type="IN" name="nif" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data":{
+    		"company": {
+    			"idSociete":$idSociete,
+		        "formeJuridique": "$formeJuridique",
+		        "idFormeJuridique": "$idFormeJuridique",
+		        "denominationSocial": "$denominationSocial",
+		        "nomCommercial": "$nomCommercial",
+		        "sigle": "$sigle",
+		        "objetSocial": "$objetSocial",
+		        "idSecteurActivite": "$idSecteurActivite",
+		        "activitePrincipal": "$activitePrincipal",
+		        "activiteImportExport": "$activiteImportExport",
+		        "activiteIndustrielCollecteur": "$activiteIndustrielCollecteur",
+		        "activiteGrossiste": "$activiteGrossiste",
+		        "capital":"$capital",
+		        "montantPartSocial": "$montantPartSocial",
+		        "dateStatut": "$dateStatut",
+		        "choixImposition": "$choixImposition",
+		        "tva":"$tva",
+		        "duree":"$duree",
+		        "finExerciceSocial": "$finExerciceSocial",
+		        "idPersonne": "$idPersonne",
+		        "idDossier": "$idDossier",
+		        "idSiegeSocial": "$idSiegeSocial",
+		        "idDevise": "$idDevise",
+		        "idDevisePartAssocie": "$idDevisePartAssocie",
+		        "NIF":"$NIF",
+		        "dateNIF":"$dateNIF",
+		        "STAT":"$STAT",
+		        "RCS":"$RCS",
+		        "dateSTAT":"$dateSTAT",
+		        "dateRCS":"$dateRCS",
+		        "ubi":"$ubi",
+		        "activiteSecondaire": "$activiteSecondaire"
+    		}
+    	}}
+    </result>
+  </query>
 </data>

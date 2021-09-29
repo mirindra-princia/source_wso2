@@ -393,9 +393,9 @@
     <result outputType="json">{"conjoint":{"idConjoint":"$idConjoint"}}</result>
   </query>
   <query id="getNationalityMapping" useConfig="personneDS">
-    <sql>SELECT * FROM public."nationaliteMapping" WHERE "codePays" = :codePays</sql>
+    <sql>SELECT * FROM public."nationaliteMapping" JOIN public.nationalite ON code = "codePays" WHERE "codePays" = :codePays</sql>
     <param type="IN" name="codePays" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <result outputType="json">{"data":{"nationalityMapping":{"codePays":"$codePays","idNationaliteRncs":"$idNationaliteRncs"}}}</result>
+    <result outputType="json">{"data":{"nationalityMapping":{"codePays":"$codePays","idNationaliteRncs":"$idNationaliteRncs", "libelle":"$libelle"}}}</result>
   </query>
   <query id="getNationality" useConfig="personneDS">
     <sql>SELECT code, libelle FROM public.nationalite ORDER BY libelle ASC</sql>
