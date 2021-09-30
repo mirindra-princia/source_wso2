@@ -363,12 +363,6 @@
       <with-param name="dateRCS " query-param="dateRCS " />
     </call-query>
   </resource>
-  <resource method="PUT" path="updateUBI">
-    <description />
-    <call-query href="updateUBI">
-      <with-param name="ubi" query-param="ubi" />
-    </call-query>
-  </resource>
   <resource method="POST" path="addStatutInteroperabilite">
     <description />
     <call-query href="statutInteroperabilite">
@@ -402,13 +396,6 @@
     <call-query href="setDgiInterStatus">
       <with-param name="status" query-param="status" />
       <with-param name="idSociete" query-param="idSociete" />
-    </call-query>
-  </resource>
-  <resource method="GET" path="getCreatedCompany">
-    <description />
-    <call-query href="listCreatedSociety">
-      <with-param name="idPersonne" query-param="idPersonne" />
-      <with-param name="limit" query-param="limit" />
     </call-query>
   </resource>
   <resource method="POST" path="insertEmptyJustificatif">
@@ -920,9 +907,16 @@
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="dateRCS " paramType="SCALAR" sqlType="DATE" optional="false" />
   </query>
+  <resource method="PUT" path="updateUBI">
+    <description />
+    <call-query href="updateUBI">
+      <with-param name="ubi" query-param="ubi" />
+      <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
   <query id="updateUBI" useConfig="societeDS">
     <sql>UPDATE public.societe
-	SET  "ubi"=:ubi WHERE "idSociete"=:idSociete;</sql>
+	SET "ubi"=:ubi, "dateCreation" = CURRENT_TIMESTAMP WHERE "idSociete"=:idSociete;</sql>
     <param type="IN" name="ubi" paramType="SCALAR" sqlType="STRING" optional="false" />
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
   </query>
@@ -971,7 +965,7 @@
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
   </query>
   <query id="listCreatedSociety" useConfig="societeDS">
-    <sql>select * from public.societe left join devise on devise."idDevise"=societe."idDevise" where "idPersonne"=:idPersonne and "dateCreation" is not null and ubi is not null is not null and "NIF" is not null and "STAT" is not null</sql>
+    <sql>select * from public.societe left join devise on devise."idDevise"=societe."idDevise" where "idPersonne"=:idPersonne and "dateCreation" is not null and ubi is not null and "NIF" is not null and "STAT" is not null</sql>
     <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <result outputType="json">{"societies":{"society":[{"denominationSocial":"$denominationSocial","ubi":"$ubi","dateCreation":"$dateCreation","idDossier":"$idDossier","idSociete":"$idSociete","formeJuridique":"$formeJuridique","capital":"$capital","labelDeviseCapital":"$labelDevise"}]}}</result>
