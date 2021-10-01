@@ -79,9 +79,9 @@
     </result>
   </query>
   <query id="documentToUploadByAssociate" useConfig="documentDS">
-    <sql>SELECT "nomDocument",public.document."idDocument", "nbUploader", "nbDeposer", "paramUpload", "paramDeposer"
+    <sql>SELECT "nomDocument",public.document."idDocument", "nbUploader", "nbDeposer", "paramUpload", "paramDeposer",mg
 	FROM public."documentAssociePersMorale",public.document WHERE public."documentAssociePersMorale"."idDocument"=public.document."idDocument";</sql>
-    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer","paramUpload":"$paramUpload","paramDeposer":"$paramDeposer"}]}}</result>
+    <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer","paramUpload":"$paramUpload","paramDeposer":"$paramDeposer", "mg":$mg}]}}</result>
   </query>
   <query id="documentToUploadByLeader" useConfig="documentDS">
     <sql>SELECT public.document."idDocument","nomDocument", "nbUploader", "nbDeposer", "paramUpload", "paramDeposer"
