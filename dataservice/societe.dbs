@@ -916,7 +916,7 @@
   </resource>
   <query id="updateUBI" useConfig="societeDS">
     <sql>UPDATE public.societe
-	SET "ubi"=:ubi, "dateCreation" = CURRENT_TIMESTAMP WHERE "idSociete"=:idSociete;</sql>
+	SET "ubi"= :ubi, "dateCreation" = CURRENT_TIMESTAMP WHERE "idSociete"=:idSociete</sql>
     <param type="IN" name="ubi" paramType="SCALAR" sqlType="STRING" optional="false" />
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
   </query>
