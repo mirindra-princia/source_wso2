@@ -1122,7 +1122,7 @@
   <query id="companyByDenomination" useConfig="societeDS">
     <sql>SELECT societe.* FROM public.societe WHERE LOWER("denominationSocial") = LOWER(:denomination)</sql>
     <param type="IN" name="denomination" sqlType="STRING" paramType="SCALAR" optional="false" />
-    <result outputType="json">{"data":{
+    <result outputType="json">{
     		"company": {
     			"idSociete":$idSociete,
 		        "formeJuridique": "$formeJuridique",
@@ -1157,7 +1157,7 @@
 		        "ubi":"$ubi",
 		        "activiteSecondaire": "$activiteSecondaire"
     		}
-    	}}
+    	}
     </result>
   </query>
   <resource path="companyByNif/{nif}" method="GET">
@@ -1169,7 +1169,7 @@
   <query id="companyByNif" useConfig="societeDS">
     <sql>SELECT societe.* FROM public.societe WHERE "NIF" = :nif</sql>
     <param type="IN" name="nif" sqlType="STRING" paramType="SCALAR" optional="false" />
-    <result outputType="json">{"data":{
+    <result outputType="json">{
     		"company": {
     			"idSociete":$idSociete,
 		        "formeJuridique": "$formeJuridique",
@@ -1204,7 +1204,7 @@
 		        "ubi":"$ubi",
 		        "activiteSecondaire": "$activiteSecondaire"
     		}
-    	}}
+    	}
     </result>
   </query>
 </data>
