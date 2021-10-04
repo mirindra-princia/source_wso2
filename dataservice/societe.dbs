@@ -416,6 +416,7 @@
       <with-param name="montantDroit" query-param="montantDroit" />
       <with-param name="idSociete" query-param="idSociete" />
       <with-param name="idDocument" query-param="idDocument" />
+      <with-param name="numeroFolio" query-param="numeroFolio" />
     </call-query>
   </resource>
   <resource method="PUT" path="updatePathNif">
@@ -1009,8 +1010,8 @@
   </query>
   <query id="addEnregistrementFiscale" useConfig="societeDS">
     <sql>INSERT INTO public."enregistrementFiscale"(
-	 "dateEnregistrement", "numeroRegistre", "numeroEnregistrement", "idUtilisateurAgent", "montantDroit", "idSociete", "idDocument")
-	VALUES ( :dateEnregistrement, :numeroRegistre, :numeroEnregistrement, :idUtilisateurAgent, :montantDroit, :idSociete, :idDocument);</sql>
+	 "dateEnregistrement", "numeroRegistre", "numeroEnregistrement", "idUtilisateurAgent", "montantDroit", "idSociete", "idDocument", "numeroFolio")
+	VALUES ( :dateEnregistrement, :numeroRegistre, :numeroEnregistrement, :idUtilisateurAgent, :montantDroit, :idSociete, :idDocument, :numeroFolio);</sql>
     <param type="IN" name="dateEnregistrement" paramType="SCALAR" sqlType="DATE" optional="false" />
     <param type="IN" name="numeroRegistre" paramType="SCALAR" sqlType="STRING" optional="false" />
     <param type="IN" name="numeroEnregistrement" paramType="SCALAR" sqlType="STRING" optional="false" />
@@ -1018,6 +1019,7 @@
     <param type="IN" name="montantDroit" paramType="SCALAR" sqlType="DOUBLE" optional="false" />
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="idDocument" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="numeroFolio" paramType="SCALAR" sqlType="STRING" optional="true" />
   </query>
   <query id="checkStatusTable" useConfig="societeDS">
     <sql>SELECT * FROM public."statutInteroperabilite" WHERE "idSociete"=:idSociete</sql>
@@ -1064,10 +1066,10 @@
     </call-query>
   </resource>
   <query id="enregistrementFiscale" useConfig="societeDS">
-    <sql>SELECT id, "dateEnregistrement", "numeroRegistre", "numeroEnregistrement", "idUtilisateurAgent", "montantDroit", public."enregistrementFiscale"."idSociete", "idDocument",public.societe."NIF" FROM public."enregistrementFiscale" LEFT JOIN public.societe ON public.societe."idSociete"=public."enregistrementFiscale"."idSociete" WHERE public."enregistrementFiscale"."idSociete"=:idSociete</sql>
+    <sql>SELECT id,"numeroFolio", "dateEnregistrement", "numeroRegistre", "numeroEnregistrement", "idUtilisateurAgent", "montantDroit", public."enregistrementFiscale"."idSociete", "idDocument",public.societe."NIF" FROM public."enregistrementFiscale" LEFT JOIN public.societe ON public.societe."idSociete"=public."enregistrementFiscale"."idSociete" WHERE public."enregistrementFiscale"."idSociete"=:idSociete</sql>
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <result outputType="json">{"data":{
-    	"enregistrementFiscaux":[{"id":$id, "dateEnregistrement":"$dateEnregistrement", "numeroRegistre":"$numeroRegistre", "numeroEnregistrement":"$numeroEnregistrement", "montantDroit":$montantDroit, "idDocument": $idDocument, "NIF":"$NIF"}]
+    	"enregistrementFiscaux":[{"id":$id, "dateEnregistrement":"$dateEnregistrement", "numeroRegistre":"$numeroRegistre", "numeroEnregistrement":"$numeroEnregistrement", "montantDroit":$montantDroit, "idDocument": $idDocument, "NIF":"$NIF", "numeroFolio": "$numeroFolio"}]
     	}}
     </result>
   </query>
