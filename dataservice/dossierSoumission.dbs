@@ -689,4 +689,80 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
   	<sql>UPDATE public.dossier SET "dateSoumission" = CURRENT_TIMESTAMP WHERE "idDossier" = :idDossier</sql>
 	<param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
   </query>
+  <resource path="saveBillStory" method="POST">
+    <description />
+    <call-query href="saveBillStory">
+    	<with-param name="uidUser" query-param="uidUser" />
+    	<with-param name="idDossier" query-param="idDossier" />
+    	<with-param name="statutPaiement" query-param="statutPaiement" />
+    </call-query>
+  </resource>
+  <query id="saveBillStory" useConfig="dossierSomissionDS">
+  	<sql>INSERT INTO public."historiquePaiement" ("uidUser", "idDossier", "statutPaiement") VALUES (:uidUser, :idDossier, :statutPaiement) RETURNING "id","statutPaiement"</sql>
+	<param type="IN" name="uidUser" sqlType="STRING" paramType="SCALAR" />
+	<param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+	<param type="IN" name="statutPaiement" sqlType="INTEGER" paramType="SCALAR" />
+	<result outputType="json">{"historique": {
+    	"id":$id,
+    	"statutPaiement":$statutPaiement,
+    }}
+    </result>
+  </query>
+  <resource path="updateBillStory" method="PUT">
+    <description />
+    <call-query href="updateBillStory">
+    	<with-param name="uidUser" query-param="uidUser" />
+    	<with-param name="idDossier" query-param="idDossier" />
+    	<with-param name="statutPaiement" query-param="statutPaiement" />
+    </call-query>
+  </resource>
+  <query id="updateBillStory" useConfig="dossierSomissionDS">
+  	<sql>UPDATE public."historiquePaiement" SET "uidUser"= :uidUser, "statutPaiement"= :statutPaiement, "updatedAt" = CURRENT_TIMESTAMP WHERE "idDossier"= :idDossier RETURNING "id","statutPaiement"</sql>
+	<param type="IN" name="uidUser" sqlType="STRING" paramType="SCALAR" />
+	<param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+	<param type="IN" name="statutPaiement" sqlType="INTEGER" paramType="SCALAR" />
+	<result outputType="json">{"historique": {
+    	"id":$id,
+    	"statutPaiement":$statutPaiement,
+    }}
+    </result>
+  </query>
+  <resource path="billStory/{idDossier}" method="GET">
+    <description />
+    <call-query href="billStory">
+    	<with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <query id="billStory" useConfig="dossierSomissionDS">
+  	<sql>SELECT * FROM public."historiquePaiement" WHERE "idDossier"= :idDossier</sql>
+	<param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+	<result outputType="json">{"historique": {
+    	"id":$id,
+    	"uidUser":$uidUser,
+    	"idDossier": $idDossier,
+    	"statutPaiement":$statutPaiement,
+    	"createdAt": "$createdAt",
+    	"updatedAt": "$updatedAt"
+    }}
+    </result>
+  </query>
+  <resource path="billStoryById/{id}" method="GET">
+    <description />
+    <call-query href="billStoryById">
+    	<with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="billStoryById" useConfig="dossierSomissionDS">
+  	<sql>SELECT * FROM public."historiquePaiement" WHERE "id"= :id</sql>
+	<param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" />
+	<result outputType="json">{"historique": {
+    	"id":$id,
+    	"uidUser":$uidUser,
+    	"idDossier": $idDossier,
+    	"statutPaiement":$statutPaiement,
+    	"createdAt": "$createdAt",
+    	"updatedAt": "$updatedAt"
+    }}
+    </result>
+  </query>
 </data>
