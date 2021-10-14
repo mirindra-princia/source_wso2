@@ -1066,10 +1066,10 @@
     </call-query>
   </resource>
   <query id="enregistrementFiscale" useConfig="societeDS">
-    <sql>SELECT id,"numeroFolio", "dateEnregistrement", "numeroRegistre", "numeroEnregistrement", "idUtilisateurAgent", "montantDroit", public."enregistrementFiscale"."idSociete", "idDocument",public.societe."NIF" FROM public."enregistrementFiscale" LEFT JOIN public.societe ON public.societe."idSociete"=public."enregistrementFiscale"."idSociete" WHERE public."enregistrementFiscale"."idSociete"=:idSociete</sql>
+    <sql>SELECT id,"numeroFolio", "dateEnregistrement", "numeroRegistre", "numeroEnregistrement", "idUtilisateurAgent", "montantDroit", public."enregistrementFiscale"."idSociete", "idDocument", societe."NIF", societe."dateNIF" FROM public."enregistrementFiscale" LEFT JOIN public.societe ON public.societe."idSociete"=public."enregistrementFiscale"."idSociete" WHERE public."enregistrementFiscale"."idSociete"=:idSociete</sql>
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <result outputType="json">{"data":{
-    	"enregistrementFiscaux":[{"id":$id, "dateEnregistrement":"$dateEnregistrement", "numeroRegistre":"$numeroRegistre", "numeroEnregistrement":"$numeroEnregistrement", "montantDroit":$montantDroit, "idDocument": $idDocument, "NIF":"$NIF", "numeroFolio": "$numeroFolio"}]
+    	"enregistrementFiscaux":[{"id":$id, "dateEnregistrement":"$dateEnregistrement", "numeroRegistre":"$numeroRegistre", "numeroEnregistrement":"$numeroEnregistrement", "montantDroit":$montantDroit, "idDocument": $idDocument, "NIF":"$NIF", "dateNIF": "$dateNIF", "numeroFolio": "$numeroFolio"}]
     	}}
     </result>
   </query>
