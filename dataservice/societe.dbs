@@ -579,10 +579,46 @@
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" />
   </query>
   <query id="getSocietyByFolderId" useConfig="societeDS">
-    <sql>SELECT "idSociete", "denominationSocial", duree, "nomCommercial", "formeJuridique", "dateStatut", capital, "declarationActivite", "activiteImportExport", "activiteIndustrielCollecteur", "totalPart", "idDossier", "idMandataire", "idInterlocuteur", "NIF", "STAT", "RCS", "activiteSecondaire", "objetSocial", "activiteGrossiste", "autreActiviteReglemente", "choixImposition", "nombreAssociePersPhysique", "nombreAssociePersMorale", "nombreDirigeant", "idPersonne", "idSiegeSocial", "activitePrincipal","idFormeJuridique",tva
-	FROM public.societe WHERE "idDossier"=:idDossier</sql>
+    <sql>SELECT * FROM public.societe WHERE "idDossier"=:idDossier</sql>
     <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
-    <result outputType="json">{"societe":{"idSociete":"$idSociete","idPersonne":"$idPersonne","denominationSocial":"$denominationSocial"}}</result>
+    <result outputType="json">{
+	    "societe":{
+	    	"idSociete":"$idSociete",
+	        "formeJuridique": "$formeJuridique",
+	        "idFormeJuridique": "$idFormeJuridique",
+	        "denominationSocial": "$denominationSocial",
+	        "nomCommercial": "$nomCommercial",
+	        "sigle": "$sigle",
+	        "objetSocial": "$objetSocial",
+	        "idSecteurActivite": "$idSecteurActivite",
+	        "activitePrincipal": "$activitePrincipal",
+	        "activiteImportExport": "$activiteImportExport",
+	        "activiteIndustrielCollecteur": "$activiteIndustrielCollecteur",
+	        "activiteGrossiste": "$activiteGrossiste",
+	        "capital":"$capital",
+	        "montantPartSocial": "$montantPartSocial",
+	        "dateStatut": "$dateStatut",
+	        "choixImposition": "$choixImposition",
+	        "tva":"$tva",
+	        "duree":"$duree",
+	        "finExerciceSocial": "$finExerciceSocial",
+	        "idPersonne": "$idPersonne",
+	        "idDossier": "$idDossier",
+	        "idSiegeSocial": "$idSiegeSocial",
+	        "idDevise": "$idDevise",
+	        "idDevisePartAssocie": "$idDevisePartAssocie",
+	        "NIF":"$NIF",
+	        "dateNIF":"$dateNIF",
+	        "STAT":"$STAT",
+	        "RCS":"$RCS",
+	        "dateSTAT":"$dateSTAT",
+	        "dateRCS":"$dateRCS",
+	        "labelDevise":"$labelDevise",
+	        "ubi":"$ubi",
+	        "activiteSecondaire": "$activiteSecondaire"
+	    }
+    }
+    </result>
   </query>
   <query id="getSiegeSocial" useConfig="societeDS">
     <sql>SELECT *	FROM public."siegeSocial" siege LEFT JOIN adresse on adresse."idAdresse"=siege."adresseSiegeSocial" WHERE "idSiege"=:idSiege</sql>
