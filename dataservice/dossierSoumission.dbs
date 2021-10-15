@@ -510,17 +510,29 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     <call-query href="factureDatas" />
   </resource>
   <query id="factureDatas" useConfig="dossierSomissionDS">
-    <sql>SELECT fd.id, fd.label, fd."refValue", tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureData" fd JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" ORDER BY tf.id ASC</sql>
+    <sql>SELECT fd.id, fd.label, fd."refValue", fd.priority, tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureData" fd JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" ORDER BY tf.id ASC</sql>
     <result outputType="json">{"data":{"factureDatas":[{
     	"id":$id,
     	"label":"$label",
     	"refValue": $refValue,
+    	"priority": $priority,
     	"typeFacturation": {
     			"id": $idTypeFacture,
     			"label": "$typeFacture"
     		}
     	}]
     }}</result>
+  </query>
+  <resource path="factureDataMaxPriority" method="GET">
+    <description />
+    <call-query href="factureDataMaxPriority" />
+  </resource>
+  <query id="factureDataMaxPriority" useConfig="dossierSomissionDS">
+    <sql>SELECT MAX(priority) as max FROM public."factureData"</sql>
+    <result outputType="json">{"factureData":{
+    		"max":$max
+    	}}    	
+    </result>
   </query>
   <resource path="companyFacture" method="GET">
     <description />
