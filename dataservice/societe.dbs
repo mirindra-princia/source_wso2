@@ -270,7 +270,7 @@
   <resource method="GET" path="getGreffeCode">
     <description />
     <call-query href="getGreffeCode">
-      <with-param name="idAdresse" query-param="idAdresse" />
+      <with-param name="idDistrict" query-param="idDistrict" />
     </call-query>
   </resource>
   <resource method="GET" path="getBusinessPlaces">
@@ -815,8 +815,8 @@
 }]}}</result>
   </query>
   <query id="getGreffeCode" useConfig="societeDS">
-    <sql> select * from public."codeGreffe" cg join public.adresse on adresse."idDistrict" = cg."idDistrict" where adresse."idAdresse" = :idAdresse</sql>
-    <param type="IN" name="idAdresse" paramType="SCALAR" sqlType="INTEGER" />
+    <sql>SELECT * FROM public."codeGreffe" WHERE "idDistrict" = :idDistrict</sql>
+    <param type="IN" name="idDistrict" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">{"data":{"codeGreffe":{"code":$code, "idDistrict":$idDistrict}}}</result>
   </query>
   <query id="getBusinessPlaces" useConfig="societeDS">
