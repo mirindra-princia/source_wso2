@@ -71,7 +71,7 @@
   <query id="category" useConfig="siteInformationDS">
     <sql>SELECT * FROM public."categorieActivite" activite WHERE id =:id</sql>
     <param type="IN" name="id" sqlType="STRING" paramType="SCALAR" />
-    <result outputType="json">{"categorie":{"id":"$id", "descriptivesCategorie_fr":"$descriptivesCategorie_fr"}}</result>
+    <result outputType="json">{"categorie":{"id":"$id", "descriptivesCategorie_fr":"$descriptivesCategorie_fr", "secteur":"$secteur"}}</result>
   </query>
   
   <resource path="categories" method="GET">
