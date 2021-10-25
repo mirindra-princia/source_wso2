@@ -1,0 +1,111 @@
+<data name="utilisateur" serviceNamespace="" serviceGroup="" transports="http https">
+  <description />
+<!--   <config id="utilisateurDS"> -->
+<!--  	 <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/utilisateur</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
+  <config id="utilisateurDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/utilisateur</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
+  </config>
+  <resource method="GET" path="agents">
+    <description>get agent list</description>
+    <call-query href="agents"> 
+    	<with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="agents" useConfig="utilisateurDS">
+    <sql>select entity.id as userid, entity.first_name, entity.last_name, entity.email, entity.username, entity.enabled, entity.email_verified, gp.id, gp.name from public.user_group_membership gpm join public.user_entity entity on entity.id = gpm.user_id join public.keycloak_group gp on gp.id = gpm.group_id where entity.id=ANY(:ids::text[])</sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING"/>
+    <result outputType="json">{"data": {
+		    "agents": [{
+	   			"id":$userid,
+	   			"firstName":$first_name,
+	   			"lastName": "$last_name",
+	   			"email": $email,
+	   			"username": "$username",
+	   			"enabled": "$enabled",
+	   			"emailVerified": "$email_verified"
+		   	}]
+	    }}</result>
+  </query>
+  <resource method="GET" path="agents/roles/{uid}">
+    <description>get agent roles list</description>
+    <call-query href="agents_roles"> 
+    	<with-param name="uid" query-param="uid" />
+    </call-query>
+  </resource>
+  <query id="agents_roles" useConfig="utilisateurDS">
+    <sql>select gp.* from public.user_group_membership gpm join public.user_entity entity on entity.id = gpm.user_id join public.keycloak_group gp on gp.id = gpm.group_id where entity.id= :uid</sql>
+    <param type="IN" name="uid" paramType="SCALAR" sqlType="STRING"/>
+    <result outputType="json">{"data": {
+		    "roles": [{
+		    	"uid": "$id",
+	   			"libelle_role": "$name"
+		   	}]
+	    }}</result>
+  </query>
+  <resource method="GET" path="users">
+    <description>get users list</description>
+    <call-query href="users"> 
+    	<with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="users" useConfig="utilisateurDS">
+    <sql>select entity.id as userid, entity.first_name, entity.last_name, entity.email, entity.username, entity.enabled, entity.email_verified from public.user_entity entity where entity.id=ANY(:ids::text[])</sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING"/>
+    <result outputType="json">{"data": {
+		    "users": [{
+	   			"id":$userid,
+	   			"firstName":$first_name,
+	   			"lastName": "$last_name",
+	   			"email": $email,
+	   			"username": "$username",
+	   			"enabled": "$enabled",
+	   			"emailVerified": "$email_verified"
+		   	}]
+	    }}</result>
+  </query>
+  <resource method="GET" path="role/{id}">
+    <description>get role</description>
+    <call-query href="role"> 
+    	<with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="role" useConfig="utilisateurDS">
+    <sql>select gp.* from public.keycloak_group gp where gp.id = :id</sql>
+    <param type="IN" name="id" paramType="SCALAR" sqlType="STRING"/>
+    <result outputType="json">{"role": {
+		    	"id": $id,
+	   			"name": "$name"
+	   		}
+	   	}
+	</result>
+  </query>
+  <resource method="GET" path="role/{id}/users">
+    <description>get users have role</description>
+    <call-query href="role_users"> 
+    	<with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="role_users" useConfig="utilisateurDS">
+    <sql>select entity.id as userid, entity.first_name, entity.last_name, entity.email, entity.username, entity.enabled, entity.email_verified from public.user_entity entity join public.user_group_membership gpm on gpm.user_id = entity.id join public.keycloak_group gp on gp.id = gpm.group_id where gp.id = :id</sql>
+    <param type="IN" name="id" paramType="SCALAR" sqlType="STRING"/>
+    <result outputType="json">{"data": {
+		    "users": [{
+	   			"id":$userid,
+	   			"firstName":$first_name,
+	   			"lastName": "$last_name",
+	   			"email": $email,
+	   			"username": "$username",
+	   			"enabled": "$enabled",
+	   			"emailVerified": "$email_verified"
+		   	}]
+	    }}
+	 </result>
+  </query>
+</data>

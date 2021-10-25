@@ -1,26 +1,97 @@
-<data transports="https http" serviceGroup="mg.gov.edbm.societe.siteInformationDS" serviceNamespace="" name="siteInformation">
+<data name="siteInformation" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.siteInformationDS" transports="https http">
   <description>site web d'information</description>
-  <operation name="getCategoryName">
-    <call-query href="categoryName">
-      <with-param name="id" query-param="id" />
-    </call-query>
-  </operation>
-  <resource method="GET" path="getCategoryName">
-    <description />
-    <call-query href="categoryName">
-      <with-param name="id" query-param="id" />
-    </call-query>
-  </resource>
-  <query id="categoryName" useConfig="siteInformationDS">
-    <sql>SELECT "codeSection", "codeDivision", "codeGroupe", "codeClasse", id, "descriptivesCategorie_fr", note_fr, "descriptivesCategorie_en", note_en, "descriptivesCategorie_mg", note_mg, created_by, updated_by, created_at, updated_at
-	FROM public."categorieActivite" WHERE id=:id</sql>
-    <param type="IN" name="id" paramType="SCALAR" sqlType="STRING" />
-    <result outputType="json">{"categoryNames":{"categoryName":{"descriptivesCategorie_fr":"$descriptivesCategorie_fr"}}}</result>
-  </query>
   <config id="siteInformationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/siteWebInformation</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config>
+<!--   <config id="siteInformationDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/siteWebInformation</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
+  <operation name="getCategoryName">
+    <call-query href="categoryName">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </operation>
+  <resource path="getCategoryName" method="GET">
+    <description />
+    <call-query href="categoryName">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query useConfig="siteInformationDS" id="categoryName">
+    <sql>SELECT "codeSection", "codeDivision", "codeGroupe", "codeClasse", id, "descriptivesCategorie_fr", note_fr, "descriptivesCategorie_en", note_en, "descriptivesCategorie_mg", note_mg, created_by, updated_by, created_at, updated_at
+	FROM public."categorieActivite" WHERE id=:id</sql>
+    <param type="IN" name="id" sqlType="STRING" paramType="SCALAR" />
+    <result outputType="json">{"categoryName":{"descriptivesCategorie_fr":"$descriptivesCategorie_fr"}}</result>
+  </query>
+  <resource path="getLegalStatusMapping" method="GET">
+    <description />
+    <call-query href="getLegalStatusMapping">
+      <with-param name="idFormeJuridiqueSi" query-param="idFormeJuridiqueSi" />
+    </call-query>
+  </resource>
+  <query id="getLegalStatusMapping" useConfig="siteInformationDS">
+    <sql>SELECT * FROM public.legal_status_lists_mapping status WHERE status."idFormeJuridiqueSi"=:idFormeJuridiqueSi</sql>
+    <param type="IN" name="idFormeJuridiqueSi" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{"legalStatusMapping":{"idFormeJuridiqueSi":"$idFormeJuridiqueSi", "idFormeJuridiqueRncs":"$idFormeJuridiqueRncs"}}</result>
+  </query>
+  <resource path="getLegalStatus" method="GET">
+    <description />
+    <call-query href="getLegalStatus">
+      <with-param name="idFormeJuridique" query-param="idFormeJuridique" />
+    </call-query>
+  </resource>
+  <query id="getLegalStatus" useConfig="siteInformationDS">
+    <sql>SELECT * FROM public.legal_status_lists status WHERE status.id=:idFormeJuridique</sql>
+    <param type="IN" name="idFormeJuridique" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{"legalStatus":{"id":$id, "status":"$STATUS"}}</result>
+  </query>
+  <resource path="getClasseActivite" method="GET">
+    <description />
+    <call-query href="getClasseActivite">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="getClasseActivite" useConfig="siteInformationDS">
+    <sql>SELECT * FROM public."classeActivite" activite WHERE id =:id</sql>
+    <param type="IN" name="id" sqlType="STRING" paramType="SCALAR" />
+    <result outputType="json">{"classeActivite":{"id":"$id", "libelleClasseActivite_fr":"$libelleClasseActivite_fr"}}</result>
+  </query>
+  <resource path="getCategory/{id}" method="GET">
+    <description />
+    <call-query href="category">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="category" useConfig="siteInformationDS">
+    <sql>SELECT * FROM public."categorieActivite" activite WHERE id =:id</sql>
+    <param type="IN" name="id" sqlType="STRING" paramType="SCALAR" />
+    <result outputType="json">{"categorie":{"id":"$id", "descriptivesCategorie_fr":"$descriptivesCategorie_fr", "secteur":"$secteur"}}</result>
+  </query>
+  
+  <resource path="categories" method="GET">
+    <description />
+    <call-query href="categories" />
+  </resource>
+  <query id="categories" useConfig="siteInformationDS">
+    <sql>SELECT id, "descriptivesCategorie_fr", TRIM(note_fr) as note_fr FROM public."categorieActivite"</sql>
+    <result outputType="json">{"data": 
+    		{"categories": [{"id":$id, "descriptivesCategorie_fr":"$descriptivesCategorie_fr", "note_fr": "$note_fr"}]}
+    	}
+    </result>
+  </query>
+  <resource path="legalStatusList" method="GET">
+    <description />
+    <call-query href="legalStatusList"/>
+  </resource>
+  <query id="legalStatusList" useConfig="siteInformationDS">
+    <sql>SELECT status.id, TRIM(status."STATUS") as acronym, TRIM(desc_status.legal_status_fr) as label, TRIM(desc_status.note_fr) as note_fr FROM public.legal_status_lists status 
+    	INNER JOIN public.components_card_status_card_statuses desc_status ON TRIM(desc_status.accronym_legal_status_fr) = TRIM(status."STATUS") OR TRIM(desc_status.acronym_legal_status_fr) = TRIM(status."STATUS")</sql>
+    <result outputType="json">{"data":{"legalStatus":[{"id":$id, "status":"$acronym", "label":"$label", "note_fr": "$note_fr"}]}}</result>
+  </query>
 </data>

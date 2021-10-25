@@ -1,0 +1,285 @@
+<data name="messagerie" serviceNamespace="" serviceGroup="" transports="https http">
+    <description/>
+<!--     <config id="messagerieDS"> -->
+<!--     	<property name="driverClassName">org.postgresql.Driver</property> -->
+<!-- 	    <property name="url">jdbc:postgresql://localhost:5432/messagerie</property> -->
+<!-- 	    <property name="username">postgres</property> -->
+<!-- 	    <property name="password">postgres</property> -->
+<!--    	</config> -->
+	<config id="messagerieDS">
+ 	 <property name="driverClassName">org.postgresql.Driver</property>
+	  <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/messagerie</property>
+	  <property name="username">devedbmdb</property>
+	  <property name="password">devedbmdb</property>
+	</config> 
+	
+	<resource method="POST" path="addMessage">
+	    <description>add message</description>
+	    <call-query href="addMessage">
+	      <with-param name="idMessageParent" query-param="idMessageParent" />
+	      <with-param name="expediteur" query-param="expediteur" />
+	      <with-param name="destinataire" query-param="destinataire" />
+	      <with-param name="idDossier" query-param="idDossier" />
+	      <with-param name="sujet" query-param="sujet" />
+	      <with-param name="contenu" query-param="contenu" />
+	    </call-query>
+  	</resource>
+  	<query id="addMessage" useConfig="messagerieDS">
+	    <sql>INSERT INTO public.message(
+		 "idMessageParent" , "expediteur", "destinataire", "idDossier", sujet,  "contenu")
+		VALUES (:idMessageParent, :expediteur, :destinataire, :idDossier, :sujet, :contenu) RETURNING "id"</sql>
+	    <param name="idMessageParent" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+	    <param name="expediteur" paramType="SCALAR" sqlType="STRING" optional="true"/>
+	    <param name="destinataire" paramType="SCALAR" sqlType="STRING" optional="true"/>
+	    <param name="idDossier" paramType="SCALAR" sqlType="INTEGER" optional="false"/>
+	    <param name="sujet" paramType="SCALAR" sqlType="STRING" optional="true"/>
+	    <param name="contenu" paramType="SCALAR" sqlType="STRING" optional="false"/>
+	    <result outputType="json">{"message":{"id":"$id"}}</result>
+  	</query>
+  	<resource method="GET" path="agent/{uid}/topics">
+	    <description>get topics list</description>
+	    <call-query href="agentTopics">
+	    	<with-param name="uid" query-param="uid" />
+	    </call-query>
+  	</resource>
+  	<query id="agentTopics" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT 
+	    		mes.id, mes.sujet, mes."idDossier", mes.expediteur, 
+				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where (m.id = mes.id or m."idMessageParent" = mes.id) and m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :uid) ) ELSE 0 END unread,
+				CASE WHEN EXISTS (select "createdAt" from public.message m where m."idMessageParent" = mes.id) THEN (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id) ELSE mes."createdAt" END "createdAt",
+				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
+			FROM public.message mes WHERE sujet IS NOT NULL AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id) ) ORDER BY "createdAt" DESC
+		</sql>
+		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
+	    <result outputType="json">{"data": {
+		    "messages": [{
+	   			"id":$id,
+	   			"sujet": "$sujet",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"contenu": "$contenu",
+	   			"expediteur": "$expediteur",
+	   			"unread": $unread
+		   	}]
+	    }}</result>
+  	</query>
+  	
+  	<resource method="GET" path="user/topics">
+	    <description>user topics list</description>
+	    <call-query href="userTopics">
+	      <with-param name="counterIds" query-param="counterIds" />
+	      <with-param name="uid" query-param="uid" />
+	      <with-param name="ids" query-param="ids" />
+	    </call-query>
+  	</resource>
+  	<query id="userTopics" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT mes.id, mes.sujet, mes."idDossier", mes.expediteur, 
+				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where m."idDossier"=ANY(:counterIds::int[]) AND (m.id = mes.id or m."idMessageParent" = mes.id) AND m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :uid)) ELSE 0 END unread,
+				CASE WHEN EXISTS (select "createdAt" from public.message m where m."idMessageParent" = mes.id) THEN (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id) ELSE mes."createdAt" END "createdAt",
+				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
+			FROM public.message mes WHERE sujet IS NOT NULL AND "idDossier"=ANY(:ids::int[]) ORDER BY "createdAt" DESC
+	    </sql>
+	    <param type="IN" name="counterIds" paramType="ARRAY" sqlType="STRING" />
+	    <param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
+	    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING" />
+	    <result outputType="json">{"data": {
+		    "messages": [{
+	   			"id":$id,
+	   			"sujet": "$sujet",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"contenu": "$contenu",
+	   			"expediteur": "$expediteur",
+	   			"unread": $unread
+		   	}]
+	    }}
+	    </result>
+  	</query>
+  	<resource method="GET" path="messages/{topicId}">
+	    <description>messages list</description>
+	    <call-query href="messages">
+	      <with-param name="topicId" query-param="topicId" />
+	    </call-query>
+  	</resource>
+  	<query id="messages" useConfig="messagerieDS">
+	    <sql>SELECT * FROM public.message WHERE "idMessageParent" = :topicId ORDER BY "createdAt" DESC</sql>
+	    <param type="IN" name="topicId" paramType="SCALAR" sqlType="INTEGER" />
+	    <result outputType="json">{"data": {
+		    "messages": [{
+	   			"id":$id,
+	   			"idMessageParent":$idMessageParent,
+	   			"sujet": "$sujet",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"contenu": "$contenu",
+	   			"expediteur": "$expediteur",
+	   			"destinataire": "$destinataire"
+		   	}]
+	    }}</result>
+  	</query>
+  	<resource method="GET" path="message/{id}">
+	    <description>get message</description>
+	    <call-query href="message">
+	      <with-param name="id" query-param="id" />
+	    </call-query>
+  	</resource>
+  	<query id="message" useConfig="messagerieDS">
+	    <sql>SELECT * FROM public.message WHERE id = :id</sql>
+	    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+	    <result outputType="json">{"message": {
+	   			"id":$id,
+	   			"idMessageParent":$idMessageParent,
+	   			"sujet": "$sujet",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"contenu": "$contenu",
+	   			"expediteur": "$expediteur",
+	   			"destinataire": "$destinataire"
+	    }}</result>
+  	</query>
+  	<resource method="POST" path="message/seen">
+	    <description>mark message as seen</description>
+	    <call-query href="message_seen">
+	      <with-param name="idMessage" query-param="idMessage" />
+	      <with-param name="idUtilisateur" query-param="idUtilisateur" />
+	    </call-query>
+  	</resource>
+  	<query id="message_seen" useConfig="messagerieDS">
+	    <sql>INSERT INTO public."messageLu"("idMessage","idUtilisateur") VALUES (:idMessage, :idUtilisateur)</sql>
+	    <param type="IN" name="idMessage" paramType="SCALAR" sqlType="INTEGER" />
+	    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" />
+  	</query>
+  	<resource method="GET" path="message/seen/{idMessage}/{idUtilisateur}">
+	    <description>check message seen</description>
+	    <call-query href="message_seen_check">
+	      <with-param name="idMessage" query-param="idMessage" />
+	      <with-param name="idUtilisateur" query-param="idUtilisateur" />
+	    </call-query>
+  	</resource>
+  	<query id="message_seen_check" useConfig="messagerieDS">
+	    <sql>SELECT * FROM public."messageLu" WHERE "idMessage" = :idMessage AND "idUtilisateur" = :idUtilisateur</sql>
+	    <param type="IN" name="idMessage" paramType="SCALAR" sqlType="INTEGER" />
+	    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" />
+	    <result outputType="json">{"messageLu": {
+	   			"idMessage":$idMessage,
+	   			"idUtilisateur":$idUtilisateur,
+	   			"seenAt": "$seenAt"
+	    }}</result>
+  	</query>
+  	<resource method="GET" path="unread-count/folder/{folderId}/{idUtilisateur}">
+	    <description>count folder's unread</description>
+	    <call-query href="unread_folder">
+	      <with-param name="folderId" query-param="folderId" />
+	      <with-param name="idUtilisateur" query-param="idUtilisateur" />
+	    </call-query>
+  	</resource>
+  	<query id="unread_folder" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT 
+				mes.id, 
+				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where (m.id = mes.id or m."idMessageParent" = mes.id) and m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :idUtilisateur) ) ELSE 0 END unread
+			FROM public.message mes WHERE sujet IS NOT NULL AND "idDossier"= :folderId
+	    </sql>
+	    <param type="IN" name="folderId" paramType="SCALAR" sqlType="INTEGER" />
+	    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" />
+	    <result outputType="json">{"messageLu": {
+	    		"id": $id,
+	   			"unread": $unread
+	    }}</result>
+  	</query>
+  	<resource method="GET" path="topics/users">
+	    <description>users topics</description>
+	    <call-query href="users_topics">
+	      <with-param name="idDossier" query-param="idDossier" />
+	      <with-param name="ids" query-param="ids" />
+	    </call-query>
+  	</resource>
+  	<query id="users_topics" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT * FROM public.message WHERE sujet IS NOT NULL AND "idDossier" = :idDossier AND expediteur=ANY(:ids::text[])
+	    </sql>
+	    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+	    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING" />
+	    <result outputType="json">{"data":{
+	    	"messages": [{
+	   			"id":$id,
+	   			"idMessageParent":$idMessageParent,
+	   			"sujet": "$sujet",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"contenu": "$contenu",
+	   			"expediteur": "$expediteur",
+	   			"destinataire": "$destinataire"
+	    	}]}
+	    }</result>
+  	</query>
+  	<resource method="GET" path="unread-count/message/{uid}">
+	    <description>count unread message</description>
+	    <call-query href="unread_message_counter">
+	      <with-param name="uid" query-param="uid" />
+	    </call-query>
+  	</resource>
+  	<query id="unread_message_counter" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT COUNT(*) as unread FROM public.message m WHERE m.id NOT IN (SELECT "idMessage" FROM public."messageLu" seen WHERE seen."idUtilisateur" = :uid)
+	    </sql>
+	    <param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
+	    <result outputType="json">{"messageLu": {
+	   			"unread": $unread
+	    }}</result>
+  	</query>
+  	<resource method="GET" path="unread-count/message">
+	    <description>user count unread message</description>
+	    <call-query href="user_unread_message_counter">
+	    	<with-param name="uid" query-param="uid" />
+	      	<with-param name="ids" query-param="ids" />
+	    </call-query>
+  	</resource>
+  	<query id="user_unread_message_counter" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT COUNT(*) as unread FROM public.message m WHERE m."idDossier"=ANY(:ids::int[]) AND m.id NOT IN (SELECT "idMessage" FROM public."messageLu" seen WHERE seen."idUtilisateur" = :uid)
+	    </sql>
+	    <param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
+	    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING" />
+	    <result outputType="json">{"messageLu": {
+	   			"unread": $unread
+	    }}</result>
+  	</query>
+  	<resource method="GET" path="user/topics/navigation">
+	    <description>user topics list with navigation</description>
+	    <call-query href="userTopicsNavigation">
+	      <with-param name="uid" query-param="uid" />
+	      <with-param name="ids" query-param="ids" />
+	      <with-param name="limit" query-param="limit" />
+      	  <with-param name="offset" query-param="offset" />
+	    </call-query>
+  	</resource>
+  	<query id="userTopicsNavigation" useConfig="messagerieDS">
+	    <sql>
+		    SELECT 
+				mes.id, mes.sujet, mes."idDossier", mes.expediteur, 
+				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where (m.id = mes.id or m."idMessageParent" = mes.id) and m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :uid) ) ELSE 0 END unread,
+				CASE WHEN EXISTS (select "createdAt" from public.message m where m."idMessageParent" = mes.id) THEN (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id) ELSE mes."createdAt" END "createdAt",
+				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
+			FROM public.message mes WHERE sujet IS NOT NULL AND "idDossier"=ANY(:ids::int[]) ORDER BY "createdAt" DESC limit :limit offset :offset
+	    </sql>
+	    <param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
+	    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING" />
+	    <param type="IN" name="limit" sqlType="INTEGER" paramType="SCALAR" />
+    	<param type="IN" name="offset" sqlType="INTEGER" paramType="SCALAR" />
+	    <result outputType="json">{"data": {
+		    "messages": [{
+	   			"id":$id,
+	   			"sujet": "$sujet",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"contenu": "$contenu",
+	   			"expediteur": "$expediteur",
+	   			"unread": $unread
+		   	}]
+	    }}
+	    </result>
+  	</query>
+</data>
