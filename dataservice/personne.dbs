@@ -377,7 +377,7 @@
     <param type="IN" name="capitalSocial" paramType="SCALAR" sqlType="DOUBLE" optional="false" />
     <param type="IN" name="RCS" paramType="SCALAR" sqlType="STRING" optional="false" />
     <param type="IN" name="NIF" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="idGreffeRCS" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idGreffeRCS" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <param type="IN" name="qualite" paramType="SCALAR" sqlType="STRING" optional="false" />
     <param type="IN" name="idAdresse" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <param type="IN" name="KBIS" paramType="SCALAR" sqlType="STRING" optional="false" />
@@ -478,7 +478,7 @@
     <param type="IN" name="RCS" paramType="SCALAR" sqlType="STRING" optional="false" />
     <param type="IN" name="KBIS" paramType="SCALAR" sqlType="STRING" optional="false" />
     <param type="IN" name="NIF" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="idGreffeRCS" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idGreffeRCS" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <param type="IN" name="qualite" paramType="SCALAR" sqlType="STRING" optional="false" />
     <param type="IN" name="STAT" paramType="SCALAR" sqlType="STRING" optional="false" />
     <param type="IN" name="capitalSocial" paramType="SCALAR" sqlType="INTEGER" optional="false" />
