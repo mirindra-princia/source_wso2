@@ -28,7 +28,7 @@
 	    :idPersonneSociete, :idConjoint, :tel2,:nationalite) RETURNING "idPersonne"
 	</sql>
     <param type="IN" name="nom" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="prenom" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="prenom" paramType="SCALAR" sqlType="STRING" optional="true" />
     <param type="IN" name="nomPere" paramType="SCALAR" sqlType="STRING" optional="true" />
     <param type="IN" name="nomMere" paramType="SCALAR" sqlType="STRING" optional="true" />
     <param type="IN" name="dateNaissance" paramType="SCALAR" sqlType="DATE" optional="true" />
@@ -39,10 +39,10 @@
     <param type="IN" name="societe_mandataire" paramType="SCALAR" sqlType="STRING" optional="true" />
     <param type="IN" name="idadresse" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <param type="IN" name="idrole" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="tel" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="e_mail" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="engagement" paramType="SCALAR" sqlType="TINYINT" optional="false" />
+    <param type="IN" name="tel" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="e_mail" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="engagement" paramType="SCALAR" sqlType="TINYINT" optional="true" />
     <param type="IN" name="civilite" paramType="SCALAR" sqlType="TINYINT" optional="true" />
     <param type="IN" name="idPersonneSociete" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <param type="IN" name="idConjoint" paramType="SCALAR" sqlType="INTEGER" optional="true" />
