@@ -1,6 +1,6 @@
 <data transports="http https" serviceGroup="mg.gov.edbm.societe.dossierSoumissionDS" serviceNamespace="" name="dossierSoumission">
   <description />
-    <config id="dossierSomissionDS">
+  <config id="dossierSomissionDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/dossier_somission</property>
     <property name="username">devedbmdb</property>
