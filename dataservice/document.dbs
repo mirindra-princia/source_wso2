@@ -7,18 +7,19 @@
 <!--     <property name="password">devedbmdb</property> -->
 <!--   </config> -->
   <config id="documentDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://13.246.0.44:5432/document</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config>
-  <!-- <config id="documentDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/document</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config> -->
 
+
+    	<property name="driverClassName">org.postgresql.Driver</property>
+	    <property name="url">jdbc:postgresql://13.246.0.44:5432/document</property>
+	    <property name="username">devedbmdb</property>
+	    <property name="password">devedbmdb</property>
+   	</config>
+<!--   	<config id="documentDS"> -->
+<!--      	<property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     	<property name="url">jdbc:postgresql://localhost:5432/document</property> -->
+<!-- 	    <property name="username">postgres</property> -->
+<!-- 	    <property name="password">postgres</property> -->
+<!--    	</config>  -->
   <resource path="listdocumentToUploadByLegalStatus" method="GET">
     <description />
     <call-query href="documentToUploadByLegalStatus">
@@ -67,7 +68,7 @@
   </resource>
   <resource path="listdocumentToSave" method="GET">
     <description />
-    <call-query href="documentToSave"/>
+    <call-query href="documentToSave" />
   </resource>
   <resource path="getDocumentLabel" method="GET">
     <description />
