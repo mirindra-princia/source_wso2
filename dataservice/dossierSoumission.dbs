@@ -1,18 +1,25 @@
 <data name="dossierSoumission" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.dossierSoumissionDS" transports="http https">
   <description />
-  <config id="dossierSomissionDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/dossier_somission</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config>
- <!--    <config id="dossierSomissionDS">
+
+<!--   <config id="dossierSomissionDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/dossier_somission</property> -->
+<!--     <property name="username">devedbmdb</property> -->
+<!--     <property name="password">devedbmdb</property> -->
+<!--   </config> -->
+  	<config id="dossierSomissionDS">
+    	<property name="driverClassName">org.postgresql.Driver</property>
+	    <property name="url">jdbc:postgresql://13.246.0.44:5432/dossier_somission</property>
+	    <property name="username">devedbmdb</property>
+	    <property name="password">devedbmdb</property>
+   	</config>
+<!--   <config id="dossierSomissionDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property>
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config> -->
-  <resource path="addFolderNumber" method="POST">
+  <resource method="POST" path="addFolderNumber">
     <description />
     <call-query href="addNumeroDossier">
       <with-param name="numeroDossier" query-param="numeroDossier" />
@@ -835,7 +842,7 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
     <sql>
 		   select  count("dateSoumission")
 		from "dossier"
-		WHERE "dateSoumission" >=(now()-interval '7 days') and "idStatutDossier"=:idStatutDossier;
+		WHERE "dateSoumission" >=(now()-interval '7 days') and "idStatutDossier"=:idStatutDossier
 	</sql>
     <param type="IN" name="idStatutDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"count":{"count":"$count"}}</result>

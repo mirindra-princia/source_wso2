@@ -1015,7 +1015,7 @@
     </call-query>
   </resource>
   <query id="listCreatedSociety" useConfig="societeDS">
-    <sql>select * from public.societe left join devise on devise."idDevise"=societe."idDevise" where "idPersonne"=:idPersonne and "dateCreation" is not null and ubi is not null and "NIF" is not null and "STAT" is not null</sql>
+    <sql>select * from public.societe left join devise on devise."idDevise"=societe."idDevise" where "idPersonne"=:idPersonne and "dateCreation" is not null and ubi is not null and "NIF" is not null and "STAT" is not null and "RCS" is not null limit :limit</sql>
     <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <result outputType="json">{"societies":{"society":[{"denominationSocial":"$denominationSocial","ubi":"$ubi","dateCreation":"$dateCreation","idDossier":"$idDossier","idSociete":"$idSociete","formeJuridique":"$formeJuridique","capital":"$capital","labelDeviseCapital":"$labelDevise"}]}}</result>
