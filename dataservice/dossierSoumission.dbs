@@ -842,7 +842,7 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
     <sql>
 		   select  count("dateSoumission")
 		from "dossier"
-		WHERE "dateSoumission" >=(now()-interval '7 days') and "idStatutDossier"=:idStatutDossier;
+		WHERE "dateSoumission" >=(now()-interval '7 days') and "idStatutDossier"=:idStatutDossier
 	</sql>
     <param type="IN" name="idStatutDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"count":{"count":"$count"}}</result>
