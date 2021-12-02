@@ -1015,7 +1015,7 @@
     </call-query>
   </resource>
   <query id="listCreatedSociety" useConfig="societeDS">
-    <sql>select * from public.societe left join devise on devise."idDevise"=societe."idDevise" where "idPersonne"=:idPersonne and "dateCreation" is not null and ubi is not null and "NIF" is not null and "STAT" is not null</sql>
+    <sql>select * from public.societe left join devise on devise."idDevise"=societe."idDevise" where "idPersonne"=:idPersonne and "dateCreation" is not null and ubi is not null and "NIF" is not null and "STAT" is not null and "RCS" is not null limit :limit</sql>
     <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <result outputType="json">{"societies":{"society":[{"denominationSocial":"$denominationSocial","ubi":"$ubi","dateCreation":"$dateCreation","idDossier":"$idDossier","idSociete":"$idSociete","formeJuridique":"$formeJuridique","capital":"$capital","labelDeviseCapital":"$labelDevise"}]}}</result>
@@ -1245,6 +1245,96 @@
 		        "dateRCS":"$dateRCS",
 		        "ubi":"$ubi",
 		        "activiteSecondaire": "$activiteSecondaire"
+    		}
+    	}
+    </result>
+  </query>
+  <resource path="associates/filter/{companyId}/{associateType}" method="GET">
+    <description>company legal person associate</description>
+    <call-query href="associate-legal-persons">
+      <with-param name="companyId" query-param="companyId" />
+      <with-param name="associateType" query-param="associateType" />
+    </call-query>
+  </resource>
+  <query id="associate-legal-persons" useConfig="societeDS">
+    <sql>SELECT associe.*, associe."idStatutSociete"::varchar FROM public.associe JOIN public."societeAssocie" sa ON sa."idAssocie" = associe."idAssocie" WHERE sa."idSociete" = :companyId AND "idTypeAssocie" = :associateType</sql>
+    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR"/>
+    <param type="IN" name="associateType" sqlType="INTEGER" paramType="SCALAR"/>
+    <result outputType="json">{
+    		"data": {
+    			"associates": [{
+	    			"idAssocie":$idAssocie,
+	    			"partCapitalAssocie": $partCapitalAssocie,
+			        "idPersonne": $idPersonne,
+			        "idTypeAssocie": $idTypeAssocie,
+			        "idPersonneMoral": $idPersonneMoral,
+			        "idStatutSociete": "$idStatutSociete",
+			        "apportNature": $apportNature,
+			        "gerantStatutaire": $gerantStatutaire,
+			        "engagement": $engagement,
+			        "idDevise": $idDevise,
+			        "descriptifApportEnNature": "$descriptifApportEnNature",
+			        "idDeviseMontantApportEnNature": $idDeviseMontantApportEnNature,
+			        "montantApportEnNature": $montantApportEnNature
+	    		}]
+    		}
+    	}
+    </result>
+  </query>
+  <resource path="bailleurs/siege-social/filter/{companyId}/{lessorType}" method="GET">
+    <description>company siege-social lessors filter</description>
+    <call-query href="siege-social-lessors-filter">
+      <with-param name="companyId" query-param="companyId"/>
+      <with-param name="lessorType" query-param="lessorType" />
+    </call-query>
+  </resource>
+  <query id="siege-social-lessors-filter" useConfig="societeDS">
+    <sql>SELECT "siegeSocial".* FROM public."siegeSocial" JOIN public.societe ON "idSiegeSocial" = "idSiege" WHERE "idTypeBailleur" = :lessorType AND "idSociete" = :companyId</sql>
+    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR"/>
+    <param type="IN" name="lessorType" sqlType="INTEGER" paramType="SCALAR"/>
+    <result outputType="json">{
+    		"data": {
+    			"lessors": [{
+	    			"idSiege":$idSiege,
+	    			"dureebail": $dureebail,
+			        "montantBail": $montantBail,
+			        "adresseSiegeSocial": $adresseSiegeSocial,
+			        "idTypeBailleur": $idTypeBailleur,
+			        "idTypeContrat": "$idTypeContrat",
+			        "autorisationProp": $autorisationProp,
+			        "idBailleurPersonne": $idBailleurPersonne,
+			        "idBailleurPersonneMoral": $idBailleurPersonneMoral,
+			        "siegePrincipal": $siegePrincipal
+	    		}]
+    		}
+    	}
+    </result>
+  </query>
+  <resource path="bailleurs/exploitation/filter/{companyId}/{lessorType}" method="GET">
+    <description>company siege-social lessors filter</description>
+    <call-query href="siege-social-lessors-filter">
+      <with-param name="companyId" query-param="companyId"/>
+      <with-param name="lessorType" query-param="lessorType" />
+    </call-query>
+  </resource>
+  <query id="siege-social-lessors-filter" useConfig="societeDS">
+    <sql>SELECT * FROM public."siegeSocial" WHERE "idTypeBailleur" = :lessorType AND "siegePrincipal" = (SELECT "idSiegeSocial" FROM public.societe WHERE "idSociete" = :companyId)</sql>
+    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR"/>
+    <param type="IN" name="lessorType" sqlType="INTEGER" paramType="SCALAR"/>
+    <result outputType="json">{
+    		"data": {
+    			"lessors": [{
+	    			"idSiege":$idSiege,
+	    			"dureebail": $dureebail,
+			        "montantBail": $montantBail,
+			        "adresseSiegeSocial": $adresseSiegeSocial,
+			        "idTypeBailleur": $idTypeBailleur,
+			        "idTypeContrat": "$idTypeContrat",
+			        "autorisationProp": $autorisationProp,
+			        "idBailleurPersonne": $idBailleurPersonne,
+			        "idBailleurPersonneMoral": $idBailleurPersonneMoral,
+			        "siegePrincipal": $siegePrincipal
+	    		}]
     		}
     	}
     </result>
