@@ -1,17 +1,17 @@
 <data name="societe" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.societeDS" transports="http https">
   <description />
-<!--   <config id="societeDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property> -->
-<!--     <property name="username">devedbmdb</property> -->
-<!--     <property name="password">devedbmdb</property> -->
-<!--   </config> -->
   <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://13.246.0.44:5432/societe</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config>
+<!--   <config id="societeDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://13.246.0.44:5432/societe</property> -->
+<!--     <property name="username">devedbmdb</property> -->
+<!--     <property name="password">devedbmdb</property> -->
+<!--   </config> -->
 <!--   <config id="societeDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/societe</property> -->
@@ -1245,6 +1245,96 @@
 		        "dateRCS":"$dateRCS",
 		        "ubi":"$ubi",
 		        "activiteSecondaire": "$activiteSecondaire"
+    		}
+    	}
+    </result>
+  </query>
+  <resource path="associates/filter/{companyId}/{associateType}" method="GET">
+    <description>company legal person associate</description>
+    <call-query href="associate-legal-persons">
+      <with-param name="companyId" query-param="companyId" />
+      <with-param name="associateType" query-param="associateType" />
+    </call-query>
+  </resource>
+  <query id="associate-legal-persons" useConfig="societeDS">
+    <sql>SELECT associe.*, associe."idStatutSociete"::varchar FROM public.associe JOIN public."societeAssocie" sa ON sa."idAssocie" = associe."idAssocie" WHERE sa."idSociete" = :companyId AND "idTypeAssocie" = :associateType</sql>
+    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR"/>
+    <param type="IN" name="associateType" sqlType="INTEGER" paramType="SCALAR"/>
+    <result outputType="json">{
+    		"data": {
+    			"associates": [{
+	    			"idAssocie":$idAssocie,
+	    			"partCapitalAssocie": $partCapitalAssocie,
+			        "idPersonne": $idPersonne,
+			        "idTypeAssocie": $idTypeAssocie,
+			        "idPersonneMoral": $idPersonneMoral,
+			        "idStatutSociete": "$idStatutSociete",
+			        "apportNature": $apportNature,
+			        "gerantStatutaire": $gerantStatutaire,
+			        "engagement": $engagement,
+			        "idDevise": $idDevise,
+			        "descriptifApportEnNature": "$descriptifApportEnNature",
+			        "idDeviseMontantApportEnNature": $idDeviseMontantApportEnNature,
+			        "montantApportEnNature": $montantApportEnNature
+	    		}]
+    		}
+    	}
+    </result>
+  </query>
+  <resource path="bailleurs/siege-social/filter/{companyId}/{lessorType}" method="GET">
+    <description>company siege-social lessors filter</description>
+    <call-query href="siege-social-lessors-filter">
+      <with-param name="companyId" query-param="companyId"/>
+      <with-param name="lessorType" query-param="lessorType" />
+    </call-query>
+  </resource>
+  <query id="siege-social-lessors-filter" useConfig="societeDS">
+    <sql>SELECT "siegeSocial".* FROM public."siegeSocial" JOIN public.societe ON "idSiegeSocial" = "idSiege" WHERE "idTypeBailleur" = :lessorType AND "idSociete" = :companyId</sql>
+    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR"/>
+    <param type="IN" name="lessorType" sqlType="INTEGER" paramType="SCALAR"/>
+    <result outputType="json">{
+    		"data": {
+    			"lessors": [{
+	    			"idSiege":$idSiege,
+	    			"dureebail": $dureebail,
+			        "montantBail": $montantBail,
+			        "adresseSiegeSocial": $adresseSiegeSocial,
+			        "idTypeBailleur": $idTypeBailleur,
+			        "idTypeContrat": "$idTypeContrat",
+			        "autorisationProp": $autorisationProp,
+			        "idBailleurPersonne": $idBailleurPersonne,
+			        "idBailleurPersonneMoral": $idBailleurPersonneMoral,
+			        "siegePrincipal": $siegePrincipal
+	    		}]
+    		}
+    	}
+    </result>
+  </query>
+  <resource path="bailleurs/exploitation/filter/{companyId}/{lessorType}" method="GET">
+    <description>company siege-social lessors filter</description>
+    <call-query href="siege-social-lessors-filter">
+      <with-param name="companyId" query-param="companyId"/>
+      <with-param name="lessorType" query-param="lessorType" />
+    </call-query>
+  </resource>
+  <query id="siege-social-lessors-filter" useConfig="societeDS">
+    <sql>SELECT * FROM public."siegeSocial" WHERE "idTypeBailleur" = :lessorType AND "siegePrincipal" = (SELECT "idSiegeSocial" FROM public.societe WHERE "idSociete" = :companyId)</sql>
+    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR"/>
+    <param type="IN" name="lessorType" sqlType="INTEGER" paramType="SCALAR"/>
+    <result outputType="json">{
+    		"data": {
+    			"lessors": [{
+	    			"idSiege":$idSiege,
+	    			"dureebail": $dureebail,
+			        "montantBail": $montantBail,
+			        "adresseSiegeSocial": $adresseSiegeSocial,
+			        "idTypeBailleur": $idTypeBailleur,
+			        "idTypeContrat": "$idTypeContrat",
+			        "autorisationProp": $autorisationProp,
+			        "idBailleurPersonne": $idBailleurPersonne,
+			        "idBailleurPersonneMoral": $idBailleurPersonneMoral,
+			        "siegePrincipal": $siegePrincipal
+	    		}]
     		}
     	}
     </result>
