@@ -1,17 +1,17 @@
 <data name="societe" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.societeDS" transports="http https">
   <description />
-  <config id="societeDS">
+  <!-- <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
+  </config> -->
+  <config id="societeDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://13.246.0.44:5432/societe</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
   </config>
-<!--   <config id="societeDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://13.246.0.44:5432/societe</property> -->
-<!--     <property name="username">devedbmdb</property> -->
-<!--     <property name="password">devedbmdb</property> -->
-<!--   </config> -->
 <!--   <config id="societeDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/societe</property> -->
