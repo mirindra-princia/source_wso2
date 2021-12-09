@@ -848,7 +848,7 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
     <sql>
 		   select  DATE("dateSoumission"), count("dateSoumission")
 		from "dossier"
-		WHERE "dateSoumission" >=(now()-interval '7 days') and "idStatutDossier"=:idStatutDossier group by DATE("dateSoumission")
+		WHERE "dateSoumission" >=(now()-interval '200 days') and "idStatutDossier"=:idStatutDossier group by DATE("dateSoumission")
 	</sql>
     <param type="IN" name="idStatutDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"statistic": [{"date":"$date", "count":"$count"}]}}</result>
