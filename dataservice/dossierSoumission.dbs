@@ -846,10 +846,13 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
   </query>
   <query id="countFolder" useConfig="dossierSomissionDS">
     <sql>
-		   select  DATE("dateSoumission"), count("dateSoumission")
-		from "dossier"
-		WHERE "dateSoumission" >=(now()-interval '200 days') and "idStatutDossier"=:idStatutDossier group by DATE("dateSoumission")
-	</sql>
+		 with T as(select CURRENT_DATE + i  as dateJour
+from generate_series(date(now()-interval '6 days')- CURRENT_DATE, 
+     date (now()) - CURRENT_DATE ) i)
+	 
+	 select  datejour as date, count("dateSoumission")
+		from "dossier" right join T
+		on "dateSoumission"=dateJour and "idStatutDossier"=:idStatutDossier  group by (datejour)</sql>
     <param type="IN" name="idStatutDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"statistic": [{"date":"$date", "count":"$count"}]}}</result>
   </query>
