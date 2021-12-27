@@ -278,7 +278,7 @@
     <description />
     <call-query href="saveCompanyBill">
       <with-param name="idFactureData" query-param="idFactureData" />
-      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="idFacture" query-param="idFacture" />
       <with-param name="label" query-param="label" />
       <with-param name="value" query-param="value" />
       <with-param name="idTypeFacture" query-param="idTypeFacture" />
@@ -686,9 +686,9 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     }}</result>
   </query>
   <query id="saveCompanyBill" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public."factureDataDossier"("idFactureData", "idDossier", "label", "value", "idTypeFacture") VALUES (:idFactureData, :idDossier, :label, :value, :idTypeFacture) RETURNING id</sql>
+    <sql>INSERT INTO public."factureDataDossier"("idFactureData", "idFacture", "label", "value", "idTypeFacture") VALUES (:idFactureData, :idFacture, :label, :value, :idTypeFacture) RETURNING id</sql>
     <param type="IN" name="idFactureData" sqlType="INTEGER" paramType="SCALAR" optional="true" />
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idFacture" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <param type="IN" name="label" sqlType="STRING" paramType="SCALAR" optional="true" />
     <param type="IN" name="value" sqlType="DOUBLE" paramType="SCALAR" optional="false" />
     <param type="IN" name="idTypeFacture" sqlType="INTEGER" paramType="SCALAR" optional="false" />
