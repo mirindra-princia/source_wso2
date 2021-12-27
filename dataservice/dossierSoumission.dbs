@@ -653,7 +653,7 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     </result>
   </query>
   <query id="companyFacture" useConfig="dossierSomissionDS">
-    <sql>SELECT fdd.id, fdd.value, fd.id as "idFactureData", fdd.label, fd."refValue", tf.label as "typeFacture", tf.id as "idTypeFacture", fdd."idFactureData" FROM public."factureDataDossier" fdd JOIN public."factureData" fd ON fd.id = fdd."idFactureData" JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" WHERE "idDossier" = :idDossier</sql>
+    <sql>SELECT fdd.id, fdd.value, fd.id as "idFactureData", fdd.label, fd."refValue", tf.label as "typeFacture", tf.id as "idTypeFacture", fdd."idFactureData" FROM public."factureDataDossier" fdd JOIN public."factureData" fd ON fd.id = fdd."idFactureData" JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" JOIN public.facture ON facture.id = fdd."idFacture" WHERE "idDossier" = :idDossier</sql>
     <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"factureDatas":[{
     	"id":$id,
@@ -671,7 +671,7 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     }}</result>
   </query>
   <query id="companyCustomFacture" useConfig="dossierSomissionDS">
-    <sql>SELECT fdd.id, fdd.label, fdd.value, fdd."idFactureData", tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureDataDossier" fdd JOIN public."typeFacture" tf ON tf.id = fdd."idTypeFacture" WHERE fdd."idDossier" = :idDossier AND fdd."idFactureData" IS NULL</sql>
+    <sql>SELECT fdd.id, fdd.label, fdd.value, fdd."idFactureData", tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureDataDossier" fdd JOIN public."typeFacture" tf ON tf.id = fdd."idTypeFacture" JOIN public.facture ON facture.id = fdd."idFacture" WHERE facture."idDossier" = :idDossier AND fdd."idFactureData" IS NULL</sql>
     <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"factureDataDossier":[{
     	"id":$id,
