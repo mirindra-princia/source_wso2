@@ -850,9 +850,9 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
 from generate_series(date(now()-interval '6 days')- CURRENT_DATE, 
      date (now()) - CURRENT_DATE ) i)
 	 
-	 select  datejour as date, count("dateSoumission")
-		from "dossier" right join T
-		on "dateSoumission"=dateJour and "idStatutDossier"=:idStatutDossier  group by (datejour)</sql>
+	 	 select  datejour as date, count(distinct date("dateModification"))
+		from "historiqueStatutDossier" right join T
+		on date("dateModification")=dateJour and "idStatut"=:idStatutDossier  group by (datejour)</sql>
     <param type="IN" name="idStatutDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"statistic": [{"date":"$date", "count":"$count"}]}}</result>
   </query>
