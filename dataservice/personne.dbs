@@ -12,13 +12,12 @@
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config>
- <!--  <config id="personneDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/personne</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config> -->
-
+<!--  <config id="personneDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/personne</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
   <query id="addPerson" useConfig="personneDS">
     <sql>INSERT INTO public.personne(nom,prenom,"nomPere", "nomMere", "dateNaissance", "lieuNaissance", "situationMatrimonial", 
 	    "idPieceIdentite", sexe, societe_mandataire, idadresse, idrole, tel,e_mail,"idUtilisateur", engagement, civilite, 
@@ -102,7 +101,7 @@
 {"personnes":{"personne":{"idPersonne":$idPersonne, "nom":"$nom", "prenom":"$prenom", "nomPere":"$nomPere", "nomMere":"$nomMere", "dateNaissance":"$dateNaissance", "lieuNaissance":"$lieuNaissance", "situationMatrimonial":"$situationMatrimonial", "pieceIdentite":"$pieceIdentite", "sexe":"$sexe", "societe_mandataire":"$societe_mandataire", "e_mail":"$e_mail", "idUtilisateur":"$idUtilisateur", "tel":$tel, "idrole":"$idrole", "idadresse":"$idadresse","tel2":$tel2,"nationalite":"$nationalite"}}}</result>
   </query>
   <query id="getPersonByEmail" useConfig="personneDS">
-    <sql>SELECT * FROM public.personne WHERE e_mail=:e_mail</sql>
+    <sql>SELECT * FROM public.personne WHERE e_mail=:e_mail AND "idUtilisateur" IS NOT NULL</sql>
     <param type="IN" name="e_mail" paramType="SCALAR" sqlType="STRING" />
     <result outputType="json">
 	{"personne":{"idPersonne":$idPersonne, "nom":"$nom", "prenom":"$prenom", "nomPere":"$nomPere", "nomMere":"$nomMere", "dateNaissance":"$dateNaissance", "lieuNaissance":"$lieuNaissance", "situationMatrimonial":"$situationMatrimonial", "pieceIdentite":"$pieceIdentite", "sexe":"$sexe", "societe_mandataire":"$societe_mandataire", "e_mail":"$e_mail", "idUtilisateur":"$idUtilisateur", "tel":$tel, "idrole":"$idrole", "idadresse":"$idadresse","tel2":$tel2}}</result>
