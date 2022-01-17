@@ -937,7 +937,7 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
   
   <query id="updateFactureState" useConfig="dossierSomissionDS">
     <sql>UPDATE public.facture 
-	 SET "statutPaiement" =:statutPaiement
+	 SET "statutPaiement" =:statutPaiement, "statutUpdatedAt" = CURRENT_TIMESTAMP
 	WHERE "id"= :id</sql>
     <param name="statutPaiement" paramType="SCALAR" type="IN" sqlType="STRING" optional="false" />
     <param name="id" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
