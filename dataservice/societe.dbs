@@ -12,12 +12,12 @@
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config>
- <!--  <config id="societeDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/societe</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config> -->
+<!--  <config id="societeDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/societe</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
   <resource method="POST" path="addSocietyForm">
     <description>add society from online form</description>
     <call-query href="addSociety">
@@ -1094,11 +1094,15 @@
     <description />
     <call-query href="exploitationBailSum">
       <with-param name="idSiege" query-param="idSiege" />
+      <with-param name="siegeAddress" query-param="siegeAddress" />
     </call-query>
   </resource>
   <query id="exploitationBailSum" useConfig="societeDS">
-    <sql>SELECT sum(("montantBail" * dureebail)) as account FROM public."siegeSocial" WHERE "siegePrincipal" = :idSiege</sql>
+    <sql>SELECT sum(("montantBail" * dureebail)) as account FROM public."siegeSocial" 
+    	JOIN public.adresse on adresse."idAdresse" = "adresseSiegeSocial"
+    	WHERE "siegePrincipal" = :idSiege AND TRIM(adresse.adresse) != :siegeAddress</sql>
     <param type="IN" name="idSiege" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="siegeAddress" sqlType="STRING" paramType="SCALAR" optional="true" />
     <result outputType="json">{"exploitation":{"account": $account}}</result>
   </query>
   <resource method="GET" path="enregistrementFiscale/{idSociete}">
