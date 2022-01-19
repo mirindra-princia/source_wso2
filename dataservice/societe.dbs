@@ -1086,7 +1086,7 @@
     </call-query>
   </resource>
   <query id="bailSum" useConfig="societeDS">
-    <sql>SELECT (ss."montantBail" * ss.dureebail) as account, ss."idSiege" FROM public."siegeSocial" ss JOIN public.societe ON societe."idSiegeSocial" = ss."idSiege" WHERE societe."idSociete" = :idSociete</sql>
+    <sql>SELECT (ss."montantBail"::double precision * ss.dureebail) as account, ss."idSiege" FROM public."siegeSocial" ss JOIN public.societe ON societe."idSiegeSocial" = ss."idSiege" WHERE societe."idSociete" = :idSociete</sql>
     <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"socialPlace":{"idSiege":$idSiege, "account": $account}}</result>
   </query>
@@ -1098,7 +1098,7 @@
     </call-query>
   </resource>
   <query id="exploitationBailSum" useConfig="societeDS">
-    <sql>SELECT sum(("montantBail" * dureebail)) as account FROM public."siegeSocial" 
+    <sql>SELECT sum(("montantBail"::double precision * dureebail)) as account FROM public."siegeSocial" 
     	JOIN public.adresse on adresse."idAdresse" = "adresseSiegeSocial"
     	WHERE "siegePrincipal" = :idSiege AND TRIM(adresse.adresse) != :siegeAddress</sql>
     <param type="IN" name="idSiege" sqlType="INTEGER" paramType="SCALAR" optional="false" />
