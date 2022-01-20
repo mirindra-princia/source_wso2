@@ -480,7 +480,7 @@
     <param type="IN" name="idGreffeRCS" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <param type="IN" name="qualite" paramType="SCALAR" sqlType="STRING" optional="false" />
     <param type="IN" name="STAT" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="capitalSocial" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="capitalSocial" paramType="SCALAR" sqlType="DOUBLE" optional="false" />
     <param type="IN" name="idPersonneMorale" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="denominationSocial" paramType="SCALAR" sqlType="STRING" optional="false" />
