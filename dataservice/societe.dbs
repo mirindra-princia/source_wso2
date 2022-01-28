@@ -1345,4 +1345,31 @@
     	}
     </result>
   </query>
+  <resource path="exploitation/{companyId}" method="GET">
+    <description>company exploitations</description>
+    <call-query href="exploitations">
+      <with-param name="companyId" query-param="companyId"/>
+    </call-query>
+  </resource>
+  <query id="exploitations" useConfig="societeDS">
+    <sql>SELECT * FROM public."siegeSocial" WHERE "siegePrincipal" = (SELECT "idSiegeSocial" FROM public.societe WHERE "idSociete" = :companyId)</sql>
+    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR"/>
+    <result outputType="json">{
+    		"data": {
+    			"lessors": [{
+	    			"idSiege":$idSiege,
+	    			"dureebail": $dureebail,
+			        "montantBail": $montantBail,
+			        "adresseSiegeSocial": $adresseSiegeSocial,
+			        "idTypeBailleur": $idTypeBailleur,
+			        "idTypeContrat": "$idTypeContrat",
+			        "autorisationProp": $autorisationProp,
+			        "idBailleurPersonne": $idBailleurPersonne,
+			        "idBailleurPersonneMoral": $idBailleurPersonneMoral,
+			        "siegePrincipal": $siegePrincipal
+	    		}]
+    		}
+    	}
+    </result>
+  </query>
 </data>
