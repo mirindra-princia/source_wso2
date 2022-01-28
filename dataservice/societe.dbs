@@ -1081,13 +1081,13 @@
     <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <result outputType="json">{"activity":{"libelleSecteurActivite":"$libelleSecteurActivite","idSecteurActivite":"$idSecteurActivite"}}</result>
   </query>
-  <resource path="bailSum" method="GET">
+  <resource path="bailCalculator" method="GET">
     <description />
-    <call-query href="bailSum">
+    <call-query href="bailCalculator">
       <with-param name="idSociete" query-param="idSociete" />
     </call-query>
   </resource>
-  <query id="bailSum" useConfig="societeDS">
+  <query id="bailCalculator" useConfig="societeDS">
     <sql>SELECT (ss."montantBail"::double precision * ss.dureebail) as account, ss."idSiege" FROM public."siegeSocial" ss JOIN public.societe ON societe."idSiegeSocial" = ss."idSiege" WHERE societe."idSociete" = :idSociete</sql>
     <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"socialPlace":{"idSiege":$idSiege, "account": $account}}</result>
