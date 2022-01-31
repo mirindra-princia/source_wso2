@@ -1,18 +1,18 @@
 <data name="societe" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.societeDS" transports="http https">
   <description />
-  <config id="societeDS">
+  <!-- <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
+  </config> -->
+  <config id="societeDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://13.246.0.44:5432/societe</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
   </config>
-<!--   <config id="societeDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://13.246.0.44:5432/societe</property> -->
-<!--     <property name="username">devedbmdb</property> -->
-<!--     <property name="password">devedbmdb</property> -->
-<!--   </config> -->
-<!--   <config id="societeDS"> -->
+<!--  <config id="societeDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/societe</property> -->
 <!--     <property name="username">postgres</property> -->
@@ -974,7 +974,9 @@
     <param type="IN" name="EDBM" paramType="SCALAR" sqlType="INTEGER" optional="false" />
   </query>
   <query id="getCreatedCompanyId" useConfig="societeDS">
-    <sql>SELECT id, "idSociete" FROM public."statutInteroperabilite" WHERE "RCS" > 1 AND "INSTAT" > 1 AND "DGI" > 0 AND "EDBM"=0;</sql>
+    <sql>SELECT status.id, status."idSociete" FROM public."statutInteroperabilite" status
+    	JOIN public.societe ON societe."idSociete" = status."idSociete"
+    	WHERE status."RCS" > 1 AND status."INSTAT" > 1 AND status."DGI" > 0 AND "EDBM"=0 AND societe."STAT" IS NOT NULL</sql>
     <result outputType="json">{"status":{"company":[{"idSociete":"$idSociete"}]}}</result>
   </query>
   <resource method="PUT" path="setEdbmInterStatus">
@@ -1079,14 +1081,14 @@
     <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <result outputType="json">{"activity":{"libelleSecteurActivite":"$libelleSecteurActivite","idSecteurActivite":"$idSecteurActivite"}}</result>
   </query>
-  <resource path="bailSum" method="GET">
+  <resource path="bailCalculator" method="GET">
     <description />
-    <call-query href="bailSum">
+    <call-query href="bailCalculator">
       <with-param name="idSociete" query-param="idSociete" />
     </call-query>
   </resource>
-  <query id="bailSum" useConfig="societeDS">
-    <sql>SELECT (ss."montantBail" * ss.dureebail) as account, ss."idSiege" FROM public."siegeSocial" ss JOIN public.societe ON societe."idSiegeSocial" = ss."idSiege" WHERE societe."idSociete" = :idSociete</sql>
+  <query id="bailCalculator" useConfig="societeDS">
+    <sql>SELECT (ss."montantBail"::double precision * ss.dureebail) as account, ss."idSiege" FROM public."siegeSocial" ss JOIN public.societe ON societe."idSiegeSocial" = ss."idSiege" WHERE societe."idSociete" = :idSociete</sql>
     <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"socialPlace":{"idSiege":$idSiege, "account": $account}}</result>
   </query>
@@ -1094,11 +1096,15 @@
     <description />
     <call-query href="exploitationBailSum">
       <with-param name="idSiege" query-param="idSiege" />
+      <with-param name="siegeAddress" query-param="siegeAddress" />
     </call-query>
   </resource>
   <query id="exploitationBailSum" useConfig="societeDS">
-    <sql>SELECT sum(("montantBail" * dureebail)) as account FROM public."siegeSocial" WHERE "siegePrincipal" = :idSiege</sql>
+    <sql>SELECT sum(("montantBail"::double precision * dureebail)) as account FROM public."siegeSocial" 
+    	JOIN public.adresse on adresse."idAdresse" = "adresseSiegeSocial"
+    	WHERE "siegePrincipal" = :idSiege AND TRIM(adresse.adresse) != :siegeAddress</sql>
     <param type="IN" name="idSiege" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="siegeAddress" sqlType="STRING" paramType="SCALAR" optional="true" />
     <result outputType="json">{"exploitation":{"account": $account}}</result>
   </query>
   <resource method="GET" path="enregistrementFiscale/{idSociete}">
@@ -1321,6 +1327,33 @@
     <sql>SELECT * FROM public."siegeSocial" WHERE "idTypeBailleur" = :lessorType AND "siegePrincipal" = (SELECT "idSiegeSocial" FROM public.societe WHERE "idSociete" = :companyId)</sql>
     <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR"/>
     <param type="IN" name="lessorType" sqlType="INTEGER" paramType="SCALAR"/>
+    <result outputType="json">{
+    		"data": {
+    			"lessors": [{
+	    			"idSiege":$idSiege,
+	    			"dureebail": $dureebail,
+			        "montantBail": $montantBail,
+			        "adresseSiegeSocial": $adresseSiegeSocial,
+			        "idTypeBailleur": $idTypeBailleur,
+			        "idTypeContrat": "$idTypeContrat",
+			        "autorisationProp": $autorisationProp,
+			        "idBailleurPersonne": $idBailleurPersonne,
+			        "idBailleurPersonneMoral": $idBailleurPersonneMoral,
+			        "siegePrincipal": $siegePrincipal
+	    		}]
+    		}
+    	}
+    </result>
+  </query>
+  <resource path="exploitation/{companyId}" method="GET">
+    <description>company exploitations</description>
+    <call-query href="exploitations">
+      <with-param name="companyId" query-param="companyId"/>
+    </call-query>
+  </resource>
+  <query id="exploitations" useConfig="societeDS">
+    <sql>SELECT * FROM public."siegeSocial" WHERE "siegePrincipal" = (SELECT "idSiegeSocial" FROM public.societe WHERE "idSociete" = :companyId)</sql>
+    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR"/>
     <result outputType="json">{
     		"data": {
     			"lessors": [{
