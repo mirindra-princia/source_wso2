@@ -1049,4 +1049,22 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
     <param name="refFacture" paramType="SCALAR" sqlType="STRING" type="IN" optional="true" />
     <param name="id" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
   </query>
+  <query id="factureByFolderIds" useConfig="dossierSomissionDS">
+    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
+      "idModePaiement", "montantTotal", "refFacture"
+      FROM public.facture
+      WHERE "idDossier" =ANY(:idDossier::int[])</sql>
+    <param name="idDossier" paramType="ARRAY" sqlType="STRING" type="IN" optional="false" />
+    <result outputType="json">{"data": { "factures": [{
+      "id":$id,
+      "numTransaction": "$numTransaction",
+      "idDossier": $idDossier,
+      "statutPaiement": "$statutPaiement" ,
+      "idModePaiement": "$idModePaiement" ,
+      "montantTotal": "$montantTotal" ,
+      "refFacture": "$refFacture"
+      }]}
+      }
+    </result>
+  </query>
 </data>
