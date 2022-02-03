@@ -1067,12 +1067,43 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
       }]}
       }
     </result>
-
-    <resource method="GET" path="bills/factureByFolderIds/{idDossier}">
-      <description>Fetch Facture by folders ids</description>
-      <call-query href="factureByFolderIds">
-        <with-param name="idDossier" query-param="idDossier" />
-      </call-query>
-    </resource>
   </query>
+
+  <resource method="GET" path="bills/factureByFolderIds/{idDossier}">
+    <description>Fetch Facture by folders ids</description>
+    <call-query href="factureByFolderIds">
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+
+  <query id="factureByStatusAndDates" useConfig="dossierSomissionDS">
+    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
+      "idModePaiement", "montantTotal", "refFacture", "receivedby"
+      FROM public.facture
+      WHERE "statutPaiement" =:statutPaiement AND "statutUpdatedAt"
+      between TO_DATE(:startdate, 'YYYY-MM-DD') AND TO_DATE(:enddate, 'YYYY-MM-DD')
+    </sql>
+    <param name="startdate" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+    <param name="enddate" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+    <param name="statutPaiement" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+    <result outputType="json">{"data": { "factures": [{
+      "id":$id,
+      "numTransaction": "$numTransaction",
+      "idDossier": $idDossier,
+      "statutPaiement": "$statutPaiement" ,
+      "idModePaiement": "$idModePaiement" ,
+      "montantTotal": "$montantTotal"
+      }]}
+      }
+    </result>
+  </query>
+
+  <resource method="GET" path="bills/factureByStatusAndDates">
+    <description>Fetch Facture by statut and dates</description>
+    <call-query href="factureByStatusAndDates">
+      <with-param name="startdate" query-param="startdate" />
+      <with-param name="enddate" query-param="enddate" />
+      <with-param name="statutPaiement" query-param="statutPaiement" />
+    </call-query>
+  </resource>
 </data>
