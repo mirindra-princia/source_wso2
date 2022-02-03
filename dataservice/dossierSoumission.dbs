@@ -1051,7 +1051,7 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
   </query>
   <query id="factureByFolderIds" useConfig="dossierSomissionDS">
     <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
-      "idModePaiement", "montantTotal", "refFacture"
+      "idModePaiement", "montantTotal", "refFacture", "receivedby"
       FROM public.facture
       WHERE "idDossier" =ANY(:idDossier::int[])</sql>
     <param name="idDossier" paramType="ARRAY" sqlType="STRING" type="IN" optional="false" />
@@ -1062,9 +1062,17 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
       "statutPaiement": "$statutPaiement" ,
       "idModePaiement": "$idModePaiement" ,
       "montantTotal": "$montantTotal" ,
-      "refFacture": "$refFacture"
+      "refFacture": "$refFacture",
+      "receivedby": "$receivedby"
       }]}
       }
     </result>
+
+    <resource method="GET" path="bills/factureByFolderIds/{idDossier}">
+      <description>Fetch Facture by folders ids</description>
+      <call-query href="factureByFolderIds">
+        <with-param name="idDossier" query-param="idDossier" />
+      </call-query>
+    </resource>
   </query>
 </data>
