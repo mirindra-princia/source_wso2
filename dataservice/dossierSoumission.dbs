@@ -282,6 +282,7 @@
       <with-param name="label" query-param="label" />
       <with-param name="value" query-param="value" />
       <with-param name="idTypeFacture" query-param="idTypeFacture" />
+      <with-param name="idOwner" query-param="idOwner" />
     </call-query>
   </resource>
   <resource path="removeCompanyBills" method="DELETE">
@@ -632,12 +633,13 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     <result outputType="json">{"progressions":{"progression":[{"idProgression":"$idProgression","libelle":"$libelle"}]}}</result>
   </query>
   <query id="factureDatas" useConfig="dossierSomissionDS">
-    <sql>SELECT fd.id, fd.label, fd."refValue", fd.priority, tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureData" fd JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" ORDER BY tf.id ASC</sql>
+    <sql>SELECT fd.id, fd.label, fd."refValue", fd.priority, fd."idOwner", tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureData" fd JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" ORDER BY tf.id ASC</sql>
     <result outputType="json">{"data":{"factureDatas":[{
     	"id":$id,
     	"label":"$label",
     	"refValue": $refValue,
     	"priority": $priority,
+    	"idOwner": $idOwner,
     	"typeFacturation": {
     			"id": $idTypeFacture,
     			"label": "$typeFacture"
@@ -653,15 +655,16 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     </result>
   </query>
   <query id="companyFacture" useConfig="dossierSomissionDS">
-    <sql>SELECT fdd.id, fdd.value, fd.id as "idFactureData", fdd.label, fd."refValue", tf.label as "typeFacture", tf.id as "idTypeFacture", fdd."idFactureData" FROM public."factureDataDossier" fdd JOIN public."factureData" fd ON fd.id = fdd."idFactureData" JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" JOIN public.facture ON facture.id = fdd."idFacture" WHERE "idDossier" = :idDossier</sql>
+    <sql>SELECT fdd.id, fdd.value, fd.id as "idFactureData", fdd.label, fd."refValue", fdd."idOwner", tf.label as "typeFacture", tf.id as "idTypeFacture", fdd."idFactureData" FROM public."factureDataDossier" fdd JOIN public."factureData" fd ON fd.id = fdd."idFactureData" JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" JOIN public.facture ON facture.id = fdd."idFacture" WHERE "idDossier" = :idDossier</sql>
     <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"factureDatas":[{
     	"id":$id,
     	"value": $value,
+    	"idOwner": $idOwner,
     	"factureData": {
     		"id": $idFactureData,
     		"label":"$label",
-    		"refValue": $refValue,
+    		"refValue": $refValue
     	},
     	"typeFacturation": {
     			"id": $idTypeFacture,
@@ -671,13 +674,14 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     }}</result>
   </query>
   <query id="companyCustomFacture" useConfig="dossierSomissionDS">
-    <sql>SELECT fdd.id, fdd.label, fdd.value, fdd."idFactureData", tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureDataDossier" fdd JOIN public."typeFacture" tf ON tf.id = fdd."idTypeFacture" JOIN public.facture ON facture.id = fdd."idFacture" WHERE facture."idDossier" = :idDossier AND fdd."idFactureData" IS NULL</sql>
+    <sql>SELECT fdd.id, fdd.label, fdd.value, fdd."idFactureData", fdd."idOwner", tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureDataDossier" fdd JOIN public."typeFacture" tf ON tf.id = fdd."idTypeFacture" JOIN public.facture ON facture.id = fdd."idFacture" WHERE facture."idDossier" = :idDossier AND fdd."idFactureData" IS NULL</sql>
     <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"factureDataDossier":[{
     	"id":$id,
     	"label":"$label",
     	"value": $value,
     	"idFactureData": $idFactureData,
+    	"idOwner": $idOwner,
     	"typeFacturation": {
     			"id": $idTypeFacture,
     			"label": "$typeFacture"
@@ -686,10 +690,11 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     }}</result>
   </query>
   <query id="saveCompanyBill" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public."factureDataDossier"("idFactureData", "idFacture", "label", "value", "idTypeFacture") VALUES (:idFactureData, :idFacture, :label, :value, :idTypeFacture) RETURNING id</sql>
+    <sql>INSERT INTO public."factureDataDossier"("idFactureData", "idFacture", "label", "value", "idTypeFacture", "idOwner") VALUES (:idFactureData, :idFacture, :label, :value, :idTypeFacture, :idOwner) RETURNING id</sql>
     <param type="IN" name="idFactureData" sqlType="INTEGER" paramType="SCALAR" optional="true" />
     <param type="IN" name="idFacture" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <param type="IN" name="label" sqlType="STRING" paramType="SCALAR" optional="true" />
+    <param type="IN" name="idOwner" sqlType="INTEGER" paramType="SCALAR" optional="true" />
     <param type="IN" name="value" sqlType="DOUBLE" paramType="SCALAR" optional="false" />
     <param type="IN" name="idTypeFacture" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"factureDataDossier":{"id": $id}}</result>
@@ -1051,7 +1056,7 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
   </query>
   <query id="factureByFolderIds" useConfig="dossierSomissionDS">
     <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
-      "idModePaiement", "montantTotal", "refFacture", "receivedby"
+      "idModePaiement", "montantTotal", "refFacture"
       FROM public.facture
       WHERE "idDossier" =ANY(:idDossier::int[])</sql>
     <param name="idDossier" paramType="ARRAY" sqlType="STRING" type="IN" optional="false" />
@@ -1062,17 +1067,9 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
       "statutPaiement": "$statutPaiement" ,
       "idModePaiement": "$idModePaiement" ,
       "montantTotal": "$montantTotal" ,
-      "refFacture": "$refFacture",
-      "receivedby": "$receivedby"
+      "refFacture": "$refFacture"
       }]}
       }
     </result>
-
-    <resource method="GET" path="bills/factureByFolderIds/{idDossier}">
-      <description>Fetch Facture by folders ids</description>
-      <call-query href="factureByFolderIds">
-        <with-param name="idDossier" query-param="idDossier" />
-      </call-query>
-    </resource>
   </query>
 </data>
