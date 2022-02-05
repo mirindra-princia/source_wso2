@@ -1096,7 +1096,8 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
           "idDossier": $idDossier,
           "statutPaiement": "$statutPaiement" ,
           "idModePaiement": "$idModePaiement" ,
-          "montantTotal": "$montantTotal"
+          "montantTotal": "$montantTotal",
+          "receivedby": "$receivedby"
           }]}
           }
         </result>
