@@ -1388,4 +1388,23 @@
       <with-param name="formeJuridique" query-param="formeJuridique" />
     </call-query>
   </resource>
+
+  <query id="companyByFolderIds" useConfig="societeDS">
+    <sql>select  s."denominationSocial",s."idSociete", s."formeJuridique", s."idDossier", s."idFormeJuridique",  s."nomCommercial"
+      from public."societe" as s
+      WHERE s."idDossier" =ANY(:idDossier::int[])
+    </sql>
+    <param name="idDossier" paramType="ARRAY" sqlType="STRING" type="IN" optional="false" />
+    <result outputType="json">{"data":{"societes":[{"denominationSocial":"$denominationSocial",
+      "idDossier":"$idDossier","idSociete":"$idSociete","formeJuridique":"$formeJuridique",
+      "nomCommercial": "$nomCommercial"
+      }]}}</result>
+  </query>
+
+  <resource method="GET" path="companyByFolderIds/{idDossier}">
+    <description>Fetch Facture by folders ids</description>
+    <call-query href="companyByFolderIds">
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
 </data>
