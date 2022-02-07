@@ -926,14 +926,15 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
   <query id="addNewBill" useConfig="dossierSomissionDS">
     <sql>INSERT INTO public.facture(   
 	"idDossier", "numTransaction", "statutPaiement", "idModePaiement", 
-	"montantTotal", "refFacture")
-	VALUES (:idDossier, :numTransaction, :statutPaiement, :idModePaiement, :montantTotal, :refFacture) RETURNING id;</sql>
+	"montantTotal", "refFacture", "createdby")
+	VALUES (:idDossier, :numTransaction, :statutPaiement, :idModePaiement, :montantTotal, :refFacture, :createdby) RETURNING id;</sql>
     <param name="idDossier" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
     <param name=" numTransaction" paramType="SCALAR" sqlType="STRING" optional="true"/>
     <param name=" montantTotal" paramType="SCALAR" sqlType="DOUBLE" type="IN" optional="false" />
     <param name=" idModePaiement" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="true" />
     <param name=" statutPaiement" paramType="SCALAR" sqlType="STRING" type="IN" optional="true" />
     <param name="refFacture" paramType="SCALAR" sqlType="STRING" type="IN" optional="true" />
+    <param name="createdby" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
     <result outputType="json">{"facture": {
 	   		"id":$id
 	    }}
@@ -989,6 +990,7 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
       <with-param name=" idModePaiement" query-param=" idModePaiement" />
       <with-param name=" statutPaiement" query-param=" statutPaiement" />
       <with-param name=" refFacture" query-param="refFacture" />
+      <with-param name=" createdby" query-param="createdby" />
     </call-query>
   </resource>
   <resource method="PUT" path="bills/updateFactureState">
