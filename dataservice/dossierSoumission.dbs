@@ -1088,7 +1088,7 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
         <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
           "idModePaiement", "montantTotal", "refFacture", "receivedby"
           FROM public.facture
-          WHERE "statutPaiement" =:statutPaiement AND "statutUpdatedAt"
+          WHERE "statutPaiement" =:statutPaiement AND "statutUpdatedAt"::date
           between TO_DATE(:startdate, 'YYYY-MM-DD') AND TO_DATE(:enddate, 'YYYY-MM-DD')
         </sql>
         <param name="startdate" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
