@@ -943,10 +943,11 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
   
   <query id="updateFactureState" useConfig="dossierSomissionDS">
     <sql>UPDATE public.facture 
-	 SET "statutPaiement" =:statutPaiement, "statutUpdatedAt" = CURRENT_TIMESTAMP
+	 SET "statutPaiement" =:statutPaiement, "statutUpdatedAt" = CURRENT_TIMESTAMP, "receivedby" =:receivedby
 	WHERE "id"= :id</sql>
     <param name="statutPaiement" paramType="SCALAR" type="IN" sqlType="STRING" optional="false" />
     <param name="id" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
+    <param name="receivedby" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
   </query>
 
   <resource path="minImmatriculation" method="GET">
@@ -998,6 +999,7 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
     <call-query href="updateFactureState">
       <with-param name="statutPaiement" query-param="statutPaiement" />
       <with-param name="id" query-param="id" />
+      <with-param name="receivedby" query-param="receivedby" />
     </call-query>
   </resource>
   <resource method="GET" path="bills/byFolder/{idDossier}">
