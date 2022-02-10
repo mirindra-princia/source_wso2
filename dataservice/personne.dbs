@@ -831,4 +831,26 @@
       <with-param name="uid" query-param="uid" />
     </call-query>
   </resource>
+
+    <query id="getPersonByUUID" useConfig="personneDS">
+        <sql>SELECT "nom", "prenom", "e_mail", "idUtilisateur"
+            FROM  public.personne WHERE "idUtilisateur"=:uid
+        </sql>
+        <param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
+        <result outputType="json">{"data":
+            {"personnes":
+            {"nom":"$nom",
+            "prenom":"$prenom",
+            "e_mail":"$e_mail",
+            "idUtilisateur": "$idUtilisateur"
+            }}}
+        </result>
+    </query>
+
+    <resource method="GET" path="getPersonByUUID/{uid}">
+        <description />
+        <call-query href="getPersonByUUID">
+            <with-param name="uid" query-param="uid" />
+        </call-query>
+    </resource>
 </data>
