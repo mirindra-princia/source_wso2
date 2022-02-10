@@ -1,17 +1,17 @@
 <data name="societe" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.societeDS" transports="http https">
   <description />
-  <!-- <config id="societeDS">
+  <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
-  </config> -->
-  <config id="societeDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://13.246.0.44:5432/societe</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
   </config>
+<!--   <config id="societeDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://13.246.0.44:5432/societe</property> -->
+<!--     <property name="username">devedbmdb</property> -->
+<!--     <property name="password">devedbmdb</property> -->
+<!--   </config> -->
 <!--  <config id="societeDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/societe</property> -->
@@ -1372,4 +1372,39 @@
     	}
     </result>
   </query>
+  <query id="societesByFormejuridique" useConfig="societeDS">
+    <sql>select  s."denominationSocial",s."idSociete", s."formeJuridique", s."idDossier", s."idFormeJuridique",  s."nomCommercial",
+      count(s."denominationSocial") OVER( partition by s."idFormeJuridique") as total
+      from public."societe" as s where s."formeJuridique" = :formeJuridique
+    </sql>
+    <param name="formeJuridique" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+    <result outputType="json">{"data":{"societes":[{"denominationSocial":"$denominationSocial",
+      "idDossier":"$idDossier","idSociete":"$idSociete","formeJuridique":"$formeJuridique", "nomCommercial": "$nomCommercial", "total": "$total"
+      }]}}</result>
+  </query>
+  <resource method="GET" path="societesByFormejuridique/{formeJuridique}">
+    <description>Fetch Societes by forme juridique</description>
+    <call-query href="societesByFormejuridique">
+      <with-param name="formeJuridique" query-param="formeJuridique" />
+    </call-query>
+  </resource>
+
+  <query id="companyByFolderIds" useConfig="societeDS">
+    <sql>select  s."denominationSocial",s."idSociete", s."formeJuridique", s."idDossier", s."idFormeJuridique",  s."nomCommercial"
+      from public."societe" as s
+      WHERE s."idDossier" =ANY(:idDossier::int[])
+    </sql>
+    <param name="idDossier" paramType="ARRAY" sqlType="STRING" type="IN" optional="false" />
+    <result outputType="json">{"data":{"societes":[{"denominationSocial":"$denominationSocial",
+      "idDossier":"$idDossier","idSociete":"$idSociete","formeJuridique":"$formeJuridique",
+      "nomCommercial": "$nomCommercial"
+      }]}}</result>
+  </query>
+
+  <resource method="GET" path="companyByFolderIds/{idDossier}">
+    <description>Fetch Facture by folders ids</description>
+    <call-query href="companyByFolderIds">
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
 </data>

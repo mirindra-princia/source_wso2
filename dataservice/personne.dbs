@@ -1,17 +1,17 @@
 <data name="personne" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.personneDS" transports="http https">
   <description />
-<!--   <config id="personneDS">
+  <config id="personneDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/personne</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
-  </config> -->
-  <config id="personneDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://13.246.0.44:5432/personne</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
   </config>
+<!--   <config id="personneDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://13.246.0.44:5432/personne</property> -->
+<!--     <property name="username">devedbmdb</property> -->
+<!--     <property name="password">devedbmdb</property> -->
+<!--   </config> -->
 <!--  <config id="personneDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/personne</property> -->
@@ -831,4 +831,26 @@
       <with-param name="uid" query-param="uid" />
     </call-query>
   </resource>
+
+    <query id="getPersonByUUID" useConfig="personneDS">
+        <sql>SELECT "nom", "prenom", "e_mail", "idUtilisateur"
+            FROM  public.personne WHERE "idUtilisateur"=:uid
+        </sql>
+        <param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
+        <result outputType="json">{"data":
+            {"personnes":
+            {"nom":"$nom",
+            "prenom":"$prenom",
+            "e_mail":"$e_mail",
+            "idUtilisateur": "$idUtilisateur"
+            }}}
+        </result>
+    </query>
+
+    <resource method="GET" path="getPersonByUUID/{uid}">
+        <description />
+        <call-query href="getPersonByUUID">
+            <with-param name="uid" query-param="uid" />
+        </call-query>
+    </resource>
 </data>

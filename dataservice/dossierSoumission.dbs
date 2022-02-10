@@ -1,24 +1,24 @@
 <data name="dossierSoumission" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.dossierSoumissionDS" transports="http https">
   <description />
 
- <!--  <config id="dossierSomissionDS">
+ <config id="dossierSomissionDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/dossier_somission</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
-  </config> --> 
+  </config>
 <!--   <config id="dossierSomissionDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property> -->
 <!--     <property name="username">postgres</property> -->
 <!--     <property name="password">postgres</property> -->
 <!--   </config> -->
-   	<config id="dossierSomissionDS">
-    	<property name="driverClassName">org.postgresql.Driver</property>
-	    <property name="url">jdbc:postgresql://13.246.0.44:5432/dossier_somission</property>
-	    <property name="username">devedbmdb</property>
-	    <property name="password">devedbmdb</property>
-   	</config> 
+<!--    	<config id="dossierSomissionDS"> -->
+<!--     	<property name="driverClassName">org.postgresql.Driver</property> -->
+<!-- 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/dossier_somission</property> -->
+<!-- 	    <property name="username">devedbmdb</property> -->
+<!-- 	    <property name="password">devedbmdb</property> -->
+<!--    	</config>  -->
 <!--   <config id="dossierSomissionDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property> -->
@@ -282,6 +282,7 @@
       <with-param name="label" query-param="label" />
       <with-param name="value" query-param="value" />
       <with-param name="idTypeFacture" query-param="idTypeFacture" />
+      <with-param name="idOwner" query-param="idOwner" />
     </call-query>
   </resource>
   <resource path="removeCompanyBills" method="DELETE">
@@ -632,12 +633,13 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     <result outputType="json">{"progressions":{"progression":[{"idProgression":"$idProgression","libelle":"$libelle"}]}}</result>
   </query>
   <query id="factureDatas" useConfig="dossierSomissionDS">
-    <sql>SELECT fd.id, fd.label, fd."refValue", fd.priority, tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureData" fd JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" ORDER BY tf.id ASC</sql>
+    <sql>SELECT fd.id, fd.label, fd."refValue", fd.priority, fd."idOwner", tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureData" fd JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" ORDER BY tf.id ASC</sql>
     <result outputType="json">{"data":{"factureDatas":[{
     	"id":$id,
     	"label":"$label",
     	"refValue": $refValue,
     	"priority": $priority,
+    	"idOwner": $idOwner,
     	"typeFacturation": {
     			"id": $idTypeFacture,
     			"label": "$typeFacture"
@@ -653,15 +655,16 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     </result>
   </query>
   <query id="companyFacture" useConfig="dossierSomissionDS">
-    <sql>SELECT fdd.id, fdd.value, fd.id as "idFactureData", fdd.label, fd."refValue", tf.label as "typeFacture", tf.id as "idTypeFacture", fdd."idFactureData" FROM public."factureDataDossier" fdd JOIN public."factureData" fd ON fd.id = fdd."idFactureData" JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" JOIN public.facture ON facture.id = fdd."idFacture" WHERE "idDossier" = :idDossier</sql>
+    <sql>SELECT fdd.id, fdd.value, fd.id as "idFactureData", fdd.label, fd."refValue", fdd."idOwner", tf.label as "typeFacture", tf.id as "idTypeFacture", fdd."idFactureData" FROM public."factureDataDossier" fdd JOIN public."factureData" fd ON fd.id = fdd."idFactureData" JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" JOIN public.facture ON facture.id = fdd."idFacture" WHERE "idDossier" = :idDossier</sql>
     <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"factureDatas":[{
     	"id":$id,
     	"value": $value,
+    	"idOwner": $idOwner,
     	"factureData": {
     		"id": $idFactureData,
     		"label":"$label",
-    		"refValue": $refValue,
+    		"refValue": $refValue
     	},
     	"typeFacturation": {
     			"id": $idTypeFacture,
@@ -671,13 +674,14 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     }}</result>
   </query>
   <query id="companyCustomFacture" useConfig="dossierSomissionDS">
-    <sql>SELECT fdd.id, fdd.label, fdd.value, fdd."idFactureData", tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureDataDossier" fdd JOIN public."typeFacture" tf ON tf.id = fdd."idTypeFacture" JOIN public.facture ON facture.id = fdd."idFacture" WHERE facture."idDossier" = :idDossier AND fdd."idFactureData" IS NULL</sql>
+    <sql>SELECT fdd.id, fdd.label, fdd.value, fdd."idFactureData", fdd."idOwner", tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureDataDossier" fdd JOIN public."typeFacture" tf ON tf.id = fdd."idTypeFacture" JOIN public.facture ON facture.id = fdd."idFacture" WHERE facture."idDossier" = :idDossier AND fdd."idFactureData" IS NULL</sql>
     <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"factureDataDossier":[{
     	"id":$id,
     	"label":"$label",
     	"value": $value,
     	"idFactureData": $idFactureData,
+    	"idOwner": $idOwner,
     	"typeFacturation": {
     			"id": $idTypeFacture,
     			"label": "$typeFacture"
@@ -686,10 +690,11 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     }}</result>
   </query>
   <query id="saveCompanyBill" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public."factureDataDossier"("idFactureData", "idFacture", "label", "value", "idTypeFacture") VALUES (:idFactureData, :idFacture, :label, :value, :idTypeFacture) RETURNING id</sql>
+    <sql>INSERT INTO public."factureDataDossier"("idFactureData", "idFacture", "label", "value", "idTypeFacture", "idOwner") VALUES (:idFactureData, :idFacture, :label, :value, :idTypeFacture, :idOwner) RETURNING id</sql>
     <param type="IN" name="idFactureData" sqlType="INTEGER" paramType="SCALAR" optional="true" />
     <param type="IN" name="idFacture" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <param type="IN" name="label" sqlType="STRING" paramType="SCALAR" optional="true" />
+    <param type="IN" name="idOwner" sqlType="INTEGER" paramType="SCALAR" optional="true" />
     <param type="IN" name="value" sqlType="DOUBLE" paramType="SCALAR" optional="false" />
     <param type="IN" name="idTypeFacture" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"factureDataDossier":{"id": $id}}</result>
@@ -921,14 +926,15 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
   <query id="addNewBill" useConfig="dossierSomissionDS">
     <sql>INSERT INTO public.facture(   
 	"idDossier", "numTransaction", "statutPaiement", "idModePaiement", 
-	"montantTotal", "refFacture")
-	VALUES (:idDossier, :numTransaction, :statutPaiement, :idModePaiement, :montantTotal, :refFacture) RETURNING id;</sql>
+	"montantTotal", "refFacture", "createdby")
+	VALUES (:idDossier, :numTransaction, :statutPaiement, :idModePaiement, :montantTotal, :refFacture, :createdby) RETURNING id;</sql>
     <param name="idDossier" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
     <param name=" numTransaction" paramType="SCALAR" sqlType="STRING" optional="true"/>
     <param name=" montantTotal" paramType="SCALAR" sqlType="DOUBLE" type="IN" optional="false" />
     <param name=" idModePaiement" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="true" />
     <param name=" statutPaiement" paramType="SCALAR" sqlType="STRING" type="IN" optional="true" />
     <param name="refFacture" paramType="SCALAR" sqlType="STRING" type="IN" optional="true" />
+    <param name="createdby" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
     <result outputType="json">{"facture": {
 	   		"id":$id
 	    }}
@@ -937,10 +943,11 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
   
   <query id="updateFactureState" useConfig="dossierSomissionDS">
     <sql>UPDATE public.facture 
-	 SET "statutPaiement" =:statutPaiement, "statutUpdatedAt" = CURRENT_TIMESTAMP
+	 SET "statutPaiement" =:statutPaiement, "statutUpdatedAt" = CURRENT_TIMESTAMP, "receivedby" =:receivedby
 	WHERE "id"= :id</sql>
     <param name="statutPaiement" paramType="SCALAR" type="IN" sqlType="STRING" optional="false" />
     <param name="id" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
+    <param name="receivedby" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
   </query>
 
   <resource path="minImmatriculation" method="GET">
@@ -984,6 +991,7 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
       <with-param name=" idModePaiement" query-param=" idModePaiement" />
       <with-param name=" statutPaiement" query-param=" statutPaiement" />
       <with-param name=" refFacture" query-param="refFacture" />
+      <with-param name=" createdby" query-param="createdby" />
     </call-query>
   </resource>
   <resource method="PUT" path="bills/updateFactureState">
@@ -991,6 +999,7 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
     <call-query href="updateFactureState">
       <with-param name="statutPaiement" query-param="statutPaiement" />
       <with-param name="id" query-param="id" />
+      <with-param name="receivedby" query-param="receivedby" />
     </call-query>
   </resource>
   <resource method="GET" path="bills/byFolder/{idDossier}">
@@ -1049,4 +1058,61 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
     <param name="refFacture" paramType="SCALAR" sqlType="STRING" type="IN" optional="true" />
     <param name="id" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
   </query>
+  <query id="factureByFolderIds" useConfig="dossierSomissionDS">
+    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
+      "idModePaiement", "montantTotal", "refFacture"
+      FROM public.facture
+      WHERE "idDossier" =ANY(:idDossier::int[])</sql>
+    <param name="idDossier" paramType="ARRAY" sqlType="STRING" type="IN" optional="false" />
+    <result outputType="json">{"data": { "factures": [{
+      "id":$id,
+      "numTransaction": "$numTransaction",
+      "idDossier": $idDossier,
+      "statutPaiement": "$statutPaiement" ,
+      "idModePaiement": "$idModePaiement" ,
+      "montantTotal": "$montantTotal" ,
+      "refFacture": "$refFacture"
+      }]}
+      }
+    </result>
+  </query>
+
+    <resource method="GET" path="bills/factureByFolderIds/{idDossier}">
+      <description>Fetch Facture by folders ids</description>
+      <call-query href="factureByFolderIds">
+        <with-param name="idDossier" query-param="idDossier" />
+      </call-query>
+    </resource>
+
+    <query id="factureByStatusAndDates" useConfig="dossierSomissionDS">
+        <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
+          "idModePaiement", "montantTotal", "refFacture", "receivedby"
+          FROM public.facture
+          WHERE "statutPaiement" =:statutPaiement AND "statutUpdatedAt"::date
+          between TO_DATE(:startdate, 'YYYY-MM-DD') AND TO_DATE(:enddate, 'YYYY-MM-DD')
+        </sql>
+        <param name="startdate" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+        <param name="enddate" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+        <param name="statutPaiement" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+        <result outputType="json">{"data": { "factures": [{
+          "id":$id,
+          "numTransaction": "$numTransaction",
+          "idDossier": $idDossier,
+          "statutPaiement": "$statutPaiement" ,
+          "idModePaiement": "$idModePaiement" ,
+          "montantTotal": "$montantTotal",
+          "receivedby": "$receivedby"
+          }]}
+          }
+        </result>
+    </query>
+
+    <resource method="GET" path="bills/factureByStatusAndDates">
+      <description>Fetch Facture by statut and dates</description>
+      <call-query href="factureByStatusAndDates">
+        <with-param name="startdate" query-param="startdate" />
+        <with-param name="enddate" query-param="enddate" />
+        <with-param name="statutPaiement" query-param="statutPaiement" />
+      </call-query>
+    </resource>
 </data>
