@@ -1295,7 +1295,7 @@
     </call-query>
   </resource>
   <query id="siege-social-lessors-filter" useConfig="societeDS">
-    <sql>SELECT "siegeSocial".* FROM public."siegeSocial" JOIN public.societe ON "idSiegeSocial" = "idSiege" WHERE "idTypeBailleur" = :lessorType AND "idSociete" = :companyId</sql>
+    <sql>SELECT "siegeSocial".* FROM public."siegeSocial" JOIN public.societe ON "idSiegeSocial" = "idSiege" WHERE "idSociete" = :companyId AND "idTypeBailleur" = :lessorType</sql>
     <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR"/>
     <param type="IN" name="lessorType" sqlType="INTEGER" paramType="SCALAR"/>
     <result outputType="json">{
@@ -1317,13 +1317,13 @@
     </result>
   </query>
   <resource path="bailleurs/exploitation/filter/{companyId}/{lessorType}" method="GET">
-    <description>company siege-social lessors filter</description>
-    <call-query href="siege-social-lessors-filter">
+    <description>company exploitation lessors filter</description>
+    <call-query href="exploitation-lessors-filter">
       <with-param name="companyId" query-param="companyId"/>
       <with-param name="lessorType" query-param="lessorType" />
     </call-query>
   </resource>
-  <query id="siege-social-lessors-filter" useConfig="societeDS">
+  <query id="exploitation-lessors-filter" useConfig="societeDS">
     <sql>SELECT * FROM public."siegeSocial" WHERE "idTypeBailleur" = :lessorType AND "siegePrincipal" = (SELECT "idSiegeSocial" FROM public.societe WHERE "idSociete" = :companyId)</sql>
     <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR"/>
     <param type="IN" name="lessorType" sqlType="INTEGER" paramType="SCALAR"/>
