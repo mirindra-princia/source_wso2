@@ -846,7 +846,7 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
     <result outputType="json">{"data":{"duree":"$duree"}}</result>
   </query>
   <query id="getSubmitedFolder" useConfig="dossierSomissionDS">
-    <sql>SELECT count("idDossier")	FROM public.dossier</sql>
+    <sql>SELECT count("idDossier")	FROM public.dossier where "numeroDossier" is not null</sql>
     <result outputType="json">{"count":{"count":"$count"}}</result>
   </query>
   <query id="countFolder" useConfig="dossierSomissionDS">
