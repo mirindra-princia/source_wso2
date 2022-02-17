@@ -857,7 +857,7 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
 	 
 	 	 select  datejour as date, count(date("dateModification"))
 		from "historiqueStatutDossier" right join T
-		on date("dateModification")=dateJour and "idStatut"=:idStatutDossier  group by (datejour)</sql>
+		on date("dateModification")=dateJour and "idStatut"=:idStatutDossier  group by (datejour) order by(datejour) asc</sql>
     <param type="IN" name="idStatutDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"statistic": [{"date":"$date", "count":"$count"}]}}</result>
   </query>
