@@ -1115,4 +1115,127 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
         <with-param name="statutPaiement" query-param="statutPaiement" />
       </call-query>
     </resource>
+
+  <query id="factureByCurrentWeek" useConfig="dossierSomissionDS">
+    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
+      "idModePaiement", "montantTotal", "refFacture", "receivedby"
+      FROM public.facture
+      WHERE "statutPaiement" =:statutPaiement
+      AND EXTRACT('WEEK' FROM "statutUpdatedAt") = EXTRACT('WEEK' FROM NOW())
+      AND EXTRACT('YEAR' FROM "statutUpdatedAt") = EXTRACT('YEAR' FROM NOW());
+    </sql>
+    <param name="statutPaiement" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+    <result outputType="json">{"data": { "factures": [{
+      "id":$id,
+      "numTransaction": "$numTransaction",
+      "idDossier": $idDossier,
+      "statutPaiement": "$statutPaiement" ,
+      "idModePaiement": "$idModePaiement" ,
+      "montantTotal": "$montantTotal",
+      "receivedby": "$receivedby"
+      }]}
+      }
+    </result>
+  </query>
+
+  <resource method="GET" path="bills/factureByCurrentWeek">
+    <description>Fetch Facture by current year and  week</description>
+    <call-query href="factureByCurrentWeek">
+      <with-param name="statutPaiement" query-param="statutPaiement" />
+    </call-query>
+  </resource>
+
+  <query id="factureBySelectedWeek" useConfig="dossierSomissionDS">
+    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
+      "idModePaiement", "montantTotal", "refFacture", "receivedby"
+      FROM public.facture
+      WHERE "statutPaiement" =:statutPaiement
+      AND EXTRACT('WEEK' FROM "statutUpdatedAt") = :selectedweek
+      AND EXTRACT('YEAR' FROM "statutUpdatedAt") = EXTRACT('YEAR' FROM NOW());
+    </sql>
+    <param name="statutPaiement" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+    <param name="selectedweek" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
+    <result outputType="json">{"data": { "factures": [{
+      "id":$id,
+      "numTransaction": "$numTransaction",
+      "idDossier": $idDossier,
+      "statutPaiement": "$statutPaiement" ,
+      "idModePaiement": "$idModePaiement" ,
+      "montantTotal": "$montantTotal",
+      "receivedby": "$receivedby"
+      }]}
+      }
+    </result>
+  </query>
+
+  <resource method="GET" path="bills/factureBySelectedWeek">
+    <description>Fetch Facture by current year and  week</description>
+    <call-query href="factureBySelectedWeek">
+      <with-param name="selectedweek" query-param="selectedweek" />
+      <with-param name="statutPaiement" query-param="statutPaiement" />
+    </call-query>
+  </resource>
+
+  <query id="factureByMonthAndStatusFilter" useConfig="dossierSomissionDS">
+    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
+      "idModePaiement", "montantTotal", "refFacture", "receivedby"
+      FROM public.facture
+      WHERE "statutPaiement" =:statutPaiement
+      AND EXTRACT('MONTH' FROM "statutUpdatedAt") =:monthParam
+      AND EXTRACT('YEAR' FROM "statutUpdatedAt") =:yearParam
+    </sql>
+    <param name="statutPaiement" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+    <param name="yearParam" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
+    <param name="monthParam" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
+    <result outputType="json">{"data": { "factures": [{
+      "id":$id,
+      "numTransaction": "$numTransaction",
+      "idDossier": $idDossier,
+      "statutPaiement": "$statutPaiement" ,
+      "idModePaiement": "$idModePaiement" ,
+      "montantTotal": "$montantTotal",
+      "receivedby": "$receivedby"
+      }]}
+      }
+    </result>
+  </query>
+
+  <resource method="GET" path="bills/factureByMonthAndStatusFilter">
+    <description>Fetch Facture by current year and  week</description>
+    <call-query href="factureByMonthAndStatusFilter">
+      <with-param name="statutPaiement" query-param="statutPaiement" />
+      <with-param name="yearParam" query-param="yearParam" />
+      <with-param name="monthParam" query-param="monthParam" />
+    </call-query>
+  </resource>
+
+  <query id="factureByYearAndStatusFilter" useConfig="dossierSomissionDS">
+    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
+      "idModePaiement", "montantTotal", "refFacture", "receivedby"
+      FROM public.facture
+      WHERE "statutPaiement" =:statutPaiement
+      AND EXTRACT('YEAR' FROM "statutUpdatedAt") =:yearParam
+    </sql>
+    <param name="statutPaiement" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+    <param name="yearParam" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
+    <result outputType="json">{"data": { "factures": [{
+      "id":$id,
+      "numTransaction": "$numTransaction",
+      "idDossier": $idDossier,
+      "statutPaiement": "$statutPaiement" ,
+      "idModePaiement": "$idModePaiement" ,
+      "montantTotal": "$montantTotal",
+      "receivedby": "$receivedby"
+      }]}
+      }
+    </result>
+  </query>
+
+  <resource method="GET" path="bills/factureByYearAndStatusFilter">
+    <description>Fetch Facture by current year and  week</description>
+    <call-query href="factureByYearAndStatusFilter">
+      <with-param name="statutPaiement" query-param="statutPaiement" />
+      <with-param name="yearParam" query-param="yearParam" />
+    </call-query>
+  </resource>
 </data>
