@@ -12,12 +12,12 @@
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config>
-<!--  <config id="societeDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://localhost:5432/societe</property> -->
-<!--     <property name="username">postgres</property> -->
-<!--     <property name="password">postgres</property> -->
-<!--   </config> -->
+ <!-- <config id="societeDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/societe</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+ </config> -->
   <resource method="POST" path="addSocietyForm">
     <description>add society from online form</description>
     <call-query href="addSociety">
@@ -1020,7 +1020,7 @@
     <sql>select * from public.societe left join devise on devise."idDevise"=societe."idDevise" where "idPersonne"=:idPersonne and "dateCreation" is not null and ubi is not null and "NIF" is not null and "STAT" is not null and "RCS" is not null limit :limit</sql>
     <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <result outputType="json">{"societies":{"society":[{"denominationSocial":"$denominationSocial","ubi":"$ubi","dateCreation":"$dateCreation","idDossier":"$idDossier","idSociete":"$idSociete","formeJuridique":"$formeJuridique","capital":"$capital","labelDeviseCapital":"$labelDevise"}]}}</result>
+    <result outputType="json">{"societies":{"society":[{"denominationSocial":"$denominationSocial","ubi":"$ubi","dateCreation":"$dateCreation","idDossier":"$idDossier","idSociete":"$idSociete","formeJuridique":"$formeJuridique","capital":"$capital","labelDeviseCapital":"$labelDevise","dateNIF":"$dateNIF","dateSTAT":"$dateSTAT","dateRCS":"$dateRCS"}]}}</result>
   </query>
   <query id="insertEmptyJustificatif" useConfig="societeDS">
     <sql>INSERT INTO public.justificatif(
