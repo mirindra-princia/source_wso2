@@ -1,18 +1,19 @@
 <data name="dossierSoumission" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.dossierSoumissionDS" transports="http https">
   <description />
 
- <!--  <config id="dossierSomissionDS">
+<!--   <config id="dossierSomissionDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/dossier_somission</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
-  </config> --> 
-  <!-- <config id="dossierSomissionDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config> -->
+  </config>  -->
+<!--   <config id="dossierSomissionDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
+
    	<config id="dossierSomissionDS">
     	<property name="driverClassName">org.postgresql.Driver</property>
 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/dossier_somission</property>
@@ -855,9 +856,9 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
 from generate_series(date(now()-interval '6 days')- CURRENT_DATE, 
      date (now()) - CURRENT_DATE ) i)
 	 
-	 	 select  datejour as date, count(distinct date("dateModification"))
+	 	 select  datejour as date, count(date("dateModification"))
 		from "historiqueStatutDossier" right join T
-		on date("dateModification")=dateJour and "idStatut"=:idStatutDossier  group by (datejour)</sql>
+		on date("dateModification")=dateJour and "idStatut"=:idStatutDossier  group by (datejour) order by(datejour) asc</sql>
     <param type="IN" name="idStatutDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"statistic": [{"date":"$date", "count":"$count"}]}}</result>
   </query>
