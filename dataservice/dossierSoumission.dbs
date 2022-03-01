@@ -854,7 +854,7 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
     <sql>
 		with T as(select CURRENT_DATE + i  as dateJour
 		from generate_series(date(now()-interval '6 days')- CURRENT_DATE, 
-		     date (now()) - CURRENT_DATE ) i)	 
+		     date (now()) - CURRENT_DATE ) i where extract(dow from  CURRENT_DATE + i) between 1 and 5)	 
 			 select  date(datejour) as date,count(distinct("idDossier"))
 		from "historiqueStatutDossier" right join T
 		on date("dateModification")=T.dateJour and "idStatut"=:idStatutDossier  group by (date) order by(date) asc
