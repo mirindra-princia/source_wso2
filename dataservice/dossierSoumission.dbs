@@ -1374,4 +1374,25 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         <with-param name="enddate" query-param="enddate" />
     </call-query>
   </resource>
+  
+  <query id="updateFacturePaiementState" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.facture SET 
+    	 "statutUpdatedAt" = CURRENT_TIMESTAMP,    	
+    	 "statutPaiement" = :statutPaiement,
+    	 "receivedby" =:receivedby   	
+    	 WHERE "refFacture"= :refFacture
+    </sql>
+    <param name="statutPaiement" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+    <param name="refFacture" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" /> 
+     <param name="receivedby" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" /> 
+  </query>
+  
+  <resource method="PUT" path="bills/updateFacturePaiementState">
+    <description>Update Facture paiement state</description>
+    <call-query href="updateFacturePaiementState">      
+      <with-param name="refFacture" query-param="refFacture" />
+      <with-param name="statutPaiement" query-param="statutPaiement" />
+      <with-param name="receivedby" query-param="receivedby" />
+    </call-query>
+  </resource>
 </data>
