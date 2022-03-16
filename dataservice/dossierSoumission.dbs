@@ -14,18 +14,18 @@
 <!--     <property name="password">postgres</property> -->
 <!--   </config> -->
 
-   	<config id="dossierSomissionDS">
+<!--   	<config id="dossierSomissionDS">
     	<property name="driverClassName">org.postgresql.Driver</property>
 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/dossier_somission</property>
 	    <property name="username">devedbmdb</property>
 	    <property name="password">devedbmdb</property>
-   	</config>
-<!--   <config id="dossierSomissionDS">
+   	</config>-->
+   <config id="dossierSomissionDS">
      <property name="driverClassName">org.postgresql.Driver</property>
      <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property>
      <property name="username">devedbmdb</property>
      <property name="password">devedbmdb</property>
-   </config>-->
+   </config>
   <resource method="POST" path="addFolderNumber">
     <description />
     <call-query href="addNumeroDossier">
@@ -1277,10 +1277,12 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
 
 				 from 
 
-					(select "idFacture", 
-							sum((case when ("label" like 'Enregistrement des statuts ou contrat%')then value  else 0 end ) +
-							   (case when ("label" like 'Enregistrement PV AGC (SA/SAU)%')then value  else 0 end ) )as statut_de,
-					 
+					(select "idFacture",
+                            sum((case when ("label" like 'Enregistrement des statuts ou contrat%')then value  else 0 end ) +
+                            (case when ("label" like 'Enregistrement PV AGC (SA/SAU)%')then value  else 0 end ) +
+                            (case when ("label" like 'DE STATUTS%') then value  else 0 end ) +
+                            (case when ("label" like 'DE PVAGC%') then value  else 0 end ))as statut_de,
+
 							sum((case when ("label" like 'AND STATUTS%') then value  else 0 end ) + 
 							   (case when ("label" like 'AND PVAGC%') then value  else 0 end )) as statut_and,
 					 
@@ -1303,7 +1305,8 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
 								(case when trim("label") = 'Enregistrement ESV' then value  else 0 end) + 
 								(case when trim("label") = 'PV ouverture de succursale' then value  else 0 end)+
 								(case when trim("label") = 'Enregistrement PV AGC' then value  else 0 end)+
-								(case when trim("label") = 'Enregistrement Contrat GIE sans capital' then value  else 0 end)		
+								(case when trim("label") = 'Enregistrement Contrat GIE sans capital' then value  else 0 end) +
+                                (case when trim("label") = 'DF%' then value  else 0 end)
 							   )
 							as df_de,
 							sum(case when trim("label") = 'PR DF%' then value  else 0 end) 
