@@ -1390,14 +1390,16 @@
   </resource>
 
   <query id="companyByFolderIds" useConfig="societeDS">
-    <sql>select  s."denominationSocial",s."idSociete", s."formeJuridique", s."idDossier", s."idFormeJuridique",  s."nomCommercial"
-      from public."societe" as s
+    <sql>select  s."denominationSocial",s."idSociete", s."formeJuridique", s."idDossier",
+      s."idFormeJuridique",  s."nomCommercial", "capital"::text, "montantBail"::text, "NIF"
+      from public."societe" as s inner join public."siegeSocial" as sg on sg."idSiege" = s."idSiegeSocial"
       WHERE s."idDossier" =ANY(:idDossier::int[])
     </sql>
     <param name="idDossier" paramType="ARRAY" sqlType="STRING" type="IN" optional="false" />
     <result outputType="json">{"data":{"societes":[{"denominationSocial":"$denominationSocial",
       "idDossier":"$idDossier","idSociete":"$idSociete","formeJuridique":"$formeJuridique",
-      "nomCommercial": "$nomCommercial"
+      "nomCommercial": "$nomCommercial", "nif": "$NIF",
+      "montantBail": "$montantBail", "capital": "$capital"
       }]}}</result>
   </query>
 
