@@ -1,24 +1,27 @@
-<data name="societe" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.societeDS" transports="http https">
+<data transports="http https" serviceGroup="mg.gov.edbm.societe.societeDS" serviceNamespace="" name="societe">
   <description />
+    <!-- CONFIGURATION PROD -->
 <!--   <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/societe</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config> -->
+  <!-- CONFIGURATION TEST -->
   <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://13.246.0.44:5432/societe</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config>
- <!-- <config id="societeDS">
+  <!-- CONFIGURATION DEV -->
+  <!-- <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/societe</property>
     <property name="username">postgres</property>
     <property name="password">postgres</property>
- </config> -->
-  <resource method="POST" path="addSocietyForm">
+  </config> -->
+  <resource path="addSocietyForm" method="POST">
     <description>add society from online form</description>
     <call-query href="addSociety">
       <with-param name="   denominationSocial " query-param="   denominationSocial " />
@@ -41,7 +44,7 @@
       <with-param name="tva" query-param="tva" />
     </call-query>
   </resource>
-  <resource method="POST" path="addAdressSociety">
+  <resource path="addAdressSociety" method="POST">
     <description />
     <call-query href="addAdress">
       <with-param name="idFokontany" query-param="idFokontany" />
@@ -57,7 +60,7 @@
       <with-param name="latitude" query-param="latitude" />
     </call-query>
   </resource>
-  <resource method="POST" path="addSiegeSocial">
+  <resource path="addSiegeSocial" method="POST">
     <description />
     <call-query href="addSiegeSocial">
       <with-param name="dureebail" query-param="dureebail" />
@@ -71,40 +74,40 @@
       <with-param name="idBailleurPersonne" query-param="idBailleurPersonne" />
     </call-query>
   </resource>
-  <resource method="GET" path="getTypeContrat">
+  <resource path="getTypeContrat" method="GET">
     <description />
     <call-query href="listTypeContrat" />
   </resource>
-  <resource method="GET" path="getTypeBailleur">
+  <resource path="getTypeBailleur" method="GET">
     <description />
     <call-query href="getListTypeBailleur" />
   </resource>
-  <resource method="PUT" path="setSocetyFolder">
+  <resource path="setSocetyFolder" method="PUT">
     <description />
     <call-query href="setSocietyFolder">
       <with-param name="idDossier" query-param="idDossier" />
       <with-param name="idSociete" query-param="idSociete" />
     </call-query>
   </resource>
-  <resource method="GET" path="getSocietyByFolderId">
+  <resource path="getSocietyByFolderId" method="GET">
     <description />
     <call-query href="getSocietyByFolderId">
       <with-param name="idDossier" query-param="idDossier" />
     </call-query>
   </resource>
-  <resource method="GET" path="getSiegeSocial">
+  <resource path="getSiegeSocial" method="GET">
     <description />
     <call-query href="getSiegeSocial">
       <with-param name="idSiege" query-param="idSiege" />
     </call-query>
   </resource>
-  <resource method="GET" path="getAddressById">
+  <resource path="getAddressById" method="GET">
     <description />
     <call-query href="getAddressById">
       <with-param name="idAdresse" query-param="idAdresse" />
     </call-query>
   </resource>
-  <resource method="PUT" path="updateSociety">
+  <resource path="updateSociety" method="PUT">
     <description />
     <call-query href="updateSociety">
       <with-param name="   denominationSocial " query-param="   denominationSocial " />
@@ -128,7 +131,7 @@
       <with-param name="tva" query-param="tva" />
     </call-query>
   </resource>
-  <resource method="PUT" path="updateAdress">
+  <resource path="updateAdress" method="PUT">
     <description />
     <call-query href="updateAdress">
       <with-param name="idFokontany" query-param="idFokontany" />
@@ -145,7 +148,7 @@
       <with-param name="latitude" query-param="latitude" />
     </call-query>
   </resource>
-  <resource method="PUT" path="updateSiegeSocial">
+  <resource path="updateSiegeSocial" method="PUT">
     <description />
     <call-query href="updateSiegeSocial">
       <with-param name="dureebail" query-param="dureebail" />
@@ -160,7 +163,7 @@
       <with-param name="idSiege" query-param="idSiege" />
     </call-query>
   </resource>
-  <resource method="POST" path="addCompany">
+  <resource path="addCompany" method="POST">
     <description>adding company 3rd iteration </description>
     <call-query href="addCompany">
       <with-param name="formeJuridique" query-param="formeJuridique" />
@@ -187,7 +190,7 @@
       <with-param name="idDevisePartAssocie" query-param="idDevisePartAssocie" />
     </call-query>
   </resource>
-  <resource method="PUT" path="updateCompany">
+  <resource path="updateCompany" method="PUT">
     <description>update Company 3rd iteration</description>
     <call-query href="updateCompany">
       <with-param name="formeJuridique" query-param="formeJuridique" />
@@ -214,13 +217,13 @@
       <with-param name="idDevisePartAssocie" query-param="idDevisePartAssocie" />
     </call-query>
   </resource>
-  <resource method="GET" path="getCompany">
+  <resource path="getCompany" method="GET">
     <description>getCompany for update 3rd iteration</description>
     <call-query href="getCompany">
       <with-param name="idSociete" query-param="idSociete" />
     </call-query>
   </resource>
-  <resource method="POST" path="addCompanyAssociate">
+  <resource path="addCompanyAssociate" method="POST">
     <description />
     <call-query href="addCompanyAssociate">
       <with-param name="idSociete" query-param="idSociete" />
@@ -228,7 +231,7 @@
       <with-param name="isDefault" query-param="isDefault" />
     </call-query>
   </resource>
-  <resource method="POST" path="addAssociate">
+  <resource path="addAssociate" method="POST">
     <description />
     <call-query href="addAssociate">
       <with-param name="partCapitalAssocie" query-param="partCapitalAssocie" />
@@ -245,71 +248,71 @@
       <with-param name="montantApportEnNature" query-param="montantApportEnNature" />
     </call-query>
   </resource>
-  <resource method="GET" path="getCompanyInformationByPersonId">
+  <resource path="getCompanyInformationByPersonId" method="GET">
     <description />
     <call-query href="getCompanyInformationByPersonId">
       <with-param name="idPersonne" query-param="idPersonne" />
     </call-query>
   </resource>
-  <resource method="DELETE" path="deleteCompany">
+  <resource path="deleteCompany" method="DELETE">
     <description />
     <call-query href="deleteCompany">
       <with-param name="idSociete" query-param="idSociete" />
     </call-query>
   </resource>
-  <resource method="GET" path="getActivitySector">
+  <resource path="getActivitySector" method="GET">
     <description />
     <call-query href="getActivitySector" />
   </resource>
-  <resource method="GET" path="getAssociateByCompanyId">
+  <resource path="getAssociateByCompanyId" method="GET">
     <description />
     <call-query href="getAssociateByCompanyId">
       <with-param name="idSociete " query-param="idSociete " />
     </call-query>
   </resource>
-  <resource method="GET" path="getExploitationPlace">
+  <resource path="getExploitationPlace" method="GET">
     <description />
     <call-query href="getExploitationPlace">
       <with-param name="siegePrincipal" query-param="siegePrincipal" />
     </call-query>
   </resource>
-  <resource method="GET" path="getGreffeCode">
+  <resource path="getGreffeCode" method="GET">
     <description />
     <call-query href="getGreffeCode">
       <with-param name="idDistrict" query-param="idDistrict" />
     </call-query>
   </resource>
-  <resource method="GET" path="getBusinessPlaces">
+  <resource path="getBusinessPlaces" method="GET">
     <description />
     <call-query href="getBusinessPlaces">
       <with-param name="id" query-param="id" />
     </call-query>
   </resource>
-  <resource method="GET" path="getDefaultAssociateByCompanyId">
+  <resource path="getDefaultAssociateByCompanyId" method="GET">
     <description />
     <call-query href="getDefaultAssociateByCompanyId">
       <with-param name="idSociete " query-param="idSociete " />
     </call-query>
   </resource>
-  <resource method="DELETE" path="deleteCompanyAssociate">
+  <resource path="deleteCompanyAssociate" method="DELETE">
     <description />
     <call-query href="deleteCompanyAssociate">
       <with-param name="idAssocie" query-param="idAssocie" />
     </call-query>
   </resource>
-  <resource method="DELETE" path="deleteAssociate">
+  <resource path="deleteAssociate" method="DELETE">
     <description />
     <call-query href="deleteAssociate">
       <with-param name="idAssocie" query-param="idAssocie" />
     </call-query>
   </resource>
-  <resource method="GET" path="getAssociateById">
+  <resource path="getAssociateById" method="GET">
     <description />
     <call-query href="getAssociateById">
       <with-param name="idAssocie" query-param="idAssocie" />
     </call-query>
   </resource>
-  <resource method="PUT" path="updateAssociate">
+  <resource path="updateAssociate" method="PUT">
     <description />
     <call-query href="updateAssociate">
       <with-param name="idAssocie" query-param="idAssocie" />
@@ -327,25 +330,25 @@
       <with-param name="idDevise" query-param="idDevise" />
     </call-query>
   </resource>
-  <resource method="DELETE" path="deleteSocialPlace">
+  <resource path="deleteSocialPlace" method="DELETE">
     <description />
     <call-query href="deleteSocialPlace">
       <with-param name="idSiege" query-param="idSiege" />
     </call-query>
   </resource>
-  <resource method="DELETE" path="deleteAdress">
+  <resource path="deleteAdress" method="DELETE">
     <description />
     <call-query href="deleteAdress">
       <with-param name="idAdresse" query-param="idAdresse" />
     </call-query>
   </resource>
-  <resource method="GET" path="user/{idPersonne}/folderIds">
+  <resource path="user/{idPersonne}/folderIds" method="GET">
     <description />
     <call-query href="userFolders">
       <with-param name="idPersonne" query-param="idPersonne" />
     </call-query>
   </resource>
-  <resource method="PUT" path="updateNIF">
+  <resource path="updateNIF" method="PUT">
     <description />
     <call-query href="updateNIF">
       <with-param name="idSociete" query-param="idSociete" />
@@ -353,7 +356,7 @@
       <with-param name="dateNIF" query-param="dateNIF" />
     </call-query>
   </resource>
-  <resource method="PUT" path="updateSTAT">
+  <resource path="updateSTAT" method="PUT">
     <description />
     <call-query href="updateSTAT">
       <with-param name="STAT" query-param="STAT" />
@@ -361,7 +364,7 @@
       <with-param name="dateSTAT " query-param="dateSTAT " />
     </call-query>
   </resource>
-  <resource method="PUT" path="updateRCS">
+  <resource path="updateRCS" method="PUT">
     <description />
     <call-query href="updateRCS">
       <with-param name="RCS" query-param="RCS" />
@@ -369,7 +372,7 @@
       <with-param name="dateRCS " query-param="dateRCS " />
     </call-query>
   </resource>
-  <resource method="POST" path="addStatutInteroperabilite">
+  <resource path="addStatutInteroperabilite" method="POST">
     <description />
     <call-query href="statutInteroperabilite">
       <with-param name="idSociete" query-param="idSociete" />
@@ -379,32 +382,32 @@
       <with-param name="EDBM" query-param="EDBM" />
     </call-query>
   </resource>
-  <resource method="GET" path="getCreatedCompanyId">
+  <resource path="getCreatedCompanyId" method="GET">
     <description />
     <call-query href="getCreatedCompanyId" />
   </resource>
-  <resource method="PUT" path="setInstatInterStatus">
+  <resource path="setInstatInterStatus" method="PUT">
     <description />
     <call-query href="setInstatInterStatus">
       <with-param name="status" query-param="status" />
       <with-param name="idSociete" query-param="idSociete" />
     </call-query>
   </resource>
-  <resource method="PUT" path="setRcsInterStatus">
+  <resource path="setRcsInterStatus" method="PUT">
     <description />
     <call-query href="setRcsInterStatus">
       <with-param name="status" query-param="status" />
       <with-param name="idSociete" query-param="idSociete" />
     </call-query>
   </resource>
-  <resource method="PUT" path="setDgiInterStatus">
+  <resource path="setDgiInterStatus" method="PUT">
     <description />
     <call-query href="setDgiInterStatus">
       <with-param name="status" query-param="status" />
       <with-param name="idSociete" query-param="idSociete" />
     </call-query>
   </resource>
-  <resource method="POST" path="insertEmptyJustificatif">
+  <resource path="insertEmptyJustificatif" method="POST">
     <description />
     <call-query href="insertEmptyJustificatif">
       <with-param name="pathStat" query-param="pathStat" />
@@ -412,7 +415,7 @@
       <with-param name="pathNif" query-param="pathNif" />
     </call-query>
   </resource>
-  <resource method="POST" path="addEnregistrementFiscale">
+  <resource path="addEnregistrementFiscale" method="POST">
     <description />
     <call-query href="addEnregistrementFiscale">
       <with-param name="dateEnregistrement" query-param="dateEnregistrement" />
@@ -425,96 +428,205 @@
       <with-param name="numeroFolio" query-param="numeroFolio" />
     </call-query>
   </resource>
-  <resource method="PUT" path="updatePathNif">
+  <resource path="updatePathNif" method="PUT">
     <description />
     <call-query href="updatePathNif">
       <with-param name="id" query-param="id" />
       <with-param name="pathNif" query-param="pathNif" />
     </call-query>
   </resource>
-  <resource method="PUT" path="updatePathRcs">
+  <resource path="updatePathRcs" method="PUT">
     <description />
     <call-query href="updatePathRcs">
       <with-param name="id" query-param="id" />
       <with-param name="pathRcs" query-param="pathRcs" />
     </call-query>
   </resource>
-  <resource method="PUT" path="updatePathStat">
+  <resource path="updatePathStat" method="PUT">
     <description />
     <call-query href="updatePathInstat">
       <with-param name="id" query-param="id" />
       <with-param name="pathStat" query-param="pathStat" />
     </call-query>
   </resource>
-  <resource method="GET" path="checkStatusTable">
+  <resource path="checkStatusTable" method="GET">
     <description />
     <call-query href="checkStatusTable">
       <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
+  <resource path="updateUBI" method="PUT">
+    <description />
+    <call-query href="updateUBI">
+      <with-param name="ubi" query-param="ubi" />
+      <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
+  <resource path="setEdbmInterStatus" method="PUT">
+    <description />
+    <call-query href="setEdbmInterStatus">
+      <with-param name="idsSociete" query-param="idsSociete" />
+      <with-param name="status" query-param="status" />
+    </call-query>
+  </resource>
+  <resource path="getCreatedCompany" method="GET">
+    <description />
+    <call-query href="listCreatedSociety">
+      <with-param name="idPersonne" query-param="idPersonne" />
+      <with-param name="limit" query-param="limit" />
+    </call-query>
+  </resource>
+  <resource path="getActiviteReglemente" method="GET">
+    <description>get activity reglemente by id</description>
+    <call-query href="getActiviteReglemente">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <resource path="bailCalculator" method="GET">
+    <description />
+    <call-query href="bailCalculator">
+      <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
+  <resource path="exploitationBailSum" method="GET">
+    <description />
+    <call-query href="exploitationBailSum">
+      <with-param name="idSiege" query-param="idSiege" />
+      <with-param name="siegeAddress" query-param="siegeAddress" />
+    </call-query>
+  </resource>
+  <resource path="enregistrementFiscale/{idSociete}" method="GET">
+    <description />
+    <call-query href="enregistrementFiscale">
+      <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
+  <resource path="companyAddressByCompanyId/{companyId}" method="GET">
+    <description />
+    <call-query href="companyAddressByCompanyId">
+      <with-param name="companyId" query-param="companyId" />
+    </call-query>
+  </resource>
+  <resource path="relative-corporates/{corporate}" method="GET">
+    <description>relative corporates</description>
+    <call-query href="relativeCorporate">
+      <with-param name="corporate" query-param="corporate" />
+    </call-query>
+  </resource>
+  <resource path="companyByDenomination/{denomination}" method="GET">
+    <description>company by denomination</description>
+    <call-query href="companyByDenomination">
+      <with-param name="denomination" query-param="denomination" />
+    </call-query>
+  </resource>
+  <resource path="companyByNif/{nif}" method="GET">
+    <description>company by nif</description>
+    <call-query href="companyByNif">
+      <with-param name="nif" query-param="nif" />
+    </call-query>
+  </resource>
+  <resource path="associates/filter/{companyId}/{associateType}" method="GET">
+    <description>company legal person associate</description>
+    <call-query href="associate-legal-persons">
+      <with-param name="companyId" query-param="companyId" />
+      <with-param name="associateType" query-param="associateType" />
+    </call-query>
+  </resource>
+  <resource path="bailleurs/siege-social/filter/{companyId}/{lessorType}" method="GET">
+    <description>company siege-social lessors filter</description>
+    <call-query href="siege-social-lessors-filter">
+      <with-param name="companyId" query-param="companyId" />
+      <with-param name="lessorType" query-param="lessorType" />
+    </call-query>
+  </resource>
+  <resource path="bailleurs/exploitation/filter/{companyId}/{lessorType}" method="GET">
+    <description>company exploitation lessors filter</description>
+    <call-query href="exploitation-lessors-filter">
+      <with-param name="companyId" query-param="companyId" />
+      <with-param name="lessorType" query-param="lessorType" />
+    </call-query>
+  </resource>
+  <resource path="exploitation/{companyId}" method="GET">
+    <description>company exploitations</description>
+    <call-query href="exploitations">
+      <with-param name="companyId" query-param="companyId" />
+    </call-query>
+  </resource>
+  <resource path="societesByFormejuridique/{formeJuridique}" method="GET">
+    <description>Fetch Societes by forme juridique</description>
+    <call-query href="societesByFormejuridique">
+      <with-param name="formeJuridique" query-param="formeJuridique" />
+    </call-query>
+  </resource>
+  <resource path="companyByFolderIds/{idDossier}" method="GET">
+    <description>Fetch Facture by folders ids</description>
+    <call-query href="companyByFolderIds">
+      <with-param name="idDossier" query-param="idDossier" />
     </call-query>
   </resource>
   <query id="addSociety" useConfig="societeDS">
     <sql>INSERT INTO public.societe(
 	 "denominationSocial" , "activitePrincipal", "formeJuridique", "dateStatut", capital,  "activiteImportExport", "activiteIndustrielCollecteur",  "objetSocial", "activiteGrossiste", "autreActiviteReglemente", "choixImposition", "nombreAssociePersPhysique", "nombreAssociePersMorale", "nombreDirigeant", "idPersonne","idSiegeSocial","idFormeJuridique",tva)
 	VALUES (:denominationSocial, :activitePrincipal, :formeJuridique, :dateStatut, :capital, :activiteImportExport, :activiteIndustrielCollecteur, :objetSocial, :activiteGrossiste, :autreActiviteReglemente, :choixImposition, :nombreAssociePersPhysique, :nombreAssociePersMorale, :nombreDirigeant,:idPersonne,:idSiegeSocial,:idFormeJuridique,:tva) RETURNING "idSociete";</sql>
-    <param name="   denominationSocial " paramType="SCALAR" sqlType="STRING" />
-    <param name=" formeJuridique" paramType="SCALAR" sqlType="STRING" />
-    <param name=" dateStatut" paramType="SCALAR" sqlType="DATE" />
-    <param name="  activiteImportExport" paramType="SCALAR" sqlType="INTEGER" />
-    <param name=" activiteIndustrielCollecteur" paramType="SCALAR" sqlType="INTEGER" />
-    <param name="  objetSocial" paramType="SCALAR" sqlType="STRING" />
-    <param name=" activiteGrossiste" paramType="SCALAR" sqlType="INTEGER" />
-    <param name=" autreActiviteReglemente" paramType="SCALAR" sqlType="INTEGER" />
-    <param name=" choixImposition" paramType="SCALAR" sqlType="INTEGER" />
-    <param name=" nombreAssociePersPhysique" paramType="SCALAR" sqlType="INTEGER" />
-    <param name=" nombreAssociePersMorale" paramType="SCALAR" sqlType="INTEGER" />
-    <param name=" nombreDirigeant" paramType="SCALAR" sqlType="INTEGER" />
-    <param name=" idPersonne" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name=" capital" paramType="SCALAR" sqlType="DOUBLE" />
-    <param type="IN" name="idSiegeSocial" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name=" activitePrincipal" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="idFormeJuridique" paramType="SCALAR" sqlType="INTEGER" />
-    <param name=" tva" paramType="SCALAR" sqlType="INTEGER" />
+    <param name="   denominationSocial " sqlType="STRING" paramType="SCALAR" />
+    <param name=" formeJuridique" sqlType="STRING" paramType="SCALAR" />
+    <param name=" dateStatut" sqlType="DATE" paramType="SCALAR" />
+    <param name="  activiteImportExport" sqlType="INTEGER" paramType="SCALAR" />
+    <param name=" activiteIndustrielCollecteur" sqlType="INTEGER" paramType="SCALAR" />
+    <param name="  objetSocial" sqlType="STRING" paramType="SCALAR" />
+    <param name=" activiteGrossiste" sqlType="INTEGER" paramType="SCALAR" />
+    <param name=" autreActiviteReglemente" sqlType="INTEGER" paramType="SCALAR" />
+    <param name=" choixImposition" sqlType="INTEGER" paramType="SCALAR" />
+    <param name=" nombreAssociePersPhysique" sqlType="INTEGER" paramType="SCALAR" />
+    <param name=" nombreAssociePersMorale" sqlType="INTEGER" paramType="SCALAR" />
+    <param name=" nombreDirigeant" sqlType="INTEGER" paramType="SCALAR" />
+    <param name=" idPersonne" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name=" capital" sqlType="DOUBLE" paramType="SCALAR" />
+    <param type="IN" name="idSiegeSocial" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name=" activitePrincipal" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="idFormeJuridique" sqlType="INTEGER" paramType="SCALAR" />
+    <param name=" tva" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"idSocietes":{"idSociete":"$idSociete"}}</result>
   </query>
   <query id="updateSociety" useConfig="societeDS">
     <sql>UPDATE  public.societe SET 
 	 "denominationSocial"=:denominationSocial , "activitePrincipal"=:activitePrincipal, "formeJuridique"=:formeJuridique, "dateStatut"=:dateStatut, capital=:capital,  "activiteImportExport"=:activiteImportExport, "activiteIndustrielCollecteur"=:activiteIndustrielCollecteur,  "objetSocial"=:objetSocial, "activiteGrossiste"=:activiteGrossiste, "autreActiviteReglemente"=:autreActiviteReglemente, "choixImposition"=:choixImposition, "nombreAssociePersPhysique"=:nombreAssociePersPhysique, "nombreAssociePersMorale"=:nombreAssociePersMorale, "nombreDirigeant"=:nombreDirigeant, "idPersonne"=:idPersonne,"idSiegeSocial"=:idSiegeSocial,"idFormeJuridique"=:idFormeJuridique,"tva"=:tva
 	  WHERE "idSociete"=:idSociete</sql>
-    <param name="   denominationSocial " paramType="SCALAR" sqlType="STRING" />
-    <param name=" formeJuridique" paramType="SCALAR" sqlType="STRING" />
-    <param name=" dateStatut" paramType="SCALAR" sqlType="DATE" />
-    <param name="  activiteImportExport" paramType="SCALAR" sqlType="INTEGER" />
-    <param name=" activiteIndustrielCollecteur" paramType="SCALAR" sqlType="INTEGER" />
-    <param name="  objetSocial" paramType="SCALAR" sqlType="STRING" />
-    <param name=" activiteGrossiste" paramType="SCALAR" sqlType="INTEGER" />
-    <param name=" autreActiviteReglemente" paramType="SCALAR" sqlType="INTEGER" />
-    <param name=" choixImposition" paramType="SCALAR" sqlType="INTEGER" />
-    <param name=" nombreAssociePersPhysique" paramType="SCALAR" sqlType="INTEGER" />
-    <param name=" nombreAssociePersMorale" paramType="SCALAR" sqlType="INTEGER" />
-    <param name=" nombreDirigeant" paramType="SCALAR" sqlType="INTEGER" />
-    <param name=" idPersonne" paramType="SCALAR" sqlType="INTEGER" />
-    <param name=" tva" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name=" capital" paramType="SCALAR" sqlType="DOUBLE" />
-    <param type="IN" name="idSiegeSocial" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name=" activitePrincipal" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="idFormeJuridique" paramType="SCALAR" sqlType="INTEGER" />
+    <param name="   denominationSocial " sqlType="STRING" paramType="SCALAR" />
+    <param name=" formeJuridique" sqlType="STRING" paramType="SCALAR" />
+    <param name=" dateStatut" sqlType="DATE" paramType="SCALAR" />
+    <param name="  activiteImportExport" sqlType="INTEGER" paramType="SCALAR" />
+    <param name=" activiteIndustrielCollecteur" sqlType="INTEGER" paramType="SCALAR" />
+    <param name="  objetSocial" sqlType="STRING" paramType="SCALAR" />
+    <param name=" activiteGrossiste" sqlType="INTEGER" paramType="SCALAR" />
+    <param name=" autreActiviteReglemente" sqlType="INTEGER" paramType="SCALAR" />
+    <param name=" choixImposition" sqlType="INTEGER" paramType="SCALAR" />
+    <param name=" nombreAssociePersPhysique" sqlType="INTEGER" paramType="SCALAR" />
+    <param name=" nombreAssociePersMorale" sqlType="INTEGER" paramType="SCALAR" />
+    <param name=" nombreDirigeant" sqlType="INTEGER" paramType="SCALAR" />
+    <param name=" idPersonne" sqlType="INTEGER" paramType="SCALAR" />
+    <param name=" tva" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name=" capital" sqlType="DOUBLE" paramType="SCALAR" />
+    <param type="IN" name="idSiegeSocial" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name=" activitePrincipal" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idFormeJuridique" sqlType="INTEGER" paramType="SCALAR" />
   </query>
   <query id="addAdress" useConfig="societeDS">
     <sql>INSERT INTO public.adresse(
 	 "idFokontany", "idCommune", "idDistrict", "idProvince", "idRegion", adresse, "idArrondissement", "codePays",longitude,latitude,"idVille")
 	VALUES (:idFokontany, :idCommune, :idDistrict, :idProvince, :idRegion, :adresse, :idArrondissement, :codePays,:longitude,:latitude,:idVille)RETURNING "idAdresse";</sql>
-    <param type="IN" name="idFokontany" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idCommune" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idDistrict" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idProvince" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idRegion" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="adresse" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="idArrondissement" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="codePays" paramType="SCALAR" sqlType="STRING" optional="true" />
-    <param type="IN" name="idVille" paramType="SCALAR" sqlType="INTEGER" optional="true" />
-    <param type="IN" name="longitude" paramType="SCALAR" sqlType="STRING" optional="true" />
-    <param type="IN" name="latitude" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="idFokontany" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idCommune" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idDistrict" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idProvince" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idRegion" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="adresse" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idArrondissement" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="codePays" sqlType="STRING" paramType="SCALAR" optional="true" />
+    <param type="IN" name="idVille" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="longitude" sqlType="STRING" paramType="SCALAR" optional="true" />
+    <param type="IN" name="latitude" sqlType="STRING" paramType="SCALAR" optional="true" />
     <result outputType="json">{"idAdresses":{"idAdresse":$idAdresse}}</result>
   </query>
   <query id="updateAdress" useConfig="societeDS">
@@ -523,49 +635,49 @@
         SET  "idFokontany"=:idFokontany, "idCommune"=:idCommune, "idRegion"=:idRegion, "idDistrict"=:idDistrict, "idArrondissement"=:idArrondissement, adresse=:adresse, "idProvince"=:idProvince, "codePays" = :codePays, "idVille" = :idVille, longitude= :longitude, latitude= :latitude 
         WHERE "idAdresse"=:idAdresse RETURNING "idAdresse"
     </sql>
-    <param type="IN" name="idFokontany" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idCommune" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idDistrict" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idProvince" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idRegion" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="adresse" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="idArrondissement" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idVille" paramType="SCALAR" sqlType="INTEGER" optional="true" />
-    <param type="IN" name="idAdresse" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="longitude" paramType="SCALAR" sqlType="STRING" optional="true" />
-    <param type="IN" name="latitude" paramType="SCALAR" sqlType="STRING" optional="true" />
-    <param type="IN" name="codePays" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="idFokontany" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idCommune" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idDistrict" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idProvince" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idRegion" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="adresse" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idArrondissement" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idVille" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="idAdresse" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="longitude" sqlType="STRING" paramType="SCALAR" optional="true" />
+    <param type="IN" name="latitude" sqlType="STRING" paramType="SCALAR" optional="true" />
+    <param type="IN" name="codePays" sqlType="STRING" paramType="SCALAR" optional="false" />
     <result outputType="json">{"adresse":{"idAdresse":$idAdresse}}</result>
   </query>
   <query id="addSiegeSocial" useConfig="societeDS">
     <sql>INSERT INTO public."siegeSocial"(
   dureebail, "montantBail",  "adresseSiegeSocial", "idTypeBailleur", "idTypeContrat","autorisationProp","idBailleurPersonne","idBailleurPersonneMoral","siegePrincipal")
 	VALUES (  :dureebail, :montantBail, :adresseSiegeSocial, :idTypeBailleur, :idTypeContrat,:autorisationProp,:idBailleurPersonne,:idBailleurPersonneMoral,:siegePrincipal) RETURNING "idSiege";</sql>
-    <param type="IN" name="dureebail" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="adresseSiegeSocial" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="idTypeBailleur" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="idTypeContrat" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="autorisationProp" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="siegePrincipal" paramType="SCALAR" sqlType="INTEGER" optional="true" />
-    <param type="IN" name="idBailleurPersonneMoral" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idBailleurPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="montantBail" paramType="SCALAR" sqlType="DOUBLE" optional="false" />
+    <param type="IN" name="dureebail" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="adresseSiegeSocial" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idTypeBailleur" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idTypeContrat" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="autorisationProp" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="siegePrincipal" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="idBailleurPersonneMoral" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idBailleurPersonne" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="montantBail" sqlType="DOUBLE" paramType="SCALAR" optional="false" />
     <result outputType="json">{"idSiege":{"idSiege":$idSiege}}</result>
   </query>
   <query id="updateSiegeSocial" useConfig="societeDS">
     <sql>UPDATE public."siegeSocial" SET
   dureebail=:dureebail, "montantBail"=:montantBail,  "adresseSiegeSocial"=:adresseSiegeSocial, "idTypeBailleur"=:idTypeBailleur, "idTypeContrat"=:idTypeContrat,"autorisationProp"=:autorisationProp,"idBailleurPersonne"=:idBailleurPersonne,"idBailleurPersonneMoral"=:idBailleurPersonneMoral,"siegePrincipal"=:siegePrincipal
   WHERE "idSiege"=:idSiege</sql>
-    <param type="IN" name="dureebail" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="adresseSiegeSocial" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="idTypeBailleur" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="idTypeContrat" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="autorisationProp" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="siegePrincipal" paramType="SCALAR" sqlType="INTEGER" optional="true" />
-    <param type="IN" name="idBailleurPersonneMoral" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idBailleurPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="montantBail" paramType="SCALAR" sqlType="DOUBLE" optional="false" />
-    <param type="IN" name="idSiege" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="dureebail" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="adresseSiegeSocial" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idTypeBailleur" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idTypeContrat" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="autorisationProp" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="siegePrincipal" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="idBailleurPersonneMoral" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idBailleurPersonne" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="montantBail" sqlType="DOUBLE" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idSiege" sqlType="INTEGER" paramType="SCALAR" />
   </query>
   <query id="getListTypeBailleur" useConfig="societeDS">
     <sql>SELECT "idTypeBailleur", "nomTypeBailleur"
@@ -581,12 +693,12 @@
     <sql>UPDATE public.societe
 	SET   "idDossier"=:idDossier
 	WHERE  "idSociete"=:idSociete</sql>
-    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" />
   </query>
   <query id="getSocietyByFolderId" useConfig="societeDS">
     <sql>SELECT * FROM public.societe WHERE "idDossier"=:idDossier</sql>
-    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{
 	    "societe":{
 	    	"idSociete":"$idSociete",
@@ -628,7 +740,7 @@
   </query>
   <query id="getSiegeSocial" useConfig="societeDS">
     <sql>SELECT *	FROM public."siegeSocial" siege LEFT JOIN adresse on adresse."idAdresse"=siege."adresseSiegeSocial" WHERE "idSiege"=:idSiege</sql>
-    <param type="IN" name="idSiege" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idSiege" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"siegeSocial":{"idSiege":"$idSiege","dureebail":"$dureebail","montantBail":"$montantBail","adresseSiegeSocial":"$adresseSiegeSocial","idTypeBailleur":"$idTypeBailleur","idTypeContrat":"$idTypeContrat","idBailleurPersonne":"$idBailleurPersonne", "idBailleurPersonneMoral":"$idBailleurPersonneMoral", "autorisationProp":"$autorisationProp", "siegePrincipal":"$siegePrincipal", "adresse": {
 	    	"idAdresse":"$idAdresse",
 	    	"idFokontany":"$idFokontany",
@@ -647,7 +759,7 @@
   <query id="getAddressById" useConfig="societeDS">
     <sql>SELECT "idAdresse", "idFokontany", "idCommune", "idDistrict", "idProvince", "idRegion", adresse, "idArrondissement","codePays"
 	FROM public.adresse WHERE "idAdresse"=:idAdresse</sql>
-    <param type="IN" name="idAdresse" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idAdresse" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"adresse":{"idAdresse":$idAdresse,"idFokontany":$idFokontany,"idCommune":$idCommune,"idDistrict":$idDistrict,"idProvince":$idProvince,"idRegion":$idRegion,"adresse":$adresse,"idArrondissement":$idArrondissement,"codePays":"$codePays"}}</result>
   </query>
   <query id="addCompany" useConfig="societeDS">
@@ -655,60 +767,60 @@
     "formeJuridique","idFormeJuridique","denominationSocial","nomCommercial",sigle,"objetSocial","idSecteurActivite","activitePrincipal", "activiteImportExport", "activiteIndustrielCollecteur", "activiteGrossiste",capital,"montantPartSocial","dateStatut","choixImposition",tva,duree,"finExerciceSocial","idPersonne","idDossier","idDevise","idDevisePartAssocie")
 	VALUES (
     :formeJuridique,:idFormeJuridique,:denominationSocial,:nomCommercial,:sigle,:objetSocial,:idSecteurActivite,:activitePrincipal, :activiteImportExport, :activiteIndustrielCollecteur, :activiteGrossiste,:capital,:montantPartSocial,:dateStatut,:choixImposition,:tva,:duree,:finExerciceSocial,:idPersonne,:idDossier,:idDevise,:idDevisePartAssocie) RETURNING "idSociete","idDossier";</sql>
-    <param type="IN" name="formeJuridique" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="idFormeJuridique" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="denominationSocial" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="nomCommercial" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="sigle" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="objetSocial" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="idSecteurActivite" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="activitePrincipal" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="activiteImportExport" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="activiteIndustrielCollecteur" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="activiteGrossiste" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="capital" paramType="SCALAR" sqlType="DOUBLE" />
-    <param type="IN" name="montantPartSocial" paramType="SCALAR" sqlType="DOUBLE" />
-    <param type="IN" name="choixImposition" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="tva" paramType="SCALAR" sqlType="INTEGER" optional="true" />
-    <param type="IN" name="duree" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="finExerciceSocial" paramType="SCALAR" sqlType="DATE" />
-    <param type="IN" name="dateStatut" paramType="SCALAR" sqlType="DATE" />
-    <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="idDevise" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idDevisePartAssocie" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="formeJuridique" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="idFormeJuridique" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="denominationSocial" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="nomCommercial" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="sigle" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="objetSocial" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="idSecteurActivite" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="activitePrincipal" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="activiteImportExport" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="activiteIndustrielCollecteur" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="activiteGrossiste" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="capital" sqlType="DOUBLE" paramType="SCALAR" />
+    <param type="IN" name="montantPartSocial" sqlType="DOUBLE" paramType="SCALAR" />
+    <param type="IN" name="choixImposition" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="tva" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="duree" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="finExerciceSocial" sqlType="DATE" paramType="SCALAR" />
+    <param type="IN" name="dateStatut" sqlType="DATE" paramType="SCALAR" />
+    <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idDevise" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idDevisePartAssocie" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"idSocietes":{"idSociete":"$idSociete","idDossier":"$idDossier"}}</result>
   </query>
   <query id="updateCompany" useConfig="societeDS">
     <sql>    UPDATE public.societe
 	SET  "formeJuridique"=:formeJuridique,"idFormeJuridique"=:idFormeJuridique,"denominationSocial"=:denominationSocial,"nomCommercial"=:nomCommercial,sigle=:sigle,"objetSocial"=:objetSocial,"idSecteurActivite"=:idSecteurActivite,"activitePrincipal"=:activitePrincipal, "activiteImportExport"=:activiteImportExport, "activiteIndustrielCollecteur"=:activiteIndustrielCollecteur, "activiteGrossiste"=:activiteGrossiste,capital=:capital,"montantPartSocial"=:montantPartSocial,"dateStatut"=:dateStatut,"choixImposition"=:choixImposition,tva=:tva,duree=:duree,"finExerciceSocial"=:finExerciceSocial,"idSiegeSocial"=:idSiegeSocial,"idDevise"=:idDevise,"idDevisePartAssocie"=:idDevisePartAssocie
 	WHERE "idSociete"=:idSociete</sql>
-    <param type="IN" name="formeJuridique" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="idFormeJuridique" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="denominationSocial" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="nomCommercial" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="sigle" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="objetSocial" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="idSecteurActivite" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="activitePrincipal" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="activiteImportExport" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="activiteIndustrielCollecteur" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="activiteGrossiste" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="capital" paramType="SCALAR" sqlType="DOUBLE" />
-    <param type="IN" name="montantPartSocial" paramType="SCALAR" sqlType="DOUBLE" />
-    <param type="IN" name="choixImposition" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="tva" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="duree" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="finExerciceSocial" paramType="SCALAR" sqlType="DATE" />
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="dateStatut" paramType="SCALAR" sqlType="DATE" />
-    <param type="IN" name="idSiegeSocial" paramType="SCALAR" sqlType="INTEGER" optional="false" defaultValue="null" />
-    <param type="IN" name="idDevise" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idDevisePartAssocie" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="formeJuridique" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="idFormeJuridique" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="denominationSocial" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="nomCommercial" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="sigle" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="objetSocial" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="idSecteurActivite" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="activitePrincipal" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="activiteImportExport" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="activiteIndustrielCollecteur" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="activiteGrossiste" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="capital" sqlType="DOUBLE" paramType="SCALAR" />
+    <param type="IN" name="montantPartSocial" sqlType="DOUBLE" paramType="SCALAR" />
+    <param type="IN" name="choixImposition" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="tva" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="duree" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="finExerciceSocial" sqlType="DATE" paramType="SCALAR" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="dateStatut" sqlType="DATE" paramType="SCALAR" />
+    <param type="IN" name="idSiegeSocial" sqlType="INTEGER" paramType="SCALAR" optional="false" defaultValue="null" />
+    <param type="IN" name="idDevise" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idDevisePartAssocie" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
   <query id="getCompany" useConfig="societeDS">
     <sql> SELECT * FROM public.societe LEFT JOIN public.devise devise on societe."idDevise"=devise."idDevise" WHERE "idSociete"=:idSociete</sql>
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{
     "Company": {
         "idSociete":"$idSociete",
@@ -751,36 +863,36 @@
     <sql>INSERT INTO public.associe(
 	 "partCapitalAssocie", "idPersonne", engagement, "idTypeAssocie", "idPersonneMoral", "idStatutSociete", "gerantStatutaire", "apportNature","idDevise","descriptifApportEnNature", "montantApportEnNature", "idDeviseMontantApportEnNature")
 	VALUES (:partCapitalAssocie, :idPersonne, :engagement, :idTypeAssocie, :idPersonneMoral, :idStatutSociete::int[],:gerantStatutaire , :apportNature,:idDevise,:descriptifApportEnNature,:montantApportEnNature,:idDeviseMontantApportEnNature) RETURNING "idAssocie"</sql>
-    <param type="IN" name="partCapitalAssocie" paramType="SCALAR" sqlType="DOUBLE" optional="false" />
-    <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="true" />
-    <param type="IN" name="engagement" paramType="SCALAR" sqlType="INTEGER" optional="true" />
-    <param type="IN" name="idTypeAssocie" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="apportNature" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idPersonneMoral" paramType="SCALAR" sqlType="INTEGER" optional="true" />
-    <param type="IN" name="idStatutSociete" paramType="ARRAY" sqlType="STRING" optional="false" />
-    <param type="IN" name="gerantStatutaire" paramType="SCALAR" sqlType="INTEGER" optional="false" defaultValue="null" />
-    <param type="IN" name="idDevise" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="descriptifApportEnNature" paramType="SCALAR" sqlType="STRING" optional="true" />
-    <param type="IN" name="idDeviseMontantApportEnNature" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="montantApportEnNature" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="partCapitalAssocie" sqlType="DOUBLE" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="engagement" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="idTypeAssocie" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="apportNature" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idPersonneMoral" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="idStatutSociete" sqlType="STRING" paramType="ARRAY" optional="false" />
+    <param type="IN" name="gerantStatutaire" sqlType="INTEGER" paramType="SCALAR" optional="false" defaultValue="null" />
+    <param type="IN" name="idDevise" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="descriptifApportEnNature" sqlType="STRING" paramType="SCALAR" optional="true" />
+    <param type="IN" name="idDeviseMontantApportEnNature" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="montantApportEnNature" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"idAssocie":{"idAssocie":$idAssocie}}</result>
   </query>
   <query id="addCompanyAssociate" useConfig="societeDS">
     <sql>INSERT INTO public."societeAssocie"(
 	"idSociete", "idAssocie", "isDefault")
 	VALUES (:idSociete, :idAssocie, :isDefault);</sql>
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idAssocie" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="isDefault" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idAssocie" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="isDefault" sqlType="STRING" paramType="SCALAR" optional="false" />
   </query>
   <query id="getCompanyInformationByPersonId" useConfig="societeDS">
     <sql>SELECT "idSociete", "denominationSocial","idDossier"	FROM public.societe WHERE "idPersonne"=:idPersonne ORDER by "idSociete" DESC</sql>
-    <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"societies":{"society":[{"idSociete":"$idSociete", "denominationSocial":"$denominationSocial","idDossier":"$idDossier"}]}}</result>
   </query>
   <query id="deleteCompany" useConfig="societeDS">
     <sql>Delete 	FROM public.societe WHERE "idSociete"=:idSociete</sql>
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
   <query id="getActivitySector" useConfig="societeDS">
     <sql>SELECT "libelleSecteurActivite", "idSecteurActivite"
@@ -791,7 +903,7 @@
     <sql>SELECT  "idStatutSociete"::varchar,associe ."idAssocie" as "idAssocie" , "isDefault", "idSociete","partCapitalAssocie", "idPersonne", "idTypeAssocie", "idPersonneMoral", "gerantStatutaire", "apportNature",engagement,associe."idDevise","descriptifApportEnNature","montantApportEnNature","idDeviseMontantApportEnNature",devise."labelDevise" as "labelDevise","deviseM"."labelDevise" as "labelDeviseMontantApport" FROM  public."societeAssocie" socAs  LEFT JOIN public."associe" associe ON associe."idAssocie"=socAs."idAssocie" LEFT JOIN 
 	public.devise devise on associe."idDevise"=devise."idDevise" LEFT JOIN 
 	public.devise "deviseM" on associe."idDeviseMontantApportEnNature"="deviseM"."idDevise"  WHERE "idSociete"=:idSociete</sql>
-    <param type="IN" name="idSociete " paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idSociete " sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"associates":{"associate":[{
 					"idStatutSociete":"$idStatutSociete",
 					"idAssocie":"$idAssocie",
@@ -816,13 +928,13 @@
   <query id="getExploitationPlace" useConfig="societeDS">
     <sql>SELECT "idSiege", dureebail, "montantBail", "adresseSiegeSocial", "idTypeBailleur", "idTypeContrat", "idBailleurPersonne", "idBailleurPersonneMoral", "autorisationProp", "siegePrincipal"
 	FROM public."siegeSocial" WHERE "siegePrincipal"=:siegePrincipal</sql>
-    <param type="IN" name="siegePrincipal" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="siegePrincipal" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"exploitations":[{"idSiege":"$idSiege","dureebail":"$dureebail","montantBail":"$montantBail","adresseSiegeSocial":"$adresseSiegeSocial","idTypeBailleur":"$idTypeBailleur","idTypeContrat":"$idTypeContrat","idBailleurPersonne":"$idBailleurPersonne", "idBailleurPersonneMoral":"$idBailleurPersonneMoral", "autorisationProp":"$autorisationProp", "siegePrincipal":"$siegePrincipal"
 }]}}</result>
   </query>
   <query id="getGreffeCode" useConfig="societeDS">
     <sql>SELECT * FROM public."codeGreffe" WHERE "idDistrict" = :idDistrict</sql>
-    <param type="IN" name="idDistrict" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idDistrict" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"data":{"codeGreffe":{"code":$code, "idDistrict":$idDistrict}}}</result>
   </query>
   <query id="getBusinessPlaces" useConfig="societeDS">
@@ -830,7 +942,7 @@
     	join public.societe on societe."idSiegeSocial" = ss."siegePrincipal" 
     	join public.adresse on adresse."idAdresse" = ss."adresseSiegeSocial" 
     	where societe."idSociete" = :id</sql>
-    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"data":{"siegeSociales":[{
     	"idAdresse":"$idAdresse",
     	"idFokontany":"$idFokontany",
@@ -852,7 +964,7 @@
   <query id="getDefaultAssociateByCompanyId" useConfig="societeDS">
     <sql>SELECT  "idStatutSociete"::varchar,associe."idAssocie" as "idAssocie" , "isDefault", "idSociete","partCapitalAssocie", "idPersonne", "idTypeAssocie", "idPersonneMoral", "gerantStatutaire", "apportNature",engagement FROM  public."societeAssocie" socAs  LEFT JOIN public."associe" associe ON associe."idAssocie"=socAs."idAssocie" 
 	WHERE "idSociete"=:idSociete AND socAs."isDefault" = 'true';</sql>
-    <param type="IN" name="idSociete " paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idSociete " sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"associate":{
 		"idStatutSociete":"$idStatutSociete",
 		"idAssocie":"$idAssocie",
@@ -871,16 +983,16 @@
   <query id="deleteCompanyAssociate" useConfig="societeDS">
     <sql>DELETE FROM public."societeAssocie"
 	WHERE "idAssocie"=:idAssocie</sql>
-    <param type="IN" name="idAssocie" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idAssocie" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
   <query id="deleteAssociate" useConfig="societeDS">
     <sql>DELETE FROM public.associe
 	WHERE "idAssocie"=:idAssocie</sql>
-    <param type="IN" name="idAssocie" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idAssocie" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
   <query id="getAssociateById" useConfig="societeDS">
     <sql>SELECT * FROM public.associe WHERE "idAssocie"=:idAssocie</sql>
-    <param type="IN" name="idAssocie" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idAssocie" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"associate":{
 		"idAssocie":"$idAssocie",
 		"partCapitalAssocie":"$partCapitalAssocie",
@@ -900,78 +1012,71 @@
 	SET "partCapitalAssocie"=:partCapitalAssocie, "idPersonne"=:idPersonne, "idTypeAssocie"=:idTypeAssocie, "idPersonneMoral"=:idPersonneMoral, "idStatutSociete"=:idStatutSociete::int[], "gerantStatutaire"=:gerantStatutaire, "apportNature"=:apportNature, engagement=:engagement,"descriptifApportEnNature"=:descriptifApportEnNature, "montantApportEnNature"=:montantApportEnNature, "idDeviseMontantApportEnNature"=:idDeviseMontantApportEnNature,"idDevise"=:idDevise
 	
 	WHERE "idAssocie" =:idAssocie </sql>
-    <param type="IN" name="idAssocie" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="partCapitalAssocie" paramType="SCALAR" sqlType="DOUBLE" optional="false" />
-    <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="true" />
-    <param type="IN" name="engagement" paramType="SCALAR" sqlType="INTEGER" optional="true" />
-    <param type="IN" name="idTypeAssocie" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="apportNature" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idPersonneMoral" paramType="SCALAR" sqlType="INTEGER" optional="true" />
-    <param type="IN" name="idStatutSociete" paramType="ARRAY" sqlType="STRING" optional="false" />
-    <param type="IN" name="gerantStatutaire" paramType="SCALAR" sqlType="INTEGER" optional="false" defaultValue="null" />
-    <param type="IN" name="descriptifApportEnNature" paramType="SCALAR" sqlType="STRING" optional="false" defaultValue="null" />
-    <param type="IN" name="montantApportEnNature" paramType="SCALAR" sqlType="DOUBLE" optional="false" defaultValue="null" />
-    <param type="IN" name="idDeviseMontantApportEnNature" paramType="SCALAR" sqlType="INTEGER" optional="false" defaultValue="null" />
-    <param type="IN" name="idDevise" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idAssocie" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="partCapitalAssocie" sqlType="DOUBLE" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="engagement" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="idTypeAssocie" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="apportNature" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idPersonneMoral" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="idStatutSociete" sqlType="STRING" paramType="ARRAY" optional="false" />
+    <param type="IN" name="gerantStatutaire" sqlType="INTEGER" paramType="SCALAR" optional="false" defaultValue="null" />
+    <param type="IN" name="descriptifApportEnNature" sqlType="STRING" paramType="SCALAR" optional="false" defaultValue="null" />
+    <param type="IN" name="montantApportEnNature" sqlType="DOUBLE" paramType="SCALAR" optional="false" defaultValue="null" />
+    <param type="IN" name="idDeviseMontantApportEnNature" sqlType="INTEGER" paramType="SCALAR" optional="false" defaultValue="null" />
+    <param type="IN" name="idDevise" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
   <query id="deleteSocialPlace" useConfig="societeDS">
     <sql>DELETE FROM public."siegeSocial"
 	WHERE "idSiege"=:idSiege</sql>
-    <param type="IN" name="idSiege" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idSiege" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
   <query id="deleteAdress" useConfig="societeDS">
     <sql>DELETE FROM public.adresse
 	WHERE "idAdresse"=:idAdresse</sql>
-    <param type="IN" name="idAdresse" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idAdresse" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
   <query id="userFolders" useConfig="societeDS">
     <sql>SELECT "idDossier" FROM public.societe WHERE "idDossier" IS NOT NULL AND "idPersonne" = :idPersonne</sql>
-    <param type="IN" name="idPersonne " paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idPersonne " sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"folderIds":[{"idDossier":"$idDossier"}]}}</result>
   </query>
   <query id="updateNIF" useConfig="societeDS">
     <sql>UPDATE public.societe
 	SET  "NIF"=:NIF, "dateNIF"=:dateNIF  WHERE "idSociete"=:idSociete</sql>
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="NIF" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="dateNIF" paramType="SCALAR" sqlType="DATE" optional="false" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="NIF" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <param type="IN" name="dateNIF" sqlType="DATE" paramType="SCALAR" optional="false" />
   </query>
   <query id="updateSTAT" useConfig="societeDS">
     <sql>UPDATE public.societe
 	SET  "STAT"=:STAT, "dateSTAT"=:dateSTAT  WHERE "idSociete"=:idSociete</sql>
-    <param type="IN" name="STAT" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="dateSTAT " paramType="SCALAR" sqlType="DATE" optional="false" />
+    <param type="IN" name="STAT" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="dateSTAT " sqlType="DATE" paramType="SCALAR" optional="false" />
   </query>
   <query id="updateRCS" useConfig="societeDS">
     <sql>UPDATE public.societe
 	SET  "RCS"=:RCS,"dateRCS"=:dateRCS WHERE "idSociete"=:idSociete</sql>
-    <param type="IN" name="RCS" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="dateRCS " paramType="SCALAR" sqlType="DATE" optional="false" />
+    <param type="IN" name="RCS" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="dateRCS " sqlType="DATE" paramType="SCALAR" optional="false" />
   </query>
-  <resource method="PUT" path="updateUBI">
-    <description />
-    <call-query href="updateUBI">
-      <with-param name="ubi" query-param="ubi" />
-      <with-param name="idSociete" query-param="idSociete" />
-    </call-query>
-  </resource>
   <query id="updateUBI" useConfig="societeDS">
     <sql>UPDATE public.societe
 	SET "ubi"= :ubi, "dateCreation" = CURRENT_TIMESTAMP WHERE "idSociete"=:idSociete</sql>
-    <param type="IN" name="ubi" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="ubi" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
   <query id="statutInteroperabilite" useConfig="societeDS">
     <sql>INSERT INTO public."statutInteroperabilite"(
 	 "idSociete", "RCS", "INSTAT", "DGI", "EDBM")
 	VALUES ( :idSociete, :RCS, :INSTAT, :DGI, :EDBM);</sql>
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="INSTAT" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="RCS" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="DGI" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="EDBM" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="INSTAT" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="RCS" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="DGI" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="EDBM" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
   <query id="getCreatedCompanyId" useConfig="societeDS">
     <sql>SELECT status.id, status."idSociete" FROM public."statutInteroperabilite" status
@@ -979,126 +1084,93 @@
     	WHERE status."RCS" > 1 AND status."INSTAT" > 1 AND status."DGI" > 0 AND "EDBM"=0 AND societe."STAT" IS NOT NULL</sql>
     <result outputType="json">{"status":{"company":[{"idSociete":"$idSociete"}]}}</result>
   </query>
-  <resource method="PUT" path="setEdbmInterStatus">
-    <description />
-    <call-query href="setEdbmInterStatus">
-      <with-param name="idsSociete" query-param="idsSociete" />
-      <with-param name="status" query-param="status" />
-    </call-query>
-  </resource>
   <query id="setEdbmInterStatus" useConfig="societeDS">
     <sql>UPDATE public."statutInteroperabilite" SET "EDBM"=:status WHERE "idSociete"=ANY(:idsSociete::int[]) </sql>
-    <param type="IN" name="idsSociete" paramType="ARRAY" sqlType="STRING" optional="false" />
-    <param type="IN" name="status" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idsSociete" sqlType="STRING" paramType="ARRAY" optional="false" />
+    <param type="IN" name="status" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
   <query id="setInstatInterStatus" useConfig="societeDS">
     <sql>UPDATE public."statutInteroperabilite"
 	SET "INSTAT"=:status WHERE "idSociete"=:idSociete</sql>
-    <param type="IN" name="status" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="status" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
   <query id="setDgiInterStatus" useConfig="societeDS">
     <sql>UPDATE public."statutInteroperabilite"
 	SET "DGI"=:status WHERE "idSociete"=:idSociete</sql>
-    <param type="IN" name="status" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="status" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
   <query id="setRcsInterStatus" useConfig="societeDS">
     <sql>UPDATE public."statutInteroperabilite"
 	SET "RCS"=:status WHERE "idSociete"=:idSociete</sql>
-    <param type="IN" name="status" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="status" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
-  <resource method="GET" path="getCreatedCompany">
-    <description />
-    <call-query href="listCreatedSociety">
-      <with-param name="idPersonne" query-param="idPersonne" />
-      <with-param name="limit" query-param="limit" />
-    </call-query>
-  </resource>
   <query id="listCreatedSociety" useConfig="societeDS">
     <sql>select * from public.societe left join devise on devise."idDevise"=societe."idDevise" where "idPersonne"=:idPersonne and "dateCreation" is not null and ubi is not null and "NIF" is not null and "STAT" is not null and "RCS" is not null limit :limit</sql>
-    <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idPersonne" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="limit" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"societies":{"society":[{"denominationSocial":"$denominationSocial","ubi":"$ubi","dateCreation":"$dateCreation","idDossier":"$idDossier","idSociete":"$idSociete","formeJuridique":"$formeJuridique","capital":"$capital","labelDeviseCapital":"$labelDevise","dateNIF":"$dateNIF","dateSTAT":"$dateSTAT","dateRCS":"$dateRCS"}]}}</result>
   </query>
   <query id="insertEmptyJustificatif" useConfig="societeDS">
     <sql>INSERT INTO public.justificatif(
 	"pathNif", "pathRcs", "pathStat")
 	VALUES ( :pathNif, :pathRcs, :pathStat) RETURNING id;</sql>
-    <param type="IN" name="pathStat" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="pathRcs" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="pathNif" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="pathStat" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <param type="IN" name="pathRcs" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <param type="IN" name="pathNif" sqlType="STRING" paramType="SCALAR" optional="false" />
     <result outputType="json">{"id":{"id":"$id"}}</result>
   </query>
   <query id="updatePathNif" useConfig="societeDS">
     <sql>UPDATE public.justificatif
 	SET "pathNif"= :pathNif
 	WHERE id= :id</sql>
-    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="pathNif" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="pathNif" sqlType="STRING" paramType="SCALAR" optional="false" />
   </query>
   <query id="updatePathRcs" useConfig="societeDS">
     <sql>UPDATE public.justificatif
 	SET "pathRcs"= :pathRcs
 	WHERE id= :id</sql>
-    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="pathRcs" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="pathRcs" sqlType="STRING" paramType="SCALAR" optional="false" />
   </query>
   <query id="updatePathInstat" useConfig="societeDS">
     <sql>UPDATE public.justificatif
 	SET "pathStat"=:pathStat
 	WHERE id=:id</sql>
-    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="pathStat" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="pathStat" sqlType="STRING" paramType="SCALAR" optional="false" />
   </query>
   <query id="addEnregistrementFiscale" useConfig="societeDS">
     <sql>INSERT INTO public."enregistrementFiscale"(
 	 "dateEnregistrement", "numeroRegistre", "numeroEnregistrement", "idUtilisateurAgent", "montantDroit", "idSociete", "idDocument", "numeroFolio")
 	VALUES ( :dateEnregistrement, :numeroRegistre, :numeroEnregistrement, :idUtilisateurAgent, :montantDroit, :idSociete, :idDocument, :numeroFolio);</sql>
-    <param type="IN" name="dateEnregistrement" paramType="SCALAR" sqlType="DATE" optional="false" />
-    <param type="IN" name="numeroRegistre" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="numeroEnregistrement" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="idUtilisateurAgent" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="montantDroit" paramType="SCALAR" sqlType="DOUBLE" optional="false" />
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="idDocument" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <param type="IN" name="numeroFolio" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="dateEnregistrement" sqlType="DATE" paramType="SCALAR" optional="false" />
+    <param type="IN" name="numeroRegistre" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <param type="IN" name="numeroEnregistrement" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idUtilisateurAgent" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <param type="IN" name="montantDroit" sqlType="DOUBLE" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idDocument" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="numeroFolio" sqlType="STRING" paramType="SCALAR" optional="true" />
   </query>
   <query id="checkStatusTable" useConfig="societeDS">
     <sql>SELECT * FROM public."statutInteroperabilite" WHERE "idSociete"=:idSociete</sql>
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"company":{"idSociete":"$idSociete", "rcs": $RCS, "instat": $INSTAT}}</result>
   </query>
-  <resource method="GET" path="getActiviteReglemente">
-    <description>get activity reglemente by id</description>
-    <call-query href="getActiviteReglemente">
-      <with-param name="id" query-param="id" />
-    </call-query>
-  </resource>
   <query id="getActiviteReglemente" useConfig="societeDS">
     <sql>SELECT * FROM public."secteurActivite" activity WHERE activity."idSecteurActivite" =:id</sql>
-    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"activity":{"libelleSecteurActivite":"$libelleSecteurActivite","idSecteurActivite":"$idSecteurActivite"}}</result>
   </query>
-  <resource path="bailCalculator" method="GET">
-    <description />
-    <call-query href="bailCalculator">
-      <with-param name="idSociete" query-param="idSociete" />
-    </call-query>
-  </resource>
   <query id="bailCalculator" useConfig="societeDS">
     <sql>SELECT (ss."montantBail"::double precision * ss.dureebail) as account, ss."idSiege" FROM public."siegeSocial" ss JOIN public.societe ON societe."idSiegeSocial" = ss."idSiege" WHERE societe."idSociete" = :idSociete</sql>
     <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"socialPlace":{"idSiege":$idSiege, "account": $account}}</result>
   </query>
-  <resource path="exploitationBailSum" method="GET">
-    <description />
-    <call-query href="exploitationBailSum">
-      <with-param name="idSiege" query-param="idSiege" />
-      <with-param name="siegeAddress" query-param="siegeAddress" />
-    </call-query>
-  </resource>
   <query id="exploitationBailSum" useConfig="societeDS">
     <sql>SELECT sum(("montantBail"::double precision * dureebail)) as account FROM public."siegeSocial" 
     	JOIN public.adresse on adresse."idAdresse" = "adresseSiegeSocial"
@@ -1107,34 +1179,20 @@
     <param type="IN" name="siegeAddress" sqlType="STRING" paramType="SCALAR" optional="true" />
     <result outputType="json">{"exploitation":{"account": $account}}</result>
   </query>
-  <resource method="GET" path="enregistrementFiscale/{idSociete}">
-    <description />
-    <call-query href="enregistrementFiscale">
-      <with-param name="idSociete" query-param="idSociete" />
-    </call-query>
-  </resource>
   <query id="enregistrementFiscale" useConfig="societeDS">
     <sql>SELECT id,"numeroFolio", "dateEnregistrement", "numeroRegistre", "numeroEnregistrement", "idUtilisateurAgent", "montantDroit", public."enregistrementFiscale"."idSociete", "idDocument", societe."NIF", societe."dateNIF" FROM public."enregistrementFiscale" LEFT JOIN public.societe ON public.societe."idSociete"=public."enregistrementFiscale"."idSociete" WHERE public."enregistrementFiscale"."idSociete"=:idSociete</sql>
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{
     	"enregistrementFiscaux":[{"id":$id, "dateEnregistrement":"$dateEnregistrement", "numeroRegistre":"$numeroRegistre", "numeroEnregistrement":"$numeroEnregistrement", "montantDroit":$montantDroit, "idDocument": $idDocument, "NIF":"$NIF", "dateNIF": "$dateNIF", "numeroFolio": "$numeroFolio"}]
     	}}
     </result>
   </query>
-  
-  
-  <resource method="GET" path="companyAddressByCompanyId/{companyId}">
-    <description />
-    <call-query href="companyAddressByCompanyId">
-      <with-param name="companyId" query-param="companyId" />
-    </call-query>
-  </resource>
   <query id="companyAddressByCompanyId" useConfig="societeDS">
     <sql>SELECT adresse.* FROM public."siegeSocial" siege 
     LEFT JOIN public.adresse ON adresse."idAdresse" = siege."adresseSiegeSocial"
     LEFT JOIN public.societe ON societe."idSiegeSocial" = siege."idSiege"
     WHERE societe."idSociete"= :companyId</sql>
-    <param type="IN" name="companyId" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"adresse": {
 	    	"idAdresse":"$idAdresse",
 	    	"idFokontany":"$idFokontany",
@@ -1149,24 +1207,11 @@
 	    }}
 	</result>
   </query>
-  <resource path="relative-corporates/{corporate}" method="GET">
-    <description>relative corporates</description>
-    <call-query href="relativeCorporate">
-      <with-param name="corporate" query-param="corporate" />
-    </call-query>
-  </resource>
   <query id="relativeCorporate" useConfig="societeDS">
     <sql>SELECT "denominationSocial" FROM public.societe WHERE LOWER("denominationSocial") LIKE CONCAT(:corporate,'%')</sql>
     <param type="IN" name="corporate" sqlType="STRING" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"corporates":[{"denomination":"$denominationSocial"}]}}</result>
   </query>
-  
-  <resource path="companyByDenomination/{denomination}" method="GET">
-    <description>company by denomination</description>
-    <call-query href="companyByDenomination">
-      <with-param name="denomination" query-param="denomination" />
-    </call-query>
-  </resource>
   <query id="companyByDenomination" useConfig="societeDS">
     <sql>SELECT societe.* FROM public.societe WHERE LOWER("denominationSocial") = LOWER(:denomination)</sql>
     <param type="IN" name="denomination" sqlType="STRING" paramType="SCALAR" optional="false" />
@@ -1208,12 +1253,6 @@
     	}
     </result>
   </query>
-  <resource path="companyByNif/{nif}" method="GET">
-    <description>company by nif</description>
-    <call-query href="companyByNif">
-      <with-param name="nif" query-param="nif" />
-    </call-query>
-  </resource>
   <query id="companyByNif" useConfig="societeDS">
     <sql>SELECT societe.* FROM public.societe WHERE "NIF" = :nif</sql>
     <param type="IN" name="nif" sqlType="STRING" paramType="SCALAR" optional="false" />
@@ -1255,17 +1294,10 @@
     	}
     </result>
   </query>
-  <resource path="associates/filter/{companyId}/{associateType}" method="GET">
-    <description>company legal person associate</description>
-    <call-query href="associate-legal-persons">
-      <with-param name="companyId" query-param="companyId" />
-      <with-param name="associateType" query-param="associateType" />
-    </call-query>
-  </resource>
   <query id="associate-legal-persons" useConfig="societeDS">
     <sql>SELECT associe.*, associe."idStatutSociete"::varchar FROM public.associe JOIN public."societeAssocie" sa ON sa."idAssocie" = associe."idAssocie" WHERE sa."idSociete" = :companyId AND "idTypeAssocie" = :associateType</sql>
-    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR"/>
-    <param type="IN" name="associateType" sqlType="INTEGER" paramType="SCALAR"/>
+    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="associateType" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{
     		"data": {
     			"associates": [{
@@ -1287,17 +1319,10 @@
     	}
     </result>
   </query>
-  <resource path="bailleurs/siege-social/filter/{companyId}/{lessorType}" method="GET">
-    <description>company siege-social lessors filter</description>
-    <call-query href="siege-social-lessors-filter">
-      <with-param name="companyId" query-param="companyId"/>
-      <with-param name="lessorType" query-param="lessorType" />
-    </call-query>
-  </resource>
   <query id="siege-social-lessors-filter" useConfig="societeDS">
     <sql>SELECT "siegeSocial".* FROM public."siegeSocial" JOIN public.societe ON "idSiegeSocial" = "idSiege" WHERE "idSociete" = :companyId AND "idTypeBailleur" = :lessorType</sql>
-    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR"/>
-    <param type="IN" name="lessorType" sqlType="INTEGER" paramType="SCALAR"/>
+    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="lessorType" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{
     		"data": {
     			"lessors": [{
@@ -1316,17 +1341,10 @@
     	}
     </result>
   </query>
-  <resource path="bailleurs/exploitation/filter/{companyId}/{lessorType}" method="GET">
-    <description>company exploitation lessors filter</description>
-    <call-query href="exploitation-lessors-filter">
-      <with-param name="companyId" query-param="companyId"/>
-      <with-param name="lessorType" query-param="lessorType" />
-    </call-query>
-  </resource>
   <query id="exploitation-lessors-filter" useConfig="societeDS">
     <sql>SELECT * FROM public."siegeSocial" WHERE "idTypeBailleur" = :lessorType AND "siegePrincipal" = (SELECT "idSiegeSocial" FROM public.societe WHERE "idSociete" = :companyId)</sql>
-    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR"/>
-    <param type="IN" name="lessorType" sqlType="INTEGER" paramType="SCALAR"/>
+    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="lessorType" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{
     		"data": {
     			"lessors": [{
@@ -1345,15 +1363,9 @@
     	}
     </result>
   </query>
-  <resource path="exploitation/{companyId}" method="GET">
-    <description>company exploitations</description>
-    <call-query href="exploitations">
-      <with-param name="companyId" query-param="companyId"/>
-    </call-query>
-  </resource>
   <query id="exploitations" useConfig="societeDS">
     <sql>SELECT * FROM public."siegeSocial" WHERE "siegePrincipal" = (SELECT "idSiegeSocial" FROM public.societe WHERE "idSociete" = :companyId)</sql>
-    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR"/>
+    <param type="IN" name="companyId" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{
     		"data": {
     			"lessors": [{
@@ -1377,36 +1389,33 @@
       count(s."denominationSocial") OVER( partition by s."idFormeJuridique") as total
       from public."societe" as s where s."formeJuridique" = :formeJuridique
     </sql>
-    <param name="formeJuridique" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
+    <param type="IN" name="formeJuridique" sqlType="STRING" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"societes":[{"denominationSocial":"$denominationSocial",
       "idDossier":"$idDossier","idSociete":"$idSociete","formeJuridique":"$formeJuridique", "nomCommercial": "$nomCommercial", "total": "$total"
       }]}}</result>
   </query>
-  <resource method="GET" path="societesByFormejuridique/{formeJuridique}">
-    <description>Fetch Societes by forme juridique</description>
-    <call-query href="societesByFormejuridique">
-      <with-param name="formeJuridique" query-param="formeJuridique" />
-    </call-query>
-  </resource>
-
   <query id="companyByFolderIds" useConfig="societeDS">
     <sql>select  s."denominationSocial",s."idSociete", s."formeJuridique", s."idDossier",
       s."idFormeJuridique",  s."nomCommercial", "capital"::text, "montantBail"::text, "NIF"
       from public."societe" as s inner join public."siegeSocial" as sg on sg."idSiege" = s."idSiegeSocial"
       WHERE s."idDossier" =ANY(:idDossier::int[])
     </sql>
-    <param name="idDossier" paramType="ARRAY" sqlType="STRING" type="IN" optional="false" />
+    <param type="IN" name="idDossier" sqlType="STRING" paramType="ARRAY" optional="false" />
     <result outputType="json">{"data":{"societes":[{"denominationSocial":"$denominationSocial",
       "idDossier":"$idDossier","idSociete":"$idSociete","formeJuridique":"$formeJuridique",
       "nomCommercial": "$nomCommercial", "nif": "$NIF",
       "montantBail": "$montantBail", "capital": "$capital"
       }]}}</result>
   </query>
-
-  <resource method="GET" path="companyByFolderIds/{idDossier}">
-    <description>Fetch Facture by folders ids</description>
-    <call-query href="companyByFolderIds">
-      <with-param name="idDossier" query-param="idDossier" />
+  <query id="checkDenomination" useConfig="societeDS">
+    <sql>select exists(select "idSociete" from societe where "denominationSocial"=:denominationSocial) as result</sql>
+    <param type="IN" name="denominationSocial" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data":{"result":$result}}</result>
+  </query>
+  <resource path="checkDenomination" method="GET">
+    <description />
+    <call-query href="checkDenomination">
+      <with-param name="denominationSocial" query-param="denominationSocial" />
     </call-query>
   </resource>
 </data>

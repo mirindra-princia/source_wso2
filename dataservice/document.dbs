@@ -1,17 +1,20 @@
 <data transports="http https" serviceGroup="mg.gov.edbm.societe.documentDS" serviceNamespace="" name="document">
   <description />
+  <!-- CONFIGURATION PROD -->
 <!--    <config id="documentDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/document</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config>  -->
-  <!-- <config id="documentDS">
+  <!-- CONFIGURATION TEST  -->
+ <!--  <config id="documentDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/document</property>
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config> -->
+  <!-- CONFIGURATION DEV -->
   	<config id="documentDS">
     	<property name="driverClassName">org.postgresql.Driver</property>
 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/document</property>
