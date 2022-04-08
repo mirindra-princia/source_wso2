@@ -856,4 +856,60 @@
             <with-param name="uid" query-param="uid" />
         </call-query>
     </resource>
+    
+  <resource path="addPerson2" method="POST">
+    <description />
+    <call-query href="addPerson2">
+      <with-param name="nom" query-param="lastName" />
+      <with-param name="prenom" query-param="firstName" />
+      <with-param name="nomPere" query-param="father" />
+      <with-param name="nomMere" query-param="mother" />
+      <with-param name="dateNaissance" query-param="birthDate" />
+      <with-param name="lieuNaissance" query-param="birthPlace" />
+      <with-param name="situationMatrimonial" query-param="martialStatusId" />
+      <with-param name="idPieceIdentite" query-param="identityCardId" />
+      <with-param name="sexe" query-param="gender" />
+      <with-param name="idadresse" query-param="addressId" />
+      <with-param name="idrole" query-param="orinasaRoleId" />
+      <with-param name="tel" query-param="phoneNumber" />
+      <with-param name="tel2" query-param="phoneNumber2" />
+      <with-param name="e_mail" query-param="email" />
+      <with-param name="idUtilisateur" query-param="keycloakUid" />
+      <with-param name="engagement" query-param="engagement" />
+      <with-param name="civilite" query-param="civility" />
+      <with-param name="idPersonneSociete" query-param="personCompanyId" />
+      <with-param name="idConjoint" query-param="partnerId" />
+      <with-param name="nationalite" query-param="nationality" />
+    </call-query>
+  </resource>
+  <query id="addPerson2" useConfig="personneDS">
+    <sql>INSERT INTO public.personne(nom,prenom,"nomPere", "nomMere", "dateNaissance", "lieuNaissance", "situationMatrimonial", 
+	    "idPieceIdentite", sexe, idadresse, idrole, tel, tel2,e_mail,"idUtilisateur", engagement, civilite, 
+	    "idPersonneSociete", "idConjoint",nationalite)
+		VALUES (:nom, :prenom, :nomPere, :nomMere, :dateNaissance, :lieuNaissance, :situationMatrimonial, 
+	    :idPieceIdentite, :sexe, :idadresse, :idrole, :tel, :tel2, :e_mail, :idUtilisateur, :engagement, :civilite, 
+	    :idPersonneSociete, :idConjoint,:nationalite) RETURNING "idPersonne"
+	</sql>
+    <param type="IN" name="nom" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="prenom" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="nomPere" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="nomMere" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="dateNaissance" paramType="SCALAR" sqlType="DATE" optional="true" />
+    <param type="IN" name="lieuNaissance" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="situationMatrimonial" paramType="SCALAR" sqlType="TINYINT" optional="true" />
+    <param type="IN" name="idPieceIdentite" paramType="SCALAR" sqlType="INTEGER" optional="true" />
+    <param type="IN" name="sexe" paramType="SCALAR" sqlType="TINYINT" optional="true" />
+    <param type="IN" name="idadresse" paramType="SCALAR" sqlType="INTEGER" optional="true" />
+    <param type="IN" name="idrole" paramType="SCALAR" sqlType="INTEGER" optional="true" />
+    <param type="IN" name="tel" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="tel2" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="e_mail" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="engagement" paramType="SCALAR" sqlType="TINYINT" optional="true" />
+    <param type="IN" name="civilite" paramType="SCALAR" sqlType="TINYINT" optional="true" />
+    <param type="IN" name="idPersonneSociete" paramType="SCALAR" sqlType="INTEGER" optional="true" />
+    <param type="IN" name="idConjoint" paramType="SCALAR" sqlType="INTEGER" optional="true" />
+    <param type="IN" name="nationalite" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <result outputType="json">{"data":{"idPersonne":"$idPersonne"}}</result>
+  </query>
 </data>
