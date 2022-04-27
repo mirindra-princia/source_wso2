@@ -15,12 +15,12 @@
     <property name="password">devedbmdb</property>
   </config>
   <!-- CONFIGURATION DEV -->
- <!--  <config id="societeDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/societe</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config> -->
+<!--   <config id="societeDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/societe</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
   <resource path="addSocietyForm" method="POST">
     <description>add society from online form</description>
     <call-query href="addSociety">
@@ -1418,4 +1418,15 @@
       <with-param name="denominationSocial" query-param="denominationSocial" />
     </call-query>
   </resource>
+  <resource path="typeEtablissement/{addressId}" method="GET">
+    <description />
+    <call-query href="typeEtablissement">
+      <with-param name="adresseSiegeSocial" query-param="addressId" />
+    </call-query>
+  </resource>
+  <query id="typeEtablissement" useConfig="societeDS">
+    <sql>SELECT te.* FROM "siegeSocial" ss JOIN "typeEtablissement" te ON te.id = ss."idTypeEtablissement" WHERE ss."adresseSiegeSocial" =:adresseSiegeSocial</sql>
+    <param type="IN" name="adresseSiegeSocial" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data":{"id":$id, "name": $name}}</result>
+  </query>
 </data>
