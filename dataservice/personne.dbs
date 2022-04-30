@@ -8,19 +8,19 @@
     <property name="password">devedbmdb</property>
   </config> -->
   <!-- CONFIGURATION TEST -->
-  <config id="personneDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://13.246.0.44:5432/personne</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config>
-  	<!-- CONFIGURATION DEV -->
-<!--  <config id="personneDS"> -->
+<!--   <config id="personneDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://localhost:5432/personne</property> -->
-<!--     <property name="username">postgres</property> -->
-<!--     <property name="password">postgres</property> -->
+<!--     <property name="url">jdbc:postgresql://13.246.0.44:5432/personne</property> -->
+<!--     <property name="username">devedbmdb</property> -->
+<!--     <property name="password">devedbmdb</property> -->
 <!--   </config> -->
+  	<!-- CONFIGURATION DEV -->
+ <config id="personneDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/personne</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config>
   <query id="addPerson" useConfig="personneDS">
     <sql>INSERT INTO public.personne(nom,prenom,"nomPere", "nomMere", "dateNaissance", "lieuNaissance", "situationMatrimonial", 
 	    "idPieceIdentite", sexe, societe_mandataire, idadresse, idrole, tel,e_mail,"idUtilisateur", engagement, civilite, 
@@ -857,6 +857,7 @@
         </call-query>
     </resource>
     
+<!--  REFACTORING REQUEST  -->
   <resource path="addPerson2" method="POST">
     <description />
     <call-query href="addPerson2">
@@ -911,5 +912,296 @@
     <param type="IN" name="idConjoint" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <param type="IN" name="nationalite" paramType="SCALAR" sqlType="STRING" optional="true" />
     <result outputType="json">{"data":{"idPersonne":"$idPersonne"}}</result>
+  </query>
+  
+  <resource path="personData/id/{id}" method="GET">
+    <description />
+    <call-query href="personData-by-id">
+      <with-param name="idPersonne" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="personData-by-id" useConfig="personneDS">
+    <sql>
+    	SELECT * FROM public.personne personne 
+    	LEFT JOIN public.adresse adresse ON personne.idadresse = adresse."idAdresse" 
+    	LEFT JOIN public.role role ON role.id_role = personne.idrole 
+    	LEFT JOIN public."pieceIdentite" identite ON identite.id = personne."idPieceIdentite" 
+    	LEFT JOIN public."typePieceIdentite" tpi ON tpi."idTypePiece" = identite."idTypePiece" 
+    	LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" 
+    	LEFT JOIN public.nationalite ON nationalite.code = personne.nationalite 
+    	LEFT JOIN public."situationMatrimoniale" sm ON sm."idSituationMatrimonial" = personne."situationMatrimonial"
+    	WHERE "idPersonne"=:idPersonne
+	</sql>
+    <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+		{
+		"data":{
+			"idPersonne":"$idPersonne", 
+			"nom":"$nom",
+			"prenom":"$prenom",
+			"nomPere":"$nomPere", 
+			"nomMere":"$nomMere", 
+			"dateNaissance":"$dateNaissance", 
+			"lieuNaissance":"$lieuNaissance", 
+			"situationMatrimonial":"$situationMatrimonial", 
+		    "idPieceIdentite":"$idPieceIdentite", 
+		    "sexe":"$sexe", 
+		    "societe_mandataire":"$societe_mandataire", 
+		    "idadresse":"$idadresse", 
+		    "idrole":"$idrole", 
+		    "tel":"$tel",
+		    "e_mail":"$e_mail",
+		    "idUtilisateur":"$idUtilisateur", 
+		    "engagement":"$engagement", 
+		    "civilite":"$civilite", 
+		    "idPersonneSociete":"$idPersonneSociete", 
+		    "idConjoint":"$idConjoint", 
+		    "tel2":"$tel2",
+		    "nationalite":"$nationalite",
+		    "nationaliteModel": {
+		    	"code": "$code",
+		    	"libelle": "$libelle"
+		    },
+		    "adresse": {
+		    	"idAdresse":"$idAdresse",
+		    	"idFokontany":"$idFokontany",
+		    	"idCommune":"$idCommune",
+		    	"idRegion":"$idRegion",
+		    	"idDistrict":"$idDistrict",
+		    	"idArrondissement":"$idArrondissement",
+		    	"adresse":"$adresse",
+		    	"idProvince":"$idProvince",
+		    	"codePays":"$codePays",
+		    	"idVille":"$idVille"
+		    },
+		    "role":{
+		    	"id_role":"$id_role",
+		    	"libelle_role":"$libelle_role",
+		    	"id_parent":"$id_parent"
+		    },
+		    "identite":{
+		    	"id": "$idPieceIdentite",
+		    	"dateDelivrancePiece": "$dateDelivrancePiece",
+		    	"lieuDelivrancePiece": "$lieuDelivrancePiece",
+		    	"numeroPiece": "$numeroPiece",
+		    	"idTypePiece": "$idTypePiece",
+		    	"typePieceIdentite": {
+		    		"idTypePiece": $idTypePiece,
+		    		"nomTypePiece": "$nomTypePiece"
+		    	}
+		    },
+		    "conjoint":{
+		   		"idAdresse":"$idAdresse",
+		    	"idConjoint":"$idConjoint",
+		    	"nomConjoint":"$nomConjoint",
+		    	"prenomConjoint":"$prenomConjoint",
+		    	"mailConjoint":"$mailConjoint",
+		    	"telConjoint":"$telConjoint"
+		    },
+		    "maritalSituation": {
+		    	"libelleSituationMatrimonial": "$libelleSituationMatrimonial",
+		    	"codeSituationMatrimonial": "$codeSituationMatrimonial"
+		    }
+	    }}
+	</result>
+  </query>
+  
+  <resource path="personData/email/{email}" method="GET">
+    <description />
+    <call-query href="personData-by-email">
+      <with-param name="email" query-param="email" />
+    </call-query>
+  </resource>
+  <query id="personData-by-email" useConfig="personneDS">
+    <sql>
+    	SELECT * FROM public.personne personne 
+    	LEFT JOIN public.adresse adresse ON personne.idadresse = adresse."idAdresse" 
+    	LEFT JOIN public.role role ON role.id_role = personne.idrole 
+    	LEFT JOIN public."pieceIdentite" identite ON identite.id = personne."idPieceIdentite" 
+    	LEFT JOIN public."typePieceIdentite" tpi ON tpi."idTypePiece" = identite."idTypePiece" 
+    	LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" 
+    	LEFT JOIN public.nationalite ON nationalite.code = personne.nationalite 
+    	LEFT JOIN public."situationMatrimoniale" sm ON sm."idSituationMatrimonial" = personne."situationMatrimonial"
+    	WHERE "e_mail"=:email
+	</sql>
+    <param type="IN" name="email" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">
+		{"data":{"idPersonne":"$idPersonne", "nom":"$nom","prenom":"$prenom","nomPere":"$nomPere", "nomMere":"$nomMere", "dateNaissance":"$dateNaissance", "lieuNaissance":"$lieuNaissance", "situationMatrimonial":"$situationMatrimonial", 
+	    "idPieceIdentite":"$idPieceIdentite", "sexe":"$sexe", "societe_mandataire":"$societe_mandataire", "idadresse":"$idadresse", "idrole":"$idrole", "tel":"$tel","e_mail":"$e_mail","idUtilisateur":"$idUtilisateur", "engagement":"$engagement", "civilite":"$civilite", 
+	    "idPersonneSociete":"$idPersonneSociete", "idConjoint":"$idConjoint", "tel2":"$tel2","nationalite":"$nationalite",
+	    "nationaliteModel": {
+	    	"code": "$code",
+	    	"libelle": "$libelle"
+	    },
+	    "adresse": {
+	    	"idAdresse":"$idAdresse",
+	    	"idFokontany":"$idFokontany",
+	    	"idCommune":"$idCommune",
+	    	"idRegion":"$idRegion",
+	    	"idDistrict":"$idDistrict",
+	    	"idArrondissement":"$idArrondissement",
+	    	"adresse":"$adresse",
+	    	"idProvince":"$idProvince",
+	    	"codePays":"$codePays",
+	    	"idVille":"$idVille"
+	    },
+	    "role":{
+	    	"id_role":"$id_role",
+	    	"libelle_role":"$libelle_role",
+	    	"id_parent":"$id_parent"
+	    },
+	    "identite":{
+	    	"id": "$idPieceIdentite",
+	    	"dateDelivrancePiece": "$dateDelivrancePiece",
+	    	"lieuDelivrancePiece": "$lieuDelivrancePiece",
+	    	"numeroPiece": "$numeroPiece",
+	    	"idTypePiece": "$idTypePiece",
+	    	"typePieceIdentite": {
+	    		"idTypePiece": $idTypePiece,
+	    		"nomTypePiece": "$nomTypePiece"
+	    	}
+	    },
+	    "conjoint":{
+	   		"idAdresse":"$idAdresse",
+	    	"idConjoint":"$idConjoint",
+	    	"nomConjoint":"$nomConjoint",
+	    	"prenomConjoint":"$prenomConjoint",
+	    	"mailConjoint":"$mailConjoint",
+	    	"telConjoint":"$telConjoint"
+	    },
+	    "maritalSituation": {
+	    	"libelleSituationMatrimonial": "$libelleSituationMatrimonial",
+	    	"codeSituationMatrimonial": "$codeSituationMatrimonial"
+	    }
+	    }}
+	</result>
+  </query>
+  
+  <resource path="personData/keycloak/{uuid}" method="GET">
+    <description />
+    <call-query href="personData-by-keycloak">
+      <with-param name="idUtilisateur" query-param="uuid" />
+    </call-query>
+  </resource>
+  <query id="personData-by-keycloak" useConfig="personneDS">
+    <sql>
+    	SELECT * FROM public.personne personne 
+    	LEFT JOIN public.adresse adresse ON personne.idadresse = adresse."idAdresse" 
+    	LEFT JOIN public.role role ON role.id_role = personne.idrole 
+    	LEFT JOIN public."pieceIdentite" identite ON identite.id = personne."idPieceIdentite" 
+    	LEFT JOIN public."typePieceIdentite" tpi ON tpi."idTypePiece" = identite."idTypePiece" 
+    	LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" 
+    	LEFT JOIN public.nationalite ON nationalite.code = personne.nationalite 
+    	LEFT JOIN public."situationMatrimoniale" sm ON sm."idSituationMatrimonial" = personne."situationMatrimonial"
+    	WHERE "idUtilisateur"=:idUtilisateur
+	</sql>
+    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">
+		{"data":{"idPersonne":"$idPersonne", "nom":"$nom","prenom":"$prenom","nomPere":"$nomPere", "nomMere":"$nomMere", "dateNaissance":"$dateNaissance", "lieuNaissance":"$lieuNaissance", "situationMatrimonial":"$situationMatrimonial", 
+	    "idPieceIdentite":"$idPieceIdentite", "sexe":"$sexe", "societe_mandataire":"$societe_mandataire", "idadresse":"$idadresse", "idrole":"$idrole", "tel":"$tel","e_mail":"$e_mail","idUtilisateur":"$idUtilisateur", "engagement":"$engagement", "civilite":"$civilite", 
+	    "idPersonneSociete":"$idPersonneSociete", "idConjoint":"$idConjoint", "tel2":"$tel2","nationalite":"$nationalite",
+	    "nationaliteModel": {
+	    	"code": "$code",
+	    	"libelle": "$libelle"
+	    },
+	    "adresse": {
+	    	"idAdresse":"$idAdresse",
+	    	"idFokontany":"$idFokontany",
+	    	"idCommune":"$idCommune",
+	    	"idRegion":"$idRegion",
+	    	"idDistrict":"$idDistrict",
+	    	"idArrondissement":"$idArrondissement",
+	    	"adresse":"$adresse",
+	    	"idProvince":"$idProvince",
+	    	"codePays":"$codePays",
+	    	"idVille":"$idVille"
+	    },
+	    "role":{
+	    	"id_role":"$id_role",
+	    	"libelle_role":"$libelle_role",
+	    	"id_parent":"$id_parent"
+	    },
+	    "identite":{
+	    	"id": "$idPieceIdentite",
+	    	"dateDelivrancePiece": "$dateDelivrancePiece",
+	    	"lieuDelivrancePiece": "$lieuDelivrancePiece",
+	    	"numeroPiece": "$numeroPiece",
+	    	"idTypePiece": "$idTypePiece",
+	    	"typePieceIdentite": {
+	    		"idTypePiece": $idTypePiece,
+	    		"nomTypePiece": "$nomTypePiece"
+	    	}
+	    },
+	    "conjoint":{
+	   		"idAdresse":"$idAdresse",
+	    	"idConjoint":"$idConjoint",
+	    	"nomConjoint":"$nomConjoint",
+	    	"prenomConjoint":"$prenomConjoint",
+	    	"mailConjoint":"$mailConjoint",
+	    	"telConjoint":"$telConjoint"
+	    },
+	    "maritalSituation": {
+	    	"libelleSituationMatrimonial": "$libelleSituationMatrimonial",
+	    	"codeSituationMatrimonial": "$codeSituationMatrimonial"
+	    }
+	    }}
+	</result>
+  </query>
+  
+  <resource path="getAddressById/{addressId}" method="GET">
+    <description />
+    <call-query href="getAddressById">
+      <with-param name="idAdresse" query-param="addressId" />
+    </call-query>
+  </resource>
+  <query id="getAddressById" useConfig="personneDS">
+    <sql>
+        SELECT * FROM public.adresse WHERE "idAdresse"=:idAdresse
+    </sql>
+    <param type="IN" name="idAdresse" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"data":{
+    	"idAdresse":"$idAdresse",
+        "idFokontany":"$idFokontany",
+        "idCommune":"$idCommune",
+        "idRegion":"$idRegion",
+        "idDistrict":"$idDistrict",
+        "idArrondissement":"$idArrondissement",
+        "adresse":"$adresse",
+        "idProvince":"$idProvince",
+        "codePays":"$codePays",
+        "idVille":"$idVille",
+        "longitude": $longitude,
+        "latitude": $latitude
+    }}</result>
+  </query>
+  
+  <resource path="getAddressByPersonId/{personId}" method="GET">
+    <description />
+    <call-query href="getAddressByPersonId">
+      <with-param name="idPersonne" query-param="personId" />
+    </call-query>
+  </resource>
+  <query id="getAddressByPersonId" useConfig="personneDS">
+    <sql>
+        SELECT adresse.* 
+        FROM public.adresse 
+        JOIN public.personne ON personne.idadresse = adresse."idAdresse"
+        WHERE personne."idPersonne"=:idPersonne
+    </sql>
+    <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"data":{
+    	"idAdresse":"$idAdresse",
+        "idFokontany":"$idFokontany",
+        "idCommune":"$idCommune",
+        "idRegion":"$idRegion",
+        "idDistrict":"$idDistrict",
+        "idArrondissement":"$idArrondissement",
+        "adresse":"$adresse",
+        "idProvince":"$idProvince",
+        "codePays":"$codePays",
+        "idVille":"$idVille",
+        "longitude": $longitude,
+        "latitude": $latitude
+    }}</result>
   </query>
 </data>
