@@ -423,4 +423,118 @@
     	"name": "$city_name"
     }}}</result>
   </query>
+  
+  <resource path="fetchAddressDetail" method="GET">
+    <description />
+    <call-query href="fetchAddressDetail">
+      <with-param name="idFokontany" query-param="idFokontany" />
+      <with-param name="idArrondissement " query-param="idArrondissement " />
+      <with-param name="idProvince" query-param="idProvince" />
+      <with-param name="idRegion" query-param="idRegion" />
+      <with-param name="idDistrict" query-param="idDistrict" />
+      <with-param name="idCommune" query-param="idCommune" />
+    </call-query>
+  </resource>
+  <query id="fetchAddressDetail" useConfig="localisationDS">
+    <sql> SELECT 
+	    fokontany.name as f_name, fokontany.id as f_id, 
+	    borough.name as b_name, borough.id as b_id, 
+	    common.name as c_name, common.id as c_id, 
+	    district.name as d_name, district.id as d_id, 
+	    region.name as r_name, region.id as r_id, 
+	    province.name as p_name, province.id as p_id,
+	    province_mapping.*,
+	    region_mapping.*,
+	    district_mapping.*,
+	    common_mapping.*,
+	    fokontany_mapping.*
+		FROM public.province
+		LEFT JOIN public."provinceMapping" province_mapping ON province_mapping."idProvinceOrinasa" = province.id
+		LEFT JOIN public.region ON region.province_id = province.id
+		LEFT JOIN public.region_mapping ON region_mapping."idRegion" = region.id
+		LEFT JOIN public.district ON district.region_id = region.id
+		LEFT JOIN public."district_mapping" district_mapping ON district_mapping."idDistrict" = district.id
+		LEFT JOIN public.common ON common.district_id = district.id
+		LEFT JOIN public."common_mapping" common_mapping ON common_mapping."idCommon" = common.id
+		LEFT JOIN public.borough ON borough.common_id = common.id
+		LEFT JOIN public.fokontany ON fokontany.borough_id = borough.id
+		LEFT JOIN public."fokontanyMapping" fokontany_mapping ON fokontany_mapping."idFokontanyOrinasa" = fokontany.id
+		WHERE common.id= :idCommune AND district.id= :idDistrict AND region.id= :idRegion AND province.id= :idProvince AND borough.id= :idArrondissement AND fokontany.id= :idFokontany
+	</sql>
+    <param type="IN" name="idFokontany" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idArrondissement " sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idProvince" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idRegion" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idDistrict" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idCommune" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{
+    	"data":{
+		    "province":{
+		    	"id": $p_id,
+		    	"name": "$p_name",
+		    	"provinceMapping": {
+		    		"idProvinceOrinasa": $idProvinceOrinasa,
+		    		"idProvinceDgi": $idProvinceDgi
+		    	}
+		    },
+		    "region":{
+		    	"id": $r_id,
+		    	"name": "$r_name",
+		    	"province_id": $p_id,
+		    	"regionMapping": {
+		    		"idRegion": $idRegion,
+			    	"idRegionRncs": "$idRegionRncs",
+			    	"idRegionDgi": $idRegionDgi
+			    }
+		    },
+		    "district":{
+		    	"id": $d_id,
+		    	"name": "$d_name",
+		    	"region_id": $r_id,
+		    	"districtMapping": {
+		    		"idDistrict": $idDistrict,
+		    		"idDistrictRncs": "$idDistrictRncs",
+		    		"idDistrictDgi": $idDistrictDgi
+		    	}
+		    },
+		    "commune":{
+		    	"id": $c_id,
+		    	"name": "$c_name",
+		    	"district_id": $d_id,
+		    	"commonMapping": {
+		    		"IdCommon": $IdCommon,
+		    		"idCommonRncs": "$idCommonRncs",
+		    		"idCommonDgi": $idCommonDgi
+		    	}
+		    },
+		    "arrondissement":{
+		    	"id": $b_id,
+		    	"name": "$b_name",
+		    	"common_id": $c_id
+		    },
+		    "fokontany":{
+		    	"id": $f_id,
+		    	"name": "$f_name",
+		    	"borough_id": $b_id,
+		    	"fokontanyMapping": {
+		    		"idFokontanyOrinasa": $idFokontanyOrinasa,
+		    		"idFokontanyDgi": "$idFokontanyDgi"
+		    	}
+		    }
+		}
+	}</result>
+  </query>
+  
+  <resource path="fetchFokontanysByBorough/{boroughId}" method="GET">
+    <description>List of all fokontany by borough id</description>
+    <call-query href="fetchFokontanysByBorough">
+      <with-param name="borough_id" query-param="boroughId" />
+    </call-query>
+  </resource>
+  <query id="fetchFokontanysByBorough" useConfig="localisationDS">
+    <sql>SELECT id, name, borough_id
+	FROM public.fokontany WHERE borough_id= :borough_id</sql>
+    <param type="IN" name="borough_id" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{"data":{"fokontany":[{"id":"$id","name":"$name","borough_id":"$borough_id"}]}}</result>
+  </query>
 </data>
