@@ -1,5 +1,6 @@
 <data transports="http https" serviceGroup="mg.gov.edbm.societe.documentDS" serviceNamespace="" name="document">
   <description />
+
   <!-- CONFIGURATION PROD -->
    <config id="documentDS">
     <property name="driverClassName">org.postgresql.Driver</property>
@@ -21,6 +22,7 @@
 <!--     <property name="username">postgres</property> -->
 <!--     <property name="password">postgres</property> -->
 <!--   </config> -->
+ 
   <resource method="GET" path="listdocumentToUploadByLegalStatus">
     <description />
     <call-query href="documentToUploadByLegalStatus">

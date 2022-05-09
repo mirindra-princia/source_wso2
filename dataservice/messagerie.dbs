@@ -1,7 +1,8 @@
 <data name="messagerie" serviceNamespace="" serviceGroup="" transports="https http">
     <description/>
+
     	<!-- CONFIGURATION PROD -->
-	<config id="messagerieDS">
+   <config id="messagerieDS">
  	 <property name="driverClassName">org.postgresql.Driver</property>
 	  <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/messagerie</property>
 	  <property name="username">devedbmdb</property>
@@ -21,6 +22,7 @@
 <!-- 	    <property name="username">postgres</property> -->
 <!-- 	    <property name="password">postgres</property> -->
 <!--  	</config> -->
+
 
 	<resource method="POST" path="addMessage">
 	    <description>add message</description>

@@ -1,7 +1,8 @@
 <data name="localisation" serviceGroup="mg.gov.edbm.societe.localisationDS" transports="http https">
   <description>Service adresse</description>
+
   	<!-- CONFIGURATION PROD -->
-   <config id="localisationDS">
+ <config id="localisationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/localisation</property>
     <property name="username">devedbmdb</property>
@@ -21,6 +22,7 @@
 <!--     <property name="username">postgres</property> -->
 <!--     <property name="password">postgres</property> -->
 <!--   </config> -->
+
   <resource path="province" method="GET">
     <description>List of all province</description>
     <call-query href="selectAllProvinces" />

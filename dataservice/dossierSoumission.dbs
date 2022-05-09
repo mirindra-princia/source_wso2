@@ -15,7 +15,7 @@
 	    <property name="password">devedbmdb</property>
    	</config> -->
    	<!-- CONFIGURATION DEV -->
-<!--    	<config id="dossierSomissionDS"> -->
+<!--   <config id="dossierSomissionDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property> -->
 <!--     <property name="username">postgres</property> -->
