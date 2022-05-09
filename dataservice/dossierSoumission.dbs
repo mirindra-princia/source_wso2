@@ -1,31 +1,917 @@
-<data name="dossierSoumission" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.dossierSoumissionDS" transports="http https">
+<data transports="http https" serviceGroup="mg.gov.edbm.societe.dossierSoumissionDS" serviceNamespace="" name="dossierSoumission">
   <description />
-
- <config id="dossierSomissionDS">
+  <!-- CONFIGURATION PROD -->
+     <config id="dossierSomissionDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/dossier_somission</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
-  </config>
+  </config> 
+  <!-- CONFIGURATION TEST -->
+ <!--  <config id="dossierSomissionDS">
+    	<property name="driverClassName">org.postgresql.Driver</property>
+	    <property name="url">jdbc:postgresql://13.246.0.44:5432/dossier_somission</property>
+	    <property name="username">devedbmdb</property>
+	    <property name="password">devedbmdb</property>
+   	</config> -->
+   	<!-- CONFIGURATION DEV -->
 <!--   <config id="dossierSomissionDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property> -->
 <!--     <property name="username">postgres</property> -->
 <!--     <property name="password">postgres</property> -->
 <!--   </config> -->
-<!--    	<config id="dossierSomissionDS"> -->
-<!--     	<property name="driverClassName">org.postgresql.Driver</property> -->
-<!-- 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/dossier_somission</property> -->
-<!-- 	    <property name="username">devedbmdb</property> -->
-<!-- 	    <property name="password">devedbmdb</property> -->
-<!--    	</config>  -->
-<!--   <config id="dossierSomissionDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property> -->
-<!--     <property name="username">devedbmdb</property> -->
-<!--     <property name="password">devedbmdb</property> -->
-<!--   </config> -->
-  <resource method="POST" path="addFolderNumber">
+  <query id="addNumeroDossier" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public.dossier(
+	 "numeroDossier","idIpAdress")
+	VALUES (:numeroDossier,:idIpAdress) RETURNING "idDossier","numeroDossier"</sql>
+    <param type="IN" name="numeroDossier" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="idIpAdress" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"idDossiers":{"idDossier":$idDossier,"numeroDossier":"$numeroDossier"}}</result>
+  </query>
+  <query id="updateLienDossier" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.dossier
+	SET  "lienDossier"=:lienDossier
+	WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="lienDossier" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+  </query>
+  <query id="addDocument" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public.document(
+	"nomDocument", "idDossier", "idTypeDocument","path")
+	VALUES (:nomDocument, :idDossier, :idTypeDocument,:path);</sql>
+    <param type="IN" name="nomDocument" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idTypeDocument" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="path" paramType="SCALAR" sqlType="STRING" />
+  </query>
+  <query id="addLinkDocument" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public."lienFormulaire"(
+	"idDossier", "idSociete", "lienConsultationFormulaire", "lienEditionFormulaire")
+	VALUES (:idDossier, :idSociete, :lienConsultationFormulaire, :lienEditionFormulaire)</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="lienEditionFormulaire" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="lienConsultationFormulaire" paramType="SCALAR" sqlType="STRING" />
+  </query>
+  <query id="verifyLink" useConfig="dossierSomissionDS">
+    <sql>WITH
+    constant_type AS (VALUES (:type)),
+    pod AS (VALUES (:pod))
+
+SELECT  CASE WHEN (table constant_type)='read' THEN (SELECT "idDossier" as exitinglink from public."lienFormulaire" where "lienConsultationFormulaire"=(table pod) LIMIT 1 ) 
+						ELSE  (SELECT "idDossier" as exitinglink from public."lienFormulaire" where "lienEditionFormulaire"=(table pod) LIMIT 1 ) 
+						END
+from public."lienFormulaire" LIMIT 1  
+</sql>
+    <param type="IN" name="type" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="pod" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"links":{"link":{"idDossier":$exitinglink }}}</result>
+  </query>
+  <query id="getfolderIdByLink" useConfig="dossierSomissionDS">
+    <sql>WITH
+    constant_type AS (VALUES (:type_link)),
+    pod AS (VALUES (:pod))
+
+SELECT  CASE WHEN (table constant_type)='read' THEN (SELECT "idDossier" from public."lienFormulaire" where "lienConsultationFormulaire"=(table pod) LIMIT 1 ) 
+						ELSE  (SELECT "idDossier"  from public."lienFormulaire" where "lienEditionFormulaire"=(table pod) LIMIT 1 ) 
+						END
+from public."lienFormulaire" LIMIT 1     
+</sql>
+    <param type="IN" name="type_link" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="pod" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"idDossiers":{"dossier":{"idDossier":$idDossier}}}</result>
+  </query>
+  <query id="getListDocumentById" useConfig="dossierSomissionDS">
+    <sql>SELECT "nomDocument", "idDossier", "nbDeposer", "idTypeDocument", "idDocument", path
+	FROM public.document WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"documents":{"document":[{"nomDocument":"$nomDocument","idDossier":$idDossier,"nbDeposer":"$nbDeposer", "idTypeDocument":"$idTypeDocument", "idDocument":"$idDocument", path:"$path"}]}}</result>
+  </query>
+  <query id="getInformationDossier" useConfig="dossierSomissionDS">
+    <sql>SELECT public.dossier."idDossier", "lienDossier", "dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", updated_at, "idStatutDossier", "numeroDossier","lienEditionFormulaire",step,"idProgression","dateSoumission", "createdAt"
+	FROM public.dossier left JOIN public."lienFormulaire" on public.dossier."idDossier"=public."lienFormulaire"."idDossier" where public.dossier."idDossier"=:idDossier</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"dossier":{"idDossier":$idDossier,"numeroDossier":"$numeroDossier","lienEditionFormulaire":"$lienEditionFormulaire","idStatutDepot":"$idStatutDepot","idStatutDossier":"$idStatutDossier","step":"$step","dateSoumission":"$dateSoumission","idProgression":"$idProgression", "createdAt":"$createdAt"}}</result>
+  </query>
+  <query id="updateStatutNouveau" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.statut SET nouveau=:value WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="value" paramType="SCALAR" sqlType="BOOLEAN" />
+  </query>
+  <query id="updateStatutMAJ" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.statut SET "MAJ"=:value WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="value" paramType="SCALAR" sqlType="BOOLEAN" />
+  </query>
+  <query id="updateStatutDossier" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.dossier
+	SET "idStatutDossier"=:idStatutDossier
+	WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="idStatutDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+  </query>
+  <query id="selectAllFolder" useConfig="dossierSomissionDS">
+    <sql>SELECT *
+	FROM public.dossier</sql>
+    <result />
+  </query>
+  <query id="statistiqueDossierNouveauTermine" useConfig="dossierSomissionDS">
+    <sql>
+SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"=ANY(:idStatutDossier::int[])</sql>
+    <param type="IN" name="idStatutDossier" paramType="ARRAY" sqlType="STRING" />
+    <result outputType="json">{"statistiques":{"nombre":{"quantite":$nombre}}}</result>
+  </query>
+  <query id="statistiqueTotal" useConfig="dossierSomissionDS">
+    <sql>SELECT COUNT("idDossier") as nombre  FROM public.dossier</sql>
+    <param type="IN" name="idStatutDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"statistiquesTotal":{"nombre":{"quantite":$nombre}}}</result>
+  </query>
+  <query id="listFolderDESC" useConfig="dossierSomissionDS">
+    <sql>SELECT "idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", "numeroDossier", updated_at, "idStatutDossier", "idProgression", "createdAt"
+	FROM public.dossier order by "dateSoumission" desc</sql>
+    <result outputType="json">
+{"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission", "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",  "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier", "idProgression":$idProgression, "createdAt":"$createdAt" }]}}</result>
+  </query>
+  <query id="listFolderASC" useConfig="dossierSomissionDS">
+    <sql>SELECT "idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", "numeroDossier", updated_at, "idStatutDossier", "idProgression", "createdAt"
+	FROM public.dossier order by "dateSoumission" asc</sql>
+    <result outputType="json">
+{"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission", "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",  "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier", "idProgression": $idProgression, "createdAt":"$createdAt" }]}}</result>
+  </query>
+  <query id="addComment" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public.commentaire(
+	"idEntite", commentaires, "idDossier", "idUtilisateur", "idStatutCommentaire")
+	VALUES (:idGroup, :commentaire, :idDossier, :idUtilisateur, :idStatutCommentaire);</sql>
+    <param type="IN" name="idGroup" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="commentaire" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="idStatutCommentaire" paramType="SCALAR" sqlType="INTEGER" defaultValue="null" />
+  </query>
+  <query id="commentListByGroup" useConfig="dossierSomissionDS">
+    <sql>SELECT "idEntite", commentaires, "dateCommentaire", "idDossier", "idUtilisateur", "idStatutCommentaire", "idCommentaire"
+	FROM public.commentaire WHERE "idEntite"=ANY(:idEntite ::varchar[]) and "idDossier"=:idDossier ORDER BY "dateCommentaire"  DESC</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idEntite" paramType="ARRAY" sqlType="STRING" />
+    <result outputType="json">{"comments":{"comment":[{"idEntite":"$idEntite", "commentaires":"$commentaires", "dateCommentaire":"$dateCommentaire", "idDossier":"$idDossier", "idUtilisateur":"$idUtilisateur", "idStatutCommentaire":"$idStatutCommentaire", "idCommentaire":"$idCommentaire"
+}]}}</result>
+  </query>
+  <query id="commentListAll" useConfig="dossierSomissionDS">
+    <sql>SELECT "idEntite", commentaires, "dateCommentaire", "idDossier", "idUtilisateur", "idStatutCommentaire", "idCommentaire"
+	FROM public.commentaire WHERE  "idDossier"=:idDossier ORDER BY "dateCommentaire" DESC</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"comments":{"comment":[{"idEntite":"$idEntite", "commentaires":"$commentaires", "dateCommentaire":"$dateCommentaire", "idDossier":"$idDossier", "idUtilisateur":"$idUtilisateur", "idStatutCommentaire":"$idStatutCommentaire", "idCommentaire":"$idCommentaire"
+}]}}</result>
+  </query>
+  <query id="addRdv" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public."rendezVous"(
+	 "idDossier", "dateRendezVous", "idUtilisateur","heureRdv","idTypeRendezVous")
+	VALUES (:idDossier, :dateRendezVous::date, :idUtilisateur,:heureRdv::time, :idTypeRendezVous);</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="dateRendezVous" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="heureRdv" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="idTypeRendezVous" paramType="SCALAR" sqlType="INTEGER" />
+  </query>
+  <query id="addFolderValidationStatus" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public."dossierStatutValidation"(
+	"idDossier", "idStatutValidation")
+	VALUES (:idDossier, :idStatutValidation);</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idStatutValidation" paramType="SCALAR" sqlType="INTEGER" />
+  </query>
+  <query id="deleteFolderValidationStatus" useConfig="dossierSomissionDS">
+    <sql>DELETE FROM public."dossierStatutValidation"
+	WHERE "idDossier"=:idDossier and "idStatutValidation"=:idStatutValidation</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idStatutValidation" paramType="SCALAR" sqlType="INTEGER" />
+  </query>
+  <query id="listFolderValidationStatus" useConfig="dossierSomissionDS">
+    <sql>SELECT "idDossier", "idStatutValidation"
+	FROM public."dossierStatutValidation" WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"folderValidationStatuses":{"folderValidationStatus":[{"idDossier":"$idDossier","idStatutValidation":"$idStatutValidation"}]}}</result>
+  </query>
+  <query id="listAllValidationStatus" useConfig="dossierSomissionDS">
+    <sql>SELECT "idStatutValidation", "libelleStatutValidation"
+	FROM public."statutValidation"</sql>
+    <result outputType="json">{"validationStatuses":{"validationStatus":[{"idStatutValidation":"$idStatutValidation","libelleStatutValidation":"$libelleStatutValidation"}]}}</result>
+  </query>
+  <query id="listRdv" useConfig="dossierSomissionDS">
+    <sql>SELECT *
+	FROM public."rendezVous" WHERE "idDossier"=:idDossier ORDER BY "dateRendezVous" DESC, "heureRdv" DESC</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+{"rdvs":{"rdv":[{"idRendezVous":"$idRendezVous", "idDossier":"$idDossier", "dateRendezVous":"$dateRendezVous", "idUtilisateur":"$idUtilisateur", "heureRdv":"$heureRdv","idTypeRendezVous":"$idTypeRendezVous"}]}}</result>
+  </query>
+  <resource path="getListRdvByType" method="GET">
+    <description>liste des rendez d'un dossier relative au type données</description>
+    <call-query href="getListRdvByType">
+      <with-param name="idDossier" query-param="folderId" />
+      <with-param name="idTypeRendezVous" query-param="appointmentTypeId" />
+    </call-query>
+  </resource>
+  <query id="getListRdvByType" useConfig="dossierSomissionDS">
+    <sql>SELECT *
+	FROM public."rendezVous" WHERE "idDossier"=:idDossier AND "idTypeRendezVous"=:idTypeRendezVous ORDER BY "dateRendezVous" DESC, "heureRdv" DESC</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idTypeRendezVous" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+		{"data":{"rdv":[{"idRendezVous":"$idRendezVous", "idDossier":"$idDossier", "dateRendezVous":"$dateRendezVous", "idUtilisateur":"$idUtilisateur", "heureRdv":"$heureRdv","idTypeRendezVous":"$idTypeRendezVous"}]}}</result>
+  </query>
+  <query id="listStatutDepot" useConfig="dossierSomissionDS">
+    <sql>SELECT "idStatutDepot", "nomStatutDepot"
+	FROM public."statutDepot";</sql>
+    <result outputType="json">{"depositStatuses":{"depositStatuse":[{"idStatutDepot":"$idStatutDepot", "nomStatutDepot":"$nomStatutDepot"
+}]}}</result>
+  </query>
+  <query id="setFolderDepositStatus" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.dossier
+	SET  "idStatutDepot"=:idStatutDepot
+	WHERE "idDossier"=:idDossier ;</sql>
+    <param type="IN" name="idStatutDepot" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idDossier " paramType="SCALAR" sqlType="INTEGER" />
+  </query>
+  <query id="addIpAdress" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public."adresseIp"(
+	"ipAdress", blacklist)
+	VALUES ( :ipAdress, :blacklist) RETURNING id;</sql>
+    <param type="IN" name="blacklist" paramType="SCALAR" sqlType="BOOLEAN" defaultValue="false" />
+    <param type="IN" name="ipAdress" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"idIpAdresses":{"idIpAdress":"$id"}}</result>
+  </query>
+  <query id="isBlacklist" useConfig="dossierSomissionDS">
+    <sql>SELECT "ipAdress", id, blacklist FROM public."adresseIp" WHERE "ipAdress"=:ipAdress</sql>
+    <param type="IN" name="ipAdress" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"isBlackLists":{"isBlackList":{"blacklist":$blacklist,"id":"$id"}}}</result>
+  </query>
+  <query id="addFolderIdIpAdress" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public.dossier(
+	 "idIpAdress")
+	VALUES (:idIpAdress) RETURNING "idDossier"</sql>
+    <param type="IN" name="idIpAdress" paramType="SCALAR" sqlType="STRING" />
+  </query>
+  <query id="insertAnEmptyFolder" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public.dossier(
+	"idIpAdress",step)
+	VALUES ( :idIpAdress,:step) RETURNING "idDossier";</sql>
+    <param type="IN" name="idIpAdress" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="step" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"idDossiers":{"idDossier":$idDossier}}</result>
+  </query>
+  <query id="updateStep" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.dossier
+	SET  step=:step
+	WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="step" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+  </query>
+  <query id="deleteDocument" useConfig="dossierSomissionDS">
+    <sql>DELETE FROM public.document
+	WHERE "path"=:path</sql>
+    <param type="IN" name="path" paramType="SCALAR" sqlType="STRING" optional="false" />
+  </query>
+  <query id="setFolderNumber" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.dossier
+	SET   "numeroDossier"=:numeroDossier
+	WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="numeroDossier" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+  </query>
+  <query id="setFolderProgress" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.dossier
+	SET   "idProgression"=:idProgression 
+	WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="idProgression" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+  </query>
+  <query id="listProgression" useConfig="dossierSomissionDS">
+    <sql>SELECT "idProgression", libelle
+	FROM public.progression;</sql>
+    <result outputType="json">{"progressions":{"progression":[{"idProgression":"$idProgression","libelle":"$libelle"}]}}</result>
+  </query>
+  <query id="factureDatas" useConfig="dossierSomissionDS">
+    <sql>SELECT fd.id, fd.label, fd."refValue", fd.priority, fd."idOwner", tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureData" fd JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" ORDER BY tf.id ASC</sql>
+    <result outputType="json">{"data":{"factureDatas":[{
+    	"id":$id,
+    	"label":"$label",
+    	"refValue": $refValue,
+    	"priority": $priority,
+    	"idOwner": $idOwner,
+    	"typeFacturation": {
+    			"id": $idTypeFacture,
+    			"label": "$typeFacture"
+    		}
+    	}]
+    }}</result>
+  </query>
+  <query id="factureDataMaxPriority" useConfig="dossierSomissionDS">
+    <sql>SELECT MAX(priority) as max FROM public."factureData"</sql>
+    <result outputType="json">{"factureData":{
+    		"max":$max
+    	}}    	
+    </result>
+  </query>
+  <query id="companyFacture" useConfig="dossierSomissionDS">
+    <sql>SELECT fdd.id, fdd.value, fd.id as "idFactureData", fdd.label, fd."refValue", fdd."idOwner", tf.label as "typeFacture", tf.id as "idTypeFacture", fdd."idFactureData" FROM public."factureDataDossier" fdd JOIN public."factureData" fd ON fd.id = fdd."idFactureData" JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" JOIN public.facture ON facture.id = fdd."idFacture" WHERE "idDossier" = :idDossier</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"data":{"factureDatas":[{
+    	"id":$id,
+    	"value": $value,
+    	"idOwner": $idOwner,
+    	"factureData": {
+    		"id": $idFactureData,
+    		"label":"$label",
+    		"refValue": $refValue
+    	},
+    	"typeFacturation": {
+    			"id": $idTypeFacture,
+    			"label": "$typeFacture"
+    		}
+    	}]
+    }}</result>
+  </query>
+  <query id="companyCustomFacture" useConfig="dossierSomissionDS">
+    <sql>SELECT fdd.id, fdd.label, fdd.value, fdd."idFactureData", fdd."idOwner", tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureDataDossier" fdd JOIN public."typeFacture" tf ON tf.id = fdd."idTypeFacture" JOIN public.facture ON facture.id = fdd."idFacture" WHERE facture."idDossier" = :idDossier AND fdd."idFactureData" IS NULL</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"data":{"factureDataDossier":[{
+    	"id":$id,
+    	"label":"$label",
+    	"value": $value,
+    	"idFactureData": $idFactureData,
+    	"idOwner": $idOwner,
+    	"typeFacturation": {
+    			"id": $idTypeFacture,
+    			"label": "$typeFacture"
+    		}
+    	}]
+    }}</result>
+  </query>
+  <query id="saveCompanyBill" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public."factureDataDossier"("idFactureData", "idFacture", "label", "value", "idTypeFacture", "idOwner") VALUES (:idFactureData, :idFacture, :label, :value, :idTypeFacture, :idOwner) RETURNING id</sql>
+    <param type="IN" name="idFactureData" paramType="SCALAR" sqlType="INTEGER" optional="true" />
+    <param type="IN" name="idFacture" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="label" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="idOwner" paramType="SCALAR" sqlType="INTEGER" optional="true" />
+    <param type="IN" name="value" paramType="SCALAR" sqlType="DOUBLE" optional="false" />
+    <param type="IN" name="idTypeFacture" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"factureDataDossier":{"id": $id}}</result>
+  </query>
+  <query id="removeCompanyBills" useConfig="dossierSomissionDS">
+    <sql>DELETE FROM public."factureDataDossier" WHERE id=ANY(:ids::int[])</sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING" />
+  </query>
+  <query id="printDocuments" useConfig="dossierSomissionDS">
+    <sql>SELECT * FROM public."impressionDocument" WHERE "idDossier"=:idDossier</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{
+    		"printDoc": [{"id": $id, "path": "$path", "idDossier": $idDossier, "corporate": "$corporate"}]
+    	}}
+    </result>
+  </query>
+  <query id="printDocumentCorporate" useConfig="dossierSomissionDS">
+    <sql>SELECT * FROM public."impressionDocument" WHERE "idDossier"=:idDossier AND corporate = :corporate</sql>
+    <param type="IN" name="corporate" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{
+    		"printDoc": [{"id": $id, "path": "$path", "idDossier": $idDossier, "corporate": "$corporate", "createdAt": $createdAt}]
+    	}}
+    </result>
+  </query>
+  <query id="printDocument" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public."impressionDocument" (path, "idDossier", corporate) VALUES (:path, :idDossier, :corporate) RETURNING id</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="path" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="corporate" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"printDoc":{"id": $id}}</result>
+  </query>
+  <query id="updatePrintDocument" useConfig="dossierSomissionDS">
+    <sql>UPDATE public."impressionDocument" SET path = :path WHERE "idDossier" = :idDossier AND corporate = :corporate RETURNING id</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="corporate" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="path" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"printDoc":{"id": $id}}</result>
+  </query>
+  <query id="lastCommentByCorporate" useConfig="dossierSomissionDS">
+    <sql>SELECT com."idEntite", com."dateCommentaire", com."idStatutCommentaire", com."updatedAtStatutCommentaire" FROM (SELECT "idEntite", MAX("dateCommentaire") as "dateCommentaire" FROM public.commentaire WHERE "idDossier" = :idDossier GROUP BY "idEntite") tcom INNER JOIN public.commentaire com ON com."dateCommentaire" = tcom."dateCommentaire" AND com."idEntite" = tcom."idEntite"</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"comments": [{"idEntite":"$idEntite", "dateCommentaire":"$dateCommentaire", "idStatutCommentaire":"$idStatutCommentaire", "updatedAtStatutCommentaire": "$updatedAtStatutCommentaire"}]}}</result>
+  </query>
+  <query id="updateStatusOfLastCommentByCorporates" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.commentaire SET "updatedAtStatutCommentaire" = CURRENT_TIMESTAMP WHERE "idCommentaire" IN (SELECT com."idCommentaire" FROM (SELECT "idEntite", MAX("dateCommentaire") as "dateCommentaire" FROM public.commentaire WHERE "idDossier" = :idDossier GROUP BY "idEntite") tcom INNER JOIN public.commentaire com ON com."dateCommentaire" = tcom."dateCommentaire" AND com."idEntite" = tcom."idEntite")</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+  </query>
+  <query id="updateSubmitDate" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.dossier SET "dateSoumission" = CURRENT_TIMESTAMP WHERE "idDossier" = :idDossier</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+  </query>
+  <query id="saveBillStory" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public."historiquePaiement" ("uidUser", "idDossier", "statutPaiement") VALUES (:uidUser, :idDossier, :statutPaiement) RETURNING "id","statutPaiement"</sql>
+    <param type="IN" name="uidUser" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="statutPaiement" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"historique": {
+    	"id":$id,
+    	"statutPaiement":$statutPaiement,
+    }}
+    </result>
+  </query>
+  <query id="updateBillStory" useConfig="dossierSomissionDS">
+    <sql>UPDATE public."historiquePaiement" SET "uidUser"= :uidUser, "statutPaiement"= :statutPaiement, "updatedAt" = CURRENT_TIMESTAMP WHERE "idDossier"= :idDossier RETURNING "id","statutPaiement"</sql>
+    <param type="IN" name="uidUser" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="statutPaiement" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"historique": {
+    	"id":$id,
+    	"statutPaiement":$statutPaiement,
+    }}
+    </result>
+  </query>
+  <query id="billStory" useConfig="dossierSomissionDS">
+    <sql>SELECT * FROM public."historiquePaiement" WHERE "idDossier"= :idDossier</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"historique": {
+    	"id":$id,
+    	"uidUser":$uidUser,
+    	"idDossier": $idDossier,
+    	"statutPaiement":$statutPaiement,
+    	"createdAt": "$createdAt",
+    	"updatedAt": "$updatedAt"
+    }}
+    </result>
+  </query>
+  <query id="billStoryById" useConfig="dossierSomissionDS">
+    <sql>SELECT * FROM public."historiquePaiement" WHERE "id"= :id</sql>
+    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"historique": {
+    	"id":$id,
+    	"uidUser":$uidUser,
+    	"idDossier": $idDossier,
+    	"statutPaiement":$statutPaiement,
+    	"createdAt": "$createdAt",
+    	"updatedAt": "$updatedAt"
+    }}
+    </result>
+  </query>
+  <query id="minValidation" useConfig="dossierSomissionDS">
+    <sql>WITH T AS
+(
+SELECT "idDossier","idStatut", 
+       LAG("dateModification") OVER(PARTITION BY "idDossier" 
+	                         ORDER BY "dateModification") AS prec ,
+	   "dateModification" AS actuel
+FROM   public."historiqueStatutDossier"
+)
+SELECT  
+      /* age( actuel, prec)*/
+	  min( EXTRACT(EPOCH FROM (actuel - prec))) AS duree
+FROM   T where "idStatut"=4 or "idStatut"=3 ;
+	</sql>
+    <result outputType="json">{"data":{"duree":"$duree"}}</result>
+  </query>
+  <query id="maxValidation" useConfig="dossierSomissionDS">
+    <sql>
+		    WITH T AS
+		(
+		SELECT "idDossier","idStatut", 
+		       LAG("dateModification") OVER(PARTITION BY "idDossier" 
+			                         ORDER BY "dateModification") AS prec ,
+			   "dateModification" AS actuel
+		FROM   public."historiqueStatutDossier"
+		)
+		SELECT  
+		      /* age( actuel, prec)*/
+			  max( EXTRACT(EPOCH FROM (actuel - prec))) AS duree
+		FROM   T where "idStatut"=4 or "idStatut"=3 ;
+	</sql>
+    <result outputType="json">{"data":{"duree":"$duree"}}</result>
+  </query>
+  <query id="moyenneValidation" useConfig="dossierSomissionDS">
+    <sql>
+		WITH T AS
+			(
+			SELECT "idDossier","idStatut", 
+			       LAG("dateModification") OVER(PARTITION BY "idDossier" 
+				                         ORDER BY "dateModification") AS prec ,
+				   "dateModification" AS actuel
+			FROM   public."historiqueStatutDossier"
+			)
+			SELECT  
+			      /* age( actuel, prec)*/
+				  avg( EXTRACT(EPOCH FROM (actuel - prec))) AS duree
+			FROM   T where "idStatut"=4 or "idStatut"=3 ;
+	</sql>
+    <result outputType="json">{"data":{"duree":"$duree"}}</result>
+  </query>
+  <query id="getSubmitedFolder" useConfig="dossierSomissionDS">
+    <sql>SELECT count("idDossier")	FROM public.dossier where "numeroDossier" is not null</sql>
+    <result outputType="json">{"count":{"count":"$count"}}</result>
+  </query>
+  <query id="countFolder" useConfig="dossierSomissionDS">
+    <sql>
+		with T as(select CURRENT_DATE + i  as dateJour
+		from generate_series(date(now()-interval '6 days')- CURRENT_DATE, 
+		     date (now()) - CURRENT_DATE ) i where extract(dow from  CURRENT_DATE + i) between 1 and 5)	 
+			 select  date(datejour) as date,count(distinct("idDossier"))
+		from "historiqueStatutDossier" right join T
+		on date("dateModification")=T.dateJour and "idStatut"=:idStatutDossier  group by (date) order by(date) asc
+	</sql>
+    <param type="IN" name="idStatutDossier" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"data":{"statistic": [{"date":"$date", "count":"$count"}]}}</result>
+  </query>
+  <query id="moyenneImmatriculation" useConfig="dossierSomissionDS">
+    <sql>
+			SELECT  
+	avg(EXTRACT(EPOCH FROM ("historiqueStatutDossier"."dateModification"-"historiquePaiement"."createdAt" ))) AS duree
+	FROM public."historiquePaiement",public."historiqueStatutDossier"   where "historiquePaiement"."idDossier"="historiqueStatutDossier"."idDossier" and  "historiqueStatutDossier"."idStatut"=8 ;
+		</sql>
+    <result outputType="json">{"data":{"duree":"$duree"}}</result>
+  </query>
+  <query id="minImmatriculation" useConfig="dossierSomissionDS">
+    <sql>
+			SELECT  
+	min(EXTRACT(EPOCH FROM ("historiqueStatutDossier"."dateModification"-"historiquePaiement"."createdAt" ))) AS duree
+	FROM public."historiquePaiement",public."historiqueStatutDossier"   where "historiquePaiement"."idDossier"="historiqueStatutDossier"."idDossier" and  "historiqueStatutDossier"."idStatut"=8 ;
+		</sql>
+    <result outputType="json">{"data":{"duree":"$duree"}}</result>
+  </query>
+  <query id="maxImmatriculation" useConfig="dossierSomissionDS">
+    <sql>
+			SELECT  
+	max(EXTRACT(EPOCH FROM ("historiqueStatutDossier"."dateModification"-"historiquePaiement"."createdAt" ))) AS duree
+	FROM public."historiquePaiement",public."historiqueStatutDossier"   where "historiquePaiement"."idDossier"="historiqueStatutDossier"."idDossier" and  "historiqueStatutDossier"."idStatut"=8 ;
+		</sql>
+    <result outputType="json">{"data":{"duree":"$duree"}}</result>
+  </query>
+  <query id="moyenneRetour" useConfig="dossierSomissionDS">
+    <sql>
+	WITH T AS
+			(
+			select  min(commentaire."dateCommentaire") as date_first_comment,"idDossier" from commentaire group by "idDossier"
+			),
+ R AS (select (EXTRACT(EPOCH FROM (date_first_comment - dossier."createdAt" ))) AS duree from T,dossier where T."idDossier"=dossier."idDossier" group by T.date_first_comment,dossier."createdAt")
+  select avg(duree) as duree from R
+  
+  </sql>
+    <result outputType="json">{"data":{"duree":"$duree"}}</result>
+  </query>
+  <query id="factureById" useConfig="dossierSomissionDS">
+    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement", 
+		"idModePaiement", "montantTotal", "statutUpdatedAt", "refFacture", 
+		"createdAt", "updatedAt"
+		FROM public.facture 
+		WHERE "id"=:factureId
+	</sql>
+    <param type="IN" name="factureId" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"data": {
+		    "facture": {
+	   			"id":$id,
+	   			"numTransaction": "$numTransaction",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt" ,
+                "updatedAt": "$updatedAt" ,
+                "statutUpdatedAt": "$statutUpdatedAt" , 	
+                "statutPaiement": "$statutPaiement" , 	
+                "idModePaiement": "$idModePaiement" , 	
+                "montantTotal": "$montantTotal" , 	
+                "refFacture": "$refFacture"                                  			
+		   	}
+	    }}
+	    </result>
+  </query>
+  <query id="addNewBill" useConfig="dossierSomissionDS">
+    <sql>INSERT INTO public.facture(   
+	"idDossier", "numTransaction", "statutPaiement", "idModePaiement", 
+	"montantTotal", "refFacture", "createdby")
+	VALUES (:idDossier, :numTransaction, :statutPaiement, :idModePaiement, :montantTotal, :refFacture, :createdby) RETURNING id;</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param name=" numTransaction" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name=" montantTotal" paramType="SCALAR" sqlType="DOUBLE" optional="false" />
+    <param type="IN" name=" idModePaiement" paramType="SCALAR" sqlType="INTEGER" optional="true" />
+    <param type="IN" name=" statutPaiement" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="refFacture" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="createdby" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <result outputType="json">{"facture": {
+	   		"id":$id
+	    }}
+	    </result>
+  </query>
+  <query id="updateFactureState" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.facture 
+	 SET "statutPaiement" =:statutPaiement, "statutUpdatedAt" = CURRENT_TIMESTAMP, "receivedby" =:receivedby
+	WHERE "id"= :id</sql>
+    <param type="IN" name="statutPaiement" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="receivedby" paramType="SCALAR" sqlType="STRING" optional="false" />
+  </query>
+  <query id="factureByFolder" useConfig="dossierSomissionDS">
+    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement", 
+		"idModePaiement", "montantTotal", "statutUpdatedAt", "refFacture", 
+		"createdAt", "updatedAt"
+		FROM public.facture 
+		WHERE "idDossier"=:idDossier
+	</sql>
+    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"facture": {
+	   			"id":$id,
+	   			"numTransaction": "$numTransaction",
+	   			"idDossier": $idDossier,
+	   			"createdAt": "$createdAt" ,
+                "updatedAt": "$updatedAt" ,
+                "statutUpdatedAt": "$statutUpdatedAt" , 	
+                "statutPaiement": "$statutPaiement" , 	
+                "idModePaiement": "$idModePaiement" , 	
+                "montantTotal": "$montantTotal" , 	
+                "refFacture": "$refFacture"                                  			
+		   	}
+	    }
+	    </result>
+  </query>
+  <query id="updateBillData" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.facture SET 
+    	"numTransaction" = :numTransaction, 
+    	"montantTotal" = :montantTotal, 
+    	"statutPaiement" = :statutPaiement, 
+    	"idModePaiement" = :idModePaiement,
+    	"refFacture" = :refFacture
+    	WHERE "id"= :id</sql>
+    <param name="numTransaction" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="montantTotal" paramType="SCALAR" sqlType="DOUBLE" optional="false" />
+    <param type="IN" name="idModePaiement" paramType="SCALAR" sqlType="INTEGER" optional="true" />
+    <param type="IN" name="statutPaiement" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="refFacture" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+  </query>
+  <query id="factureByFolderIds" useConfig="dossierSomissionDS">
+    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
+      "idModePaiement", "montantTotal", "refFacture"
+      FROM public.facture
+      WHERE "idDossier" =ANY(:idDossier::int[])</sql>
+    <param type="IN" name="idDossier" paramType="ARRAY" sqlType="STRING" optional="false" />
+    <result outputType="json">{"data": { "factures": [{
+      "id":$id,
+      "numTransaction": "$numTransaction",
+      "idDossier": $idDossier,
+      "statutPaiement": "$statutPaiement" ,
+      "idModePaiement": "$idModePaiement" ,
+      "montantTotal": "$montantTotal" ,
+      "refFacture": "$refFacture"
+      }]}
+      }
+    </result>
+  </query>
+  <query id="factureByStatusAndDates" useConfig="dossierSomissionDS">
+    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
+          "idModePaiement", "montantTotal", "refFacture", "receivedby"
+          FROM public.facture
+          WHERE "statutPaiement" =:statutPaiement AND "statutUpdatedAt"::date
+          between TO_DATE(:startdate, 'YYYY-MM-DD') AND TO_DATE(:enddate, 'YYYY-MM-DD')
+        </sql>
+    <param type="IN" name="startdate" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="enddate" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="statutPaiement" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <result outputType="json">{"data": { "factures": [{
+          "id":$id,
+          "numTransaction": "$numTransaction",
+          "idDossier": $idDossier,
+          "statutPaiement": "$statutPaiement" ,
+          "idModePaiement": "$idModePaiement" ,
+          "montantTotal": "$montantTotal",
+          "receivedby": "$receivedby",
+          "refFacture": "$refFacture"
+          }]}
+          }
+        </result>
+  </query>
+  <query id="factureByCurrentWeek" useConfig="dossierSomissionDS">
+    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
+      "idModePaiement", "montantTotal", "refFacture", "receivedby"
+      FROM public.facture
+      WHERE "statutPaiement" =:statutPaiement
+      AND EXTRACT('WEEK' FROM "statutUpdatedAt") = EXTRACT('WEEK' FROM NOW())
+      AND EXTRACT('YEAR' FROM "statutUpdatedAt") = EXTRACT('YEAR' FROM NOW());
+    </sql>
+    <param type="IN" name="statutPaiement" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <result outputType="json">{"data": { "factures": [{
+      "id":$id,
+      "numTransaction": "$numTransaction",
+      "idDossier": $idDossier,
+      "statutPaiement": "$statutPaiement" ,
+      "idModePaiement": "$idModePaiement" ,
+      "montantTotal": "$montantTotal",
+      "receivedby": "$receivedby",
+      "refFacture": "$refFacture"
+      }]}
+      }
+    </result>
+  </query>
+  <query id="factureBySelectedWeek" useConfig="dossierSomissionDS">
+    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
+      "idModePaiement", "montantTotal", "refFacture", "receivedby"
+      FROM public.facture
+      WHERE "statutPaiement" =:statutPaiement
+      AND EXTRACT('WEEK' FROM "statutUpdatedAt") = :selectedweek
+      AND EXTRACT('YEAR' FROM "statutUpdatedAt") = EXTRACT('YEAR' FROM NOW());
+    </sql>
+    <param type="IN" name="statutPaiement" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="selectedweek" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"data": { "factures": [{
+      "id":$id,
+      "numTransaction": "$numTransaction",
+      "idDossier": $idDossier,
+      "statutPaiement": "$statutPaiement" ,
+      "idModePaiement": "$idModePaiement" ,
+      "montantTotal": "$montantTotal",
+      "receivedby": "$receivedby",
+      "refFacture": "$refFacture"
+      }]}
+      }
+    </result>
+  </query>
+  <query id="factureByMonthAndStatusFilter" useConfig="dossierSomissionDS">
+    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
+      "idModePaiement", "montantTotal", "refFacture", "receivedby"
+      FROM public.facture
+      WHERE "statutPaiement" =:statutPaiement
+      AND EXTRACT('MONTH' FROM "statutUpdatedAt") =:monthParam
+      AND EXTRACT('YEAR' FROM "statutUpdatedAt") =:yearParam
+    </sql>
+    <param type="IN" name="statutPaiement" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="yearParam" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="monthParam" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"data": { "factures": [{
+      "id":$id,
+      "numTransaction": "$numTransaction",
+      "idDossier": $idDossier,
+      "statutPaiement": "$statutPaiement" ,
+      "idModePaiement": "$idModePaiement" ,
+      "montantTotal": "$montantTotal",
+      "receivedby": "$receivedby",
+      "refFacture": "$refFacture",
+      }]}
+      }
+    </result>
+  </query>
+  <query id="factureByYearAndStatusFilter" useConfig="dossierSomissionDS">
+    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
+      "idModePaiement", "montantTotal", "refFacture", "receivedby"
+      FROM public.facture
+      WHERE "statutPaiement" =:statutPaiement
+      AND EXTRACT('YEAR' FROM "statutUpdatedAt") =:yearParam
+    </sql>
+    <param type="IN" name="statutPaiement" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="yearParam" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"data": { "factures": [{
+      "id":$id,
+      "numTransaction": "$numTransaction",
+      "idDossier": $idDossier,
+      "statutPaiement": "$statutPaiement" ,
+      "idModePaiement": "$idModePaiement" ,
+      "montantTotal": "$montantTotal",
+      "receivedby": "$receivedby",
+      "refFacture": "$refFacture"
+      }]}
+      }
+    </result>
+  </query>
+  <query id="fiscVersments" useConfig="dossierSomissionDS">
+      <sql>
+          select * ,
+          (sum("statut_de") over())::text as total_statut_de,
+          (sum("statut_pr") over())::text as total_statut_pr,
+          (sum("statut_and") over())::text as total_statut_and,
+
+          (sum("bails_de") over())::text as total_bails_de,
+          (sum("bails_pr") over() )::text as total_bails_pr,
+          (sum("bails_and") over())::text as total_bails_and,
+
+          (sum("df_de") over() )::text as total_df_de,
+          (sum("df_pr") over() )::text as total_df_pr,
+          (sum("df_and") over())::text as total_df_and,
+
+          (sum("total_de") over())::text as total_general_de,
+          (sum("total_pr") over() )::text as total_general_pr,
+          (sum("total_and") over())::text as total_general_and,
+
+          (sum("statut_de") over() )::text as total_df_de,
+          ( sum("is") over())::text as total_is,
+          (sum("ir") over())::text as total_ir
+
+          from
+          (select  * from
+
+          (select *, sum(sc."statut_de" + sc."bails_de" + sc."df_de" ) as total_de,
+          sum(sc."statut_pr" + sc."bails_pr" + sc."df_pr" ) as total_pr,
+          sum(sc."statut_and" + sc."bails_and" + sc."df_and" ) as total_and
+
+          from
+
+          (select "idFacture",
+          sum((case when ("label" like 'Enregistrement des statuts ou contrat%')then value  else 0 end ) +
+          (case when ("label" like 'Enregistrement PV AGC (SA/SAU)%')then value  else 0 end ) +
+          (case when ("label" like 'DE STATUTS%') then value  else 0 end ) +
+          (case when ("label" like 'DE PVAGC%') then value  else 0 end ))as statut_de,
+
+
+          sum((case when ("label" like 'AND STATUTS%') then value  else 0 end ) +
+          (case when ("label" like 'AND PVAGC%') then value  else 0 end )) as statut_and,
+
+          sum((case when ("label" like 'PR STATUTS%') then value  else 0 end ) +
+          (case when ("label" like 'PR PVAGC%') then value  else 0 end )) as statut_pr,
+
+          sum((case when ("label" like 'Enregistrement contrat de bail%') then value  else 0 end) +
+          (case when ("label" like 'Enregistrement contrat de bail Lieu(x) d%') then value  else 0 end)) as bails_de,
+
+          sum(case when ("label" like 'PR BAIL%') then value  else 0 end ) as bails_pr,
+          sum(case when ("label" like 'AND BAIL%') then value  else 0 end ) as bails_and,
+
+          sum(
+          (case when trim("label") = 'Enregistrement procuration' then value  else 0 end) +
+          (case when trim("label") = 'Enregistrement PV nomination gérants' then value  else 0 end) +
+          (case when trim("label") = 'Enregistrement Statut (SA/SAU)' then value  else 0 end) +
+          (case when trim("label") = 'Enregistrement PV CA' then value  else 0 end) +
+          (case when trim("label") like 'Enregistrement Bulletin de souscription pour%' then value  else 0 end) +
+          (case when trim("label") = 'Enregistrement DSV' then value  else 0 end) +
+          (case when trim("label") = 'Enregistrement ESV' then value  else 0 end) +
+          (case when trim("label") = 'PV ouverture de succursale' then value  else 0 end)+
+          (case when trim("label") = 'Enregistrement PV AGC' then value  else 0 end)+
+          (case when trim("label") = 'Enregistrement Contrat GIE sans capital' then value  else 0 end) +
+          (case when trim("label") like 'DF%' then value  else 0 end)
+          )
+          as df_de,
+          sum(case when trim("label") = 'PR DF%' then value  else 0 end)
+          as df_pr,
+
+          sum (case when trim("label") = 'AND DF_%' then value  else 0 end)
+          as df_and,
+
+          sum(case when ("label" like 'Acompte IS%') then value  else 0 end)  as is,
+          sum(case when ("label" like 'Acompte IR%') then value  else 0 end)  as ir
+
+          from "factureDataDossier" fd group by  fd."idFacture" ) as sc
+          group by "idFacture", "statut_de" , "bails_de" , "df_de", "statut_pr", "statut_and", "bails_pr", "bails_and", "is", "ir", "df_and", "df_pr"
+          order by "idFacture" asc) as fiscData
+          inner join
+          ( select distinct "idFacture", "statutUpdatedAt" as date_paiement, "idDossier",
+          (select sum(value) from "factureDataDossier" where fd."idFacture" = "idFacture" and "idOwner" = 3) as fo_espece <!--get only fisc amount-->
+          from "factureDataDossier" as fd inner join "facture" as f on f."id" = fd."idFacture"
+          )
+          as fdata	on fdata."idFacture" = fiscData."idFacture"
+
+          where fdata."date_paiement"::date between TO_DATE(:startdate, 'YYYY-MM-DD') AND TO_DATE(:enddate, 'YYYY-MM-DD')) as allData
+      </sql>
+    <param type="IN" name="startdate" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="enddate" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <result outputType="json">{"data": { "factures": [{
+      "idFacture":$idFacture,
+      "statut_de": "$statut_de",
+      "statut_pr": $statut_pr,
+      "statut_and": "$statut_and" ,
+      "bails_de": "$bails_de" ,
+      "bails_pr": "$bails_pr",
+      "bails_and": "$bails_and",
+      "is": "$is",
+      "ir": "$ir",
+      "df_and": "$df_and",
+      "df_de": "$df_de",
+      "df_pr": "$df_pr",
+      "total_de": "$total_de",
+      "total_pr": "$total_pr",
+      "total_and": "$total_and",
+      "total_statut_de": "$total_statut_de",
+      "total_statut_pr": "$total_statut_pr",
+      "total_statut_and": "$total_statut_and",
+      "total_bails_de": "$total_bails_de",
+      "total_bails_pr": "$total_bails_pr",
+      "total_bails_and": "$total_bails_and",
+      "total_df_de": "$total_df_de",
+      "total_df_pr": "$total_df_pr",
+      "total_df_and": "$total_df_and",
+      "total_general_de": "$total_general_de",
+      "total_general_pr": "$total_general_pr",
+      "total_general_and": "$total_general_and",
+      "total_is": "$total_is",
+      "total_ir": "$total_ir",
+      "idDossier": "$idDossier",
+      "date_paiement": "$date_paiement",
+      "fo_espece": "$fo_espece"
+      }]}
+      }
+    </result>
+  </query>
+  <query id="updateFacturePaiementState" useConfig="dossierSomissionDS">
+    <sql>UPDATE public.facture SET 
+    	 "statutUpdatedAt" = CURRENT_TIMESTAMP,    	
+    	 "statutPaiement" = :statutPaiement,
+    	 "receivedby" =:receivedby   	
+    	 WHERE "refFacture"= :refFacture
+    </sql>
+    <param type="IN" name="statutPaiement" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="refFacture" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="receivedby" paramType="SCALAR" sqlType="STRING" optional="false" />
+  </query>
+  <resource path="addFolderNumber" method="POST">
     <description />
     <call-query href="addNumeroDossier">
       <with-param name="numeroDossier" query-param="numeroDossier" />
@@ -148,6 +1034,7 @@
       <with-param name="dateRendezVous" query-param="dateRendezVous" />
       <with-param name="idUtilisateur" query-param="idUtilisateur" />
       <with-param name="heureRdv" query-param="heureRdv" />
+      <with-param name="idTypeRendezVous" query-param="idTypeRendezVous" />
     </call-query>
   </resource>
   <resource path="addFolderValidationStatus" method="POST">
@@ -177,7 +1064,7 @@
   <resource path="getListRdv" method="GET">
     <description>liste des rendez d'un dossier</description>
     <call-query href="listRdv">
-      <with-param name="idDossier" query-param="idDossier" />
+      <with-param name="idDossier" query-param="folderId" />
     </call-query>
   </resource>
   <resource path="listStatutDepot" method="GET">
@@ -378,578 +1265,6 @@
     <description>durÃ©e moyenne de validation</description>
     <call-query href="moyenneValidation" />
   </resource>
-  <query id="addNumeroDossier" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public.dossier(
-	 "numeroDossier","idIpAdress")
-	VALUES (:numeroDossier,:idIpAdress) RETURNING "idDossier","numeroDossier"</sql>
-    <param type="IN" name="numeroDossier" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="idIpAdress" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"idDossiers":{"idDossier":$idDossier,"numeroDossier":"$numeroDossier"}}</result>
-  </query>
-  <query id="updateLienDossier" useConfig="dossierSomissionDS">
-    <sql>UPDATE public.dossier
-	SET  "lienDossier"=:lienDossier
-	WHERE "idDossier"=:idDossier</sql>
-    <param type="IN" name="lienDossier" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-  </query>
-  <query id="addDocument" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public.document(
-	"nomDocument", "idDossier", "idTypeDocument","path")
-	VALUES (:nomDocument, :idDossier, :idTypeDocument,:path);</sql>
-    <param type="IN" name="nomDocument" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idTypeDocument" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="path" sqlType="STRING" paramType="SCALAR" />
-  </query>
-  <query id="addLinkDocument" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public."lienFormulaire"(
-	"idDossier", "idSociete", "lienConsultationFormulaire", "lienEditionFormulaire")
-	VALUES (:idDossier, :idSociete, :lienConsultationFormulaire, :lienEditionFormulaire)</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="lienEditionFormulaire" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="lienConsultationFormulaire" sqlType="STRING" paramType="SCALAR" />
-  </query>
-  <query id="verifyLink" useConfig="dossierSomissionDS">
-    <sql>WITH
-    constant_type AS (VALUES (:type)),
-    pod AS (VALUES (:pod))
-
-SELECT  CASE WHEN (table constant_type)='read' THEN (SELECT "idDossier" as exitinglink from public."lienFormulaire" where "lienConsultationFormulaire"=(table pod) LIMIT 1 ) 
-						ELSE  (SELECT "idDossier" as exitinglink from public."lienFormulaire" where "lienEditionFormulaire"=(table pod) LIMIT 1 ) 
-						END
-from public."lienFormulaire" LIMIT 1  
-</sql>
-    <param type="IN" name="type" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="pod" sqlType="STRING" paramType="SCALAR" />
-    <result outputType="json">{"links":{"link":{"idDossier":$exitinglink }}}</result>
-  </query>
-  <query id="getfolderIdByLink" useConfig="dossierSomissionDS">
-    <sql>WITH
-    constant_type AS (VALUES (:type_link)),
-    pod AS (VALUES (:pod))
-
-SELECT  CASE WHEN (table constant_type)='read' THEN (SELECT "idDossier" from public."lienFormulaire" where "lienConsultationFormulaire"=(table pod) LIMIT 1 ) 
-						ELSE  (SELECT "idDossier"  from public."lienFormulaire" where "lienEditionFormulaire"=(table pod) LIMIT 1 ) 
-						END
-from public."lienFormulaire" LIMIT 1     
-</sql>
-    <param type="IN" name="type_link" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="pod" sqlType="STRING" paramType="SCALAR" />
-    <result outputType="json">{"idDossiers":{"dossier":{"idDossier":$idDossier}}}</result>
-  </query>
-  <query id="getListDocumentById" useConfig="dossierSomissionDS">
-    <sql>SELECT "nomDocument", "idDossier", "nbDeposer", "idTypeDocument", "idDocument", path
-	FROM public.document WHERE "idDossier"=:idDossier</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"documents":{"document":[{"nomDocument":"$nomDocument","idDossier":$idDossier,"nbDeposer":"$nbDeposer", "idTypeDocument":"$idTypeDocument", "idDocument":"$idDocument", path:"$path"}]}}</result>
-  </query>
-  <query id="getInformationDossier" useConfig="dossierSomissionDS">
-    <sql>SELECT public.dossier."idDossier", "lienDossier", "dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", updated_at, "idStatutDossier", "numeroDossier","lienEditionFormulaire",step,"idProgression","dateSoumission", "createdAt"
-	FROM public.dossier left JOIN public."lienFormulaire" on public.dossier."idDossier"=public."lienFormulaire"."idDossier" where public.dossier."idDossier"=:idDossier</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"dossier":{"idDossier":$idDossier,"numeroDossier":"$numeroDossier","lienEditionFormulaire":"$lienEditionFormulaire","idStatutDepot":"$idStatutDepot","idStatutDossier":"$idStatutDossier","step":"$step","dateSoumission":"$dateSoumission","idProgression":"$idProgression", "createdAt":"$createdAt"}}</result>
-  </query>
-  <query id="updateStatutNouveau" useConfig="dossierSomissionDS">
-    <sql>UPDATE public.statut SET nouveau=:value WHERE "idDossier"=:idDossier</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="value" sqlType="BOOLEAN" paramType="SCALAR" />
-  </query>
-  <query id="updateStatutMAJ" useConfig="dossierSomissionDS">
-    <sql>UPDATE public.statut SET "MAJ"=:value WHERE "idDossier"=:idDossier</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="value" sqlType="BOOLEAN" paramType="SCALAR" />
-  </query>
-  <query id="updateStatutDossier" useConfig="dossierSomissionDS">
-    <sql>UPDATE public.dossier
-	SET "idStatutDossier"=:idStatutDossier
-	WHERE "idDossier"=:idDossier</sql>
-    <param type="IN" name="idStatutDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-  </query>
-  <query id="selectAllFolder" useConfig="dossierSomissionDS">
-    <sql>SELECT *
-	FROM public.dossier</sql>
-    <result />
-  </query>
-  <query id="statistiqueDossierNouveauTermine" useConfig="dossierSomissionDS">
-    <sql>
-SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"=ANY(:idStatutDossier::int[])</sql>
-    <param type="IN" name="idStatutDossier" sqlType="STRING" paramType="ARRAY" />
-    <result outputType="json">{"statistiques":{"nombre":{"quantite":$nombre}}}</result>
-  </query>
-  <query id="statistiqueTotal" useConfig="dossierSomissionDS">
-    <sql>SELECT COUNT("idDossier") as nombre  FROM public.dossier</sql>
-    <param type="IN" name="idStatutDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"statistiquesTotal":{"nombre":{"quantite":$nombre}}}</result>
-  </query>
-  <query id="listFolderDESC" useConfig="dossierSomissionDS">
-    <sql>SELECT "idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", "numeroDossier", updated_at, "idStatutDossier", "idProgression", "createdAt"
-	FROM public.dossier order by "dateSoumission" desc</sql>
-    <result outputType="json">
-{"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission", "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",  "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier", "idProgression":$idProgression, "createdAt":"$createdAt" }]}}</result>
-  </query>
-  <query id="listFolderASC" useConfig="dossierSomissionDS">
-    <sql>SELECT "idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot", "numeroDossier", updated_at, "idStatutDossier", "idProgression", "createdAt"
-	FROM public.dossier order by "dateSoumission" asc</sql>
-    <result outputType="json">
-{"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission", "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",  "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier", "idProgression": $idProgression, "createdAt":"$createdAt" }]}}</result>
-  </query>
-  <query id="addComment" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public.commentaire(
-	"idEntite", commentaires, "idDossier", "idUtilisateur", "idStatutCommentaire")
-	VALUES (:idGroup, :commentaire, :idDossier, :idUtilisateur, :idStatutCommentaire);</sql>
-    <param type="IN" name="idGroup" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="commentaire" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idUtilisateur" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="idStatutCommentaire" sqlType="INTEGER" paramType="SCALAR" defaultValue="null" />
-  </query>
-  <query id="commentListByGroup" useConfig="dossierSomissionDS">
-    <sql>SELECT "idEntite", commentaires, "dateCommentaire", "idDossier", "idUtilisateur", "idStatutCommentaire", "idCommentaire"
-	FROM public.commentaire WHERE "idEntite"=ANY(:idEntite ::varchar[]) and "idDossier"=:idDossier ORDER BY "dateCommentaire"  DESC</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idEntite" sqlType="STRING" paramType="ARRAY" />
-    <result outputType="json">{"comments":{"comment":[{"idEntite":"$idEntite", "commentaires":"$commentaires", "dateCommentaire":"$dateCommentaire", "idDossier":"$idDossier", "idUtilisateur":"$idUtilisateur", "idStatutCommentaire":"$idStatutCommentaire", "idCommentaire":"$idCommentaire"
-}]}}</result>
-  </query>
-  <query id="commentListAll" useConfig="dossierSomissionDS">
-    <sql>SELECT "idEntite", commentaires, "dateCommentaire", "idDossier", "idUtilisateur", "idStatutCommentaire", "idCommentaire"
-	FROM public.commentaire WHERE  "idDossier"=:idDossier ORDER BY "dateCommentaire" DESC</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"comments":{"comment":[{"idEntite":"$idEntite", "commentaires":"$commentaires", "dateCommentaire":"$dateCommentaire", "idDossier":"$idDossier", "idUtilisateur":"$idUtilisateur", "idStatutCommentaire":"$idStatutCommentaire", "idCommentaire":"$idCommentaire"
-}]}}</result>
-  </query>
-  <query id="addRdv" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public."rendezVous"(
-	 "idDossier", "dateRendezVous", "idUtilisateur","heureRdv")
-	VALUES (:idDossier, :dateRendezVous::date, :idUtilisateur,:heureRdv::time);</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="dateRendezVous" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="idUtilisateur" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="heureRdv" sqlType="STRING" paramType="SCALAR" />
-  </query>
-  <query id="addFolderValidationStatus" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public."dossierStatutValidation"(
-	"idDossier", "idStatutValidation")
-	VALUES (:idDossier, :idStatutValidation);</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idStatutValidation" sqlType="INTEGER" paramType="SCALAR" />
-  </query>
-  <query id="deleteFolderValidationStatus" useConfig="dossierSomissionDS">
-    <sql>DELETE FROM public."dossierStatutValidation"
-	WHERE "idDossier"=:idDossier and "idStatutValidation"=:idStatutValidation</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idStatutValidation" sqlType="INTEGER" paramType="SCALAR" />
-  </query>
-  <query id="listFolderValidationStatus" useConfig="dossierSomissionDS">
-    <sql>SELECT "idDossier", "idStatutValidation"
-	FROM public."dossierStatutValidation" WHERE "idDossier"=:idDossier</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"folderValidationStatuses":{"folderValidationStatus":[{"idDossier":"$idDossier","idStatutValidation":"$idStatutValidation"}]}}</result>
-  </query>
-  <query id="listAllValidationStatus" useConfig="dossierSomissionDS">
-    <sql>SELECT "idStatutValidation", "libelleStatutValidation"
-	FROM public."statutValidation"</sql>
-    <result outputType="json">{"validationStatuses":{"validationStatus":[{"idStatutValidation":"$idStatutValidation","libelleStatutValidation":"$libelleStatutValidation"}]}}</result>
-  </query>
-  <query id="listRdv" useConfig="dossierSomissionDS">
-    <sql>SELECT "idRendezVous", "idDossier", "dateRendezVous", "idUtilisateur", "heureRdv"
-	FROM public."rendezVous" WHERE "idDossier"=:idDossier</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">
-{"rdvs":{"rdv":[{"idRendezVous":"$idRendezVous", "idDossier":"$idDossier", "dateRendezVous":"$dateRendezVous", "idUtilisateur":"$idUtilisateur", "heureRdv":"$heureRdv"}]}}</result>
-  </query>
-  <query id="listStatutDepot" useConfig="dossierSomissionDS">
-    <sql>SELECT "idStatutDepot", "nomStatutDepot"
-	FROM public."statutDepot";</sql>
-    <result outputType="json">{"depositStatuses":{"depositStatuse":[{"idStatutDepot":"$idStatutDepot", "nomStatutDepot":"$nomStatutDepot"
-}]}}</result>
-  </query>
-  <query id="setFolderDepositStatus" useConfig="dossierSomissionDS">
-    <sql>UPDATE public.dossier
-	SET  "idStatutDepot"=:idStatutDepot
-	WHERE "idDossier"=:idDossier ;</sql>
-    <param type="IN" name="idStatutDepot" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="idDossier " sqlType="INTEGER" paramType="SCALAR" />
-  </query>
-  <query id="addIpAdress" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public."adresseIp"(
-	"ipAdress", blacklist)
-	VALUES ( :ipAdress, :blacklist) RETURNING id;</sql>
-    <param type="IN" name="blacklist" sqlType="BOOLEAN" paramType="SCALAR" defaultValue="false" />
-    <param type="IN" name="ipAdress" sqlType="STRING" paramType="SCALAR" />
-    <result outputType="json">{"idIpAdresses":{"idIpAdress":"$id"}}</result>
-  </query>
-  <query id="isBlacklist" useConfig="dossierSomissionDS">
-    <sql>SELECT "ipAdress", id, blacklist FROM public."adresseIp" WHERE "ipAdress"=:ipAdress</sql>
-    <param type="IN" name="ipAdress" sqlType="STRING" paramType="SCALAR" />
-    <result outputType="json">{"isBlackLists":{"isBlackList":{"blacklist":$blacklist,"id":"$id"}}}</result>
-  </query>
-  <query id="addFolderIdIpAdress" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public.dossier(
-	 "idIpAdress")
-	VALUES (:idIpAdress) RETURNING "idDossier"</sql>
-    <param type="IN" name="idIpAdress" sqlType="STRING" paramType="SCALAR" />
-  </query>
-  <query id="insertAnEmptyFolder" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public.dossier(
-	"idIpAdress",step)
-	VALUES ( :idIpAdress,:step) RETURNING "idDossier";</sql>
-    <param type="IN" name="idIpAdress" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="step" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <result outputType="json">{"idDossiers":{"idDossier":$idDossier}}</result>
-  </query>
-  <query id="updateStep" useConfig="dossierSomissionDS">
-    <sql>UPDATE public.dossier
-	SET  step=:step
-	WHERE "idDossier"=:idDossier</sql>
-    <param type="IN" name="step" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-  </query>
-  <query id="deleteDocument" useConfig="dossierSomissionDS">
-    <sql>DELETE FROM public.document
-	WHERE "path"=:path</sql>
-    <param type="IN" name="path" sqlType="STRING" paramType="SCALAR" optional="false" />
-  </query>
-  <query id="setFolderNumber" useConfig="dossierSomissionDS">
-    <sql>UPDATE public.dossier
-	SET   "numeroDossier"=:numeroDossier
-	WHERE "idDossier"=:idDossier</sql>
-    <param type="IN" name="numeroDossier" sqlType="STRING" paramType="SCALAR" optional="false" />
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-  </query>
-  <query id="setFolderProgress" useConfig="dossierSomissionDS">
-    <sql>UPDATE public.dossier
-	SET   "idProgression"=:idProgression 
-	WHERE "idDossier"=:idDossier</sql>
-    <param type="IN" name="idProgression" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-  </query>
-  <query id="listProgression" useConfig="dossierSomissionDS">
-    <sql>SELECT "idProgression", libelle
-	FROM public.progression;</sql>
-    <result outputType="json">{"progressions":{"progression":[{"idProgression":"$idProgression","libelle":"$libelle"}]}}</result>
-  </query>
-  <query id="factureDatas" useConfig="dossierSomissionDS">
-    <sql>SELECT fd.id, fd.label, fd."refValue", fd.priority, fd."idOwner", tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureData" fd JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" ORDER BY tf.id ASC</sql>
-    <result outputType="json">{"data":{"factureDatas":[{
-    	"id":$id,
-    	"label":"$label",
-    	"refValue": $refValue,
-    	"priority": $priority,
-    	"idOwner": $idOwner,
-    	"typeFacturation": {
-    			"id": $idTypeFacture,
-    			"label": "$typeFacture"
-    		}
-    	}]
-    }}</result>
-  </query>
-  <query id="factureDataMaxPriority" useConfig="dossierSomissionDS">
-    <sql>SELECT MAX(priority) as max FROM public."factureData"</sql>
-    <result outputType="json">{"factureData":{
-    		"max":$max
-    	}}    	
-    </result>
-  </query>
-  <query id="companyFacture" useConfig="dossierSomissionDS">
-    <sql>SELECT fdd.id, fdd.value, fd.id as "idFactureData", fdd.label, fd."refValue", fdd."idOwner", tf.label as "typeFacture", tf.id as "idTypeFacture", fdd."idFactureData" FROM public."factureDataDossier" fdd JOIN public."factureData" fd ON fd.id = fdd."idFactureData" JOIN public."typeFacture" tf ON tf.id = fd."idTypeFacture" JOIN public.facture ON facture.id = fdd."idFacture" WHERE "idDossier" = :idDossier</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <result outputType="json">{"data":{"factureDatas":[{
-    	"id":$id,
-    	"value": $value,
-    	"idOwner": $idOwner,
-    	"factureData": {
-    		"id": $idFactureData,
-    		"label":"$label",
-    		"refValue": $refValue
-    	},
-    	"typeFacturation": {
-    			"id": $idTypeFacture,
-    			"label": "$typeFacture"
-    		}
-    	}]
-    }}</result>
-  </query>
-  <query id="companyCustomFacture" useConfig="dossierSomissionDS">
-    <sql>SELECT fdd.id, fdd.label, fdd.value, fdd."idFactureData", fdd."idOwner", tf.label as "typeFacture", tf.id as "idTypeFacture" FROM public."factureDataDossier" fdd JOIN public."typeFacture" tf ON tf.id = fdd."idTypeFacture" JOIN public.facture ON facture.id = fdd."idFacture" WHERE facture."idDossier" = :idDossier AND fdd."idFactureData" IS NULL</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <result outputType="json">{"data":{"factureDataDossier":[{
-    	"id":$id,
-    	"label":"$label",
-    	"value": $value,
-    	"idFactureData": $idFactureData,
-    	"idOwner": $idOwner,
-    	"typeFacturation": {
-    			"id": $idTypeFacture,
-    			"label": "$typeFacture"
-    		}
-    	}]
-    }}</result>
-  </query>
-  <query id="saveCompanyBill" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public."factureDataDossier"("idFactureData", "idFacture", "label", "value", "idTypeFacture", "idOwner") VALUES (:idFactureData, :idFacture, :label, :value, :idTypeFacture, :idOwner) RETURNING id</sql>
-    <param type="IN" name="idFactureData" sqlType="INTEGER" paramType="SCALAR" optional="true" />
-    <param type="IN" name="idFacture" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="label" sqlType="STRING" paramType="SCALAR" optional="true" />
-    <param type="IN" name="idOwner" sqlType="INTEGER" paramType="SCALAR" optional="true" />
-    <param type="IN" name="value" sqlType="DOUBLE" paramType="SCALAR" optional="false" />
-    <param type="IN" name="idTypeFacture" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <result outputType="json">{"factureDataDossier":{"id": $id}}</result>
-  </query>
-  <query id="removeCompanyBills" useConfig="dossierSomissionDS">
-    <sql>DELETE FROM public."factureDataDossier" WHERE id=ANY(:ids::int[])</sql>
-    <param type="IN" name="ids" sqlType="STRING" paramType="ARRAY" />
-  </query>
-  <query id="printDocuments" useConfig="dossierSomissionDS">
-    <sql>SELECT * FROM public."impressionDocument" WHERE "idDossier"=:idDossier</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"data":{
-    		"printDoc": [{"id": $id, "path": "$path", "idDossier": $idDossier, "corporate": "$corporate"}]
-    	}}
-    </result>
-  </query>
-  <query id="printDocumentCorporate" useConfig="dossierSomissionDS">
-    <sql>SELECT * FROM public."impressionDocument" WHERE "idDossier"=:idDossier AND corporate = :corporate</sql>
-    <param type="IN" name="corporate" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"data":{
-    		"printDoc": [{"id": $id, "path": "$path", "idDossier": $idDossier, "corporate": "$corporate", "createdAt": $createdAt}]
-    	}}
-    </result>
-  </query>
-  <query id="printDocument" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public."impressionDocument" (path, "idDossier", corporate) VALUES (:path, :idDossier, :corporate) RETURNING id</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="path" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="corporate" sqlType="STRING" paramType="SCALAR" />
-    <result outputType="json">{"printDoc":{"id": $id}}</result>
-  </query>
-  <query id="updatePrintDocument" useConfig="dossierSomissionDS">
-    <sql>UPDATE public."impressionDocument" SET path = :path WHERE "idDossier" = :idDossier AND corporate = :corporate RETURNING id</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="corporate" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="path" sqlType="STRING" paramType="SCALAR" />
-    <result outputType="json">{"printDoc":{"id": $id}}</result>
-  </query>
-  <query id="lastCommentByCorporate" useConfig="dossierSomissionDS">
-    <sql>SELECT com."idEntite", com."dateCommentaire", com."idStatutCommentaire", com."updatedAtStatutCommentaire" FROM (SELECT "idEntite", MAX("dateCommentaire") as "dateCommentaire" FROM public.commentaire WHERE "idDossier" = :idDossier GROUP BY "idEntite") tcom INNER JOIN public.commentaire com ON com."dateCommentaire" = tcom."dateCommentaire" AND com."idEntite" = tcom."idEntite"</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"data":{"comments": [{"idEntite":"$idEntite", "dateCommentaire":"$dateCommentaire", "idStatutCommentaire":"$idStatutCommentaire", "updatedAtStatutCommentaire": "$updatedAtStatutCommentaire"}]}}</result>
-  </query>
-  <query id="updateStatusOfLastCommentByCorporates" useConfig="dossierSomissionDS">
-    <sql>UPDATE public.commentaire SET "updatedAtStatutCommentaire" = CURRENT_TIMESTAMP WHERE "idCommentaire" IN (SELECT com."idCommentaire" FROM (SELECT "idEntite", MAX("dateCommentaire") as "dateCommentaire" FROM public.commentaire WHERE "idDossier" = :idDossier GROUP BY "idEntite") tcom INNER JOIN public.commentaire com ON com."dateCommentaire" = tcom."dateCommentaire" AND com."idEntite" = tcom."idEntite")</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-  </query>
-  <query id="updateSubmitDate" useConfig="dossierSomissionDS">
-    <sql>UPDATE public.dossier SET "dateSoumission" = CURRENT_TIMESTAMP WHERE "idDossier" = :idDossier</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-  </query>
-  <query id="saveBillStory" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public."historiquePaiement" ("uidUser", "idDossier", "statutPaiement") VALUES (:uidUser, :idDossier, :statutPaiement) RETURNING "id","statutPaiement"</sql>
-    <param type="IN" name="uidUser" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="statutPaiement" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"historique": {
-    	"id":$id,
-    	"statutPaiement":$statutPaiement,
-    }}
-    </result>
-  </query>
-  <query id="updateBillStory" useConfig="dossierSomissionDS">
-    <sql>UPDATE public."historiquePaiement" SET "uidUser"= :uidUser, "statutPaiement"= :statutPaiement, "updatedAt" = CURRENT_TIMESTAMP WHERE "idDossier"= :idDossier RETURNING "id","statutPaiement"</sql>
-    <param type="IN" name="uidUser" sqlType="STRING" paramType="SCALAR" />
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <param type="IN" name="statutPaiement" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"historique": {
-    	"id":$id,
-    	"statutPaiement":$statutPaiement,
-    }}
-    </result>
-  </query>
-  <query id="billStory" useConfig="dossierSomissionDS">
-    <sql>SELECT * FROM public."historiquePaiement" WHERE "idDossier"= :idDossier</sql>
-    <param type="IN" name="idDossier" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"historique": {
-    	"id":$id,
-    	"uidUser":$uidUser,
-    	"idDossier": $idDossier,
-    	"statutPaiement":$statutPaiement,
-    	"createdAt": "$createdAt",
-    	"updatedAt": "$updatedAt"
-    }}
-    </result>
-  </query>
-  <query id="billStoryById" useConfig="dossierSomissionDS">
-    <sql>SELECT * FROM public."historiquePaiement" WHERE "id"= :id</sql>
-    <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"historique": {
-    	"id":$id,
-    	"uidUser":$uidUser,
-    	"idDossier": $idDossier,
-    	"statutPaiement":$statutPaiement,
-    	"createdAt": "$createdAt",
-    	"updatedAt": "$updatedAt"
-    }}
-    </result>
-  </query>
-  <query id="minValidation" useConfig="dossierSomissionDS">
-    <sql>WITH T AS
-(
-SELECT "idDossier","idStatut", 
-       LAG("dateModification") OVER(PARTITION BY "idDossier" 
-	                         ORDER BY "dateModification") AS prec ,
-	   "dateModification" AS actuel
-FROM   public."historiqueStatutDossier"
-)
-SELECT  
-      /* age( actuel, prec)*/
-	  min( EXTRACT(EPOCH FROM (actuel - prec))) AS duree
-FROM   T where "idStatut"=4 or "idStatut"=3 ;
-	</sql>
-    <result outputType="json">{"data":{"duree":"$duree"}}</result>
-  </query>
-  <query id="maxValidation" useConfig="dossierSomissionDS">
-    <sql>
-		    WITH T AS
-		(
-		SELECT "idDossier","idStatut", 
-		       LAG("dateModification") OVER(PARTITION BY "idDossier" 
-			                         ORDER BY "dateModification") AS prec ,
-			   "dateModification" AS actuel
-		FROM   public."historiqueStatutDossier"
-		)
-		SELECT  
-		      /* age( actuel, prec)*/
-			  max( EXTRACT(EPOCH FROM (actuel - prec))) AS duree
-		FROM   T where "idStatut"=4 or "idStatut"=3 ;
-	</sql>
-    <result outputType="json">{"data":{"duree":"$duree"}}</result>
-  </query>
-  <query id="moyenneValidation" useConfig="dossierSomissionDS">
-    <sql>
-		WITH T AS
-			(
-			SELECT "idDossier","idStatut", 
-			       LAG("dateModification") OVER(PARTITION BY "idDossier" 
-				                         ORDER BY "dateModification") AS prec ,
-				   "dateModification" AS actuel
-			FROM   public."historiqueStatutDossier"
-			)
-			SELECT  
-			      /* age( actuel, prec)*/
-				  avg( EXTRACT(EPOCH FROM (actuel - prec))) AS duree
-			FROM   T where "idStatut"=4 or "idStatut"=3 ;
-	</sql>
-    <result outputType="json">{"data":{"duree":"$duree"}}</result>
-  </query>
-  <query id="getSubmitedFolder" useConfig="dossierSomissionDS">
-    <sql>SELECT count("idDossier")	FROM public.dossier</sql>
-    <result outputType="json">{"count":{"count":"$count"}}</result>
-  </query>
-  <query id="countFolder" useConfig="dossierSomissionDS">
-    <sql>
-		 with T as(select CURRENT_DATE + i  as dateJour
-from generate_series(date(now()-interval '6 days')- CURRENT_DATE, 
-     date (now()) - CURRENT_DATE ) i)
-	 
-	 	 select  datejour as date, count(distinct date("dateModification"))
-		from "historiqueStatutDossier" right join T
-		on date("dateModification")=dateJour and "idStatut"=:idStatutDossier  group by (datejour)</sql>
-    <param type="IN" name="idStatutDossier" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <result outputType="json">{"data":{"statistic": [{"date":"$date", "count":"$count"}]}}</result>
-  </query>
-  <query id="moyenneImmatriculation" useConfig="dossierSomissionDS">
-    <sql>
-			SELECT  
-	avg(EXTRACT(EPOCH FROM ("historiqueStatutDossier"."dateModification"-"historiquePaiement"."createdAt" ))) AS duree
-	FROM public."historiquePaiement",public."historiqueStatutDossier"   where "historiquePaiement"."idDossier"="historiqueStatutDossier"."idDossier" and  "historiqueStatutDossier"."idStatut"=8 ;
-		</sql>
-    <result outputType="json">{"data":{"duree":"$duree"}}</result>
-  </query>
-  <query id="minImmatriculation" useConfig="dossierSomissionDS">
-    <sql>
-			SELECT  
-	min(EXTRACT(EPOCH FROM ("historiqueStatutDossier"."dateModification"-"historiquePaiement"."createdAt" ))) AS duree
-	FROM public."historiquePaiement",public."historiqueStatutDossier"   where "historiquePaiement"."idDossier"="historiqueStatutDossier"."idDossier" and  "historiqueStatutDossier"."idStatut"=8 ;
-		</sql>
-    <result outputType="json">{"data":{"duree":"$duree"}}</result>
-  </query>
-  <query id="maxImmatriculation" useConfig="dossierSomissionDS">
-    <sql>
-			SELECT  
-	max(EXTRACT(EPOCH FROM ("historiqueStatutDossier"."dateModification"-"historiquePaiement"."createdAt" ))) AS duree
-	FROM public."historiquePaiement",public."historiqueStatutDossier"   where "historiquePaiement"."idDossier"="historiqueStatutDossier"."idDossier" and  "historiqueStatutDossier"."idStatut"=8 ;
-		</sql>
-    <result outputType="json">{"data":{"duree":"$duree"}}</result>
-  </query>
-  <query id="moyenneRetour" useConfig="dossierSomissionDS">
-    <sql>
-	WITH T AS
-			(
-			select  min(commentaire."dateCommentaire") as date_first_comment,"idDossier" from commentaire group by "idDossier"
-			),
- R AS (select (EXTRACT(EPOCH FROM (date_first_comment - dossier."createdAt" ))) AS duree from T,dossier where T."idDossier"=dossier."idDossier" group by T.date_first_comment,dossier."createdAt")
-  select avg(duree) as duree from R
-  
-  </sql>
-    <result outputType="json">{"data":{"duree":"$duree"}}</result>
-  </query>
-
-<query id="factureById" useConfig="dossierSomissionDS">
-    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement", 
-		"idModePaiement", "montantTotal", "statutUpdatedAt", "refFacture", 
-		"createdAt", "updatedAt"
-		FROM public.facture 
-		WHERE "id"=:factureId
-	</sql>
-    <param name="factureId" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
-    <result outputType="json">{"data": {
-		    "facture": {
-	   			"id":$id,
-	   			"numTransaction": "$numTransaction",
-	   			"idDossier": $idDossier,
-	   			"createdAt": "$createdAt" ,
-                "updatedAt": "$updatedAt" ,
-                "statutUpdatedAt": "$statutUpdatedAt" , 	
-                "statutPaiement": "$statutPaiement" , 	
-                "idModePaiement": "$idModePaiement" , 	
-                "montantTotal": "$montantTotal" , 	
-                "refFacture": "$refFacture"                                  			
-		   	}
-	    }}
-	    </result>
-  </query>
-  
-  <query id="addNewBill" useConfig="dossierSomissionDS">
-    <sql>INSERT INTO public.facture(   
-	"idDossier", "numTransaction", "statutPaiement", "idModePaiement", 
-	"montantTotal", "refFacture", "createdby")
-	VALUES (:idDossier, :numTransaction, :statutPaiement, :idModePaiement, :montantTotal, :refFacture, :createdby) RETURNING id;</sql>
-    <param name="idDossier" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
-    <param name=" numTransaction" paramType="SCALAR" sqlType="STRING" optional="true"/>
-    <param name=" montantTotal" paramType="SCALAR" sqlType="DOUBLE" type="IN" optional="false" />
-    <param name=" idModePaiement" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="true" />
-    <param name=" statutPaiement" paramType="SCALAR" sqlType="STRING" type="IN" optional="true" />
-    <param name="refFacture" paramType="SCALAR" sqlType="STRING" type="IN" optional="true" />
-    <param name="createdby" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
-    <result outputType="json">{"facture": {
-	   		"id":$id
-	    }}
-	    </result>
-  </query>
-  
-  <query id="updateFactureState" useConfig="dossierSomissionDS">
-    <sql>UPDATE public.facture 
-	 SET "statutPaiement" =:statutPaiement, "statutUpdatedAt" = CURRENT_TIMESTAMP, "receivedby" =:receivedby
-	WHERE "id"= :id</sql>
-    <param name="statutPaiement" paramType="SCALAR" type="IN" sqlType="STRING" optional="false" />
-    <param name="id" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
-    <param name="receivedby" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
-  </query>
-
   <resource path="minImmatriculation" method="GET">
     <description />
     <call-query href="minImmatriculation" />
@@ -976,13 +1291,13 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
     <description />
     <call-query href="moyenneRetour" />
   </resource>
-  <resource method="GET" path="bills/byId/{factureId}">
+  <resource path="bills/byId/{factureId}" method="GET">
     <description>Fetch Facture by Id</description>
     <call-query href="factureById">
       <with-param name="factureId" query-param="factureId" />
     </call-query>
   </resource>
-  <resource method="POST" path="bills/addNewBill">
+  <resource path="bills/addNewBill" method="POST">
     <description>Create new Facture</description>
     <call-query href="addNewBill">
       <with-param name="idDossier" query-param="idDossier" />
@@ -994,7 +1309,7 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
       <with-param name=" createdby" query-param="createdby" />
     </call-query>
   </resource>
-  <resource method="PUT" path="bills/updateFactureState">
+  <resource path="bills/updateFactureState" method="PUT">
     <description>Update Facture state</description>
     <call-query href="updateFactureState">
       <with-param name="statutPaiement" query-param="statutPaiement" />
@@ -1002,37 +1317,13 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
       <with-param name="receivedby" query-param="receivedby" />
     </call-query>
   </resource>
-  <resource method="GET" path="bills/byFolder/{idDossier}">
+  <resource path="bills/byFolder/{idDossier}" method="GET">
     <description>Fetch Facture by folder id</description>
     <call-query href="factureByFolder">
       <with-param name="idDossier" query-param="idDossier" />
     </call-query>
   </resource>
-  <query id="factureByFolder" useConfig="dossierSomissionDS">
-    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement", 
-		"idModePaiement", "montantTotal", "statutUpdatedAt", "refFacture", 
-		"createdAt", "updatedAt"
-		FROM public.facture 
-		WHERE "idDossier"=:idDossier
-	</sql>
-    <param name="idDossier" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
-    <result outputType="json">{"facture": {
-	   			"id":$id,
-	   			"numTransaction": "$numTransaction",
-	   			"idDossier": $idDossier,
-	   			"createdAt": "$createdAt" ,
-                "updatedAt": "$updatedAt" ,
-                "statutUpdatedAt": "$statutUpdatedAt" , 	
-                "statutPaiement": "$statutPaiement" , 	
-                "idModePaiement": "$idModePaiement" , 	
-                "montantTotal": "$montantTotal" , 	
-                "refFacture": "$refFacture"                                  			
-		   	}
-	    }
-	    </result>
-  </query>
-  
-  <resource method="PUT" path="bills/updateBillData">
+  <resource path="bills/updateBillData" method="PUT">
     <description>Update Facture</description>
     <call-query href="updateBillData">
       <with-param name="numTransaction" query-param="numTransaction" />
@@ -1043,76 +1334,61 @@ from generate_series(date(now()-interval '6 days')- CURRENT_DATE,
       <with-param name="id" query-param="id" />
     </call-query>
   </resource>
-  <query id="updateBillData" useConfig="dossierSomissionDS">
-    <sql>UPDATE public.facture SET 
-    	"numTransaction" = :numTransaction, 
-    	"montantTotal" = :montantTotal, 
-    	"statutPaiement" = :statutPaiement, 
-    	"idModePaiement" = :idModePaiement,
-    	"refFacture" = :refFacture
-    	WHERE "id"= :id</sql>
-    <param name="numTransaction" paramType="SCALAR" sqlType="STRING" optional="true"/>
-    <param name="montantTotal" paramType="SCALAR" sqlType="DOUBLE" type="IN" optional="false" />
-    <param name="idModePaiement" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="true" />
-    <param name="statutPaiement" paramType="SCALAR" sqlType="STRING" type="IN" optional="true" />
-    <param name="refFacture" paramType="SCALAR" sqlType="STRING" type="IN" optional="true" />
-    <param name="id" paramType="SCALAR" sqlType="INTEGER" type="IN" optional="false" />
-  </query>
-  <query id="factureByFolderIds" useConfig="dossierSomissionDS">
-    <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
-      "idModePaiement", "montantTotal", "refFacture"
-      FROM public.facture
-      WHERE "idDossier" =ANY(:idDossier::int[])</sql>
-    <param name="idDossier" paramType="ARRAY" sqlType="STRING" type="IN" optional="false" />
-    <result outputType="json">{"data": { "factures": [{
-      "id":$id,
-      "numTransaction": "$numTransaction",
-      "idDossier": $idDossier,
-      "statutPaiement": "$statutPaiement" ,
-      "idModePaiement": "$idModePaiement" ,
-      "montantTotal": "$montantTotal" ,
-      "refFacture": "$refFacture"
-      }]}
-      }
-    </result>
-  </query>
-
-    <resource method="GET" path="bills/factureByFolderIds/{idDossier}">
-      <description>Fetch Facture by folders ids</description>
-      <call-query href="factureByFolderIds">
-        <with-param name="idDossier" query-param="idDossier" />
-      </call-query>
-    </resource>
-
-    <query id="factureByStatusAndDates" useConfig="dossierSomissionDS">
-        <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement",
-          "idModePaiement", "montantTotal", "refFacture", "receivedby"
-          FROM public.facture
-          WHERE "statutPaiement" =:statutPaiement AND "statutUpdatedAt"::date
-          between TO_DATE(:startdate, 'YYYY-MM-DD') AND TO_DATE(:enddate, 'YYYY-MM-DD')
-        </sql>
-        <param name="startdate" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
-        <param name="enddate" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
-        <param name="statutPaiement" paramType="SCALAR" sqlType="STRING" type="IN" optional="false" />
-        <result outputType="json">{"data": { "factures": [{
-          "id":$id,
-          "numTransaction": "$numTransaction",
-          "idDossier": $idDossier,
-          "statutPaiement": "$statutPaiement" ,
-          "idModePaiement": "$idModePaiement" ,
-          "montantTotal": "$montantTotal",
-          "receivedby": "$receivedby"
-          }]}
-          }
-        </result>
-    </query>
-
-    <resource method="GET" path="bills/factureByStatusAndDates">
-      <description>Fetch Facture by statut and dates</description>
-      <call-query href="factureByStatusAndDates">
-        <with-param name="startdate" query-param="startdate" />
-        <with-param name="enddate" query-param="enddate" />
-        <with-param name="statutPaiement" query-param="statutPaiement" />
-      </call-query>
-    </resource>
+  <resource path="bills/factureByFolderIds/{idDossier}" method="GET">
+    <description>Fetch Facture by folders ids</description>
+    <call-query href="factureByFolderIds">
+      <with-param name="idDossier" query-param="idDossier" />
+    </call-query>
+  </resource>
+  <resource path="bills/factureByStatusAndDates" method="GET">
+    <description>Fetch Facture by statut and dates</description>
+    <call-query href="factureByStatusAndDates">
+      <with-param name="startdate" query-param="startdate" />
+      <with-param name="enddate" query-param="enddate" />
+      <with-param name="statutPaiement" query-param="statutPaiement" />
+    </call-query>
+  </resource>
+  <resource path="bills/factureByCurrentWeek" method="GET">
+    <description>Fetch Facture by current year and  week</description>
+    <call-query href="factureByCurrentWeek">
+      <with-param name="statutPaiement" query-param="statutPaiement" />
+    </call-query>
+  </resource>
+  <resource path="bills/factureBySelectedWeek" method="GET">
+    <description>Fetch Facture by current year and  week</description>
+    <call-query href="factureBySelectedWeek">
+      <with-param name="selectedweek" query-param="selectedweek" />
+      <with-param name="statutPaiement" query-param="statutPaiement" />
+    </call-query>
+  </resource>
+  <resource path="bills/factureByMonthAndStatusFilter" method="GET">
+    <description>Fetch Facture by current year and  week</description>
+    <call-query href="factureByMonthAndStatusFilter">
+      <with-param name="statutPaiement" query-param="statutPaiement" />
+      <with-param name="yearParam" query-param="yearParam" />
+      <with-param name="monthParam" query-param="monthParam" />
+    </call-query>
+  </resource>
+  <resource path="bills/factureByYearAndStatusFilter" method="GET">
+    <description>Fetch Facture by current year and  week</description>
+    <call-query href="factureByYearAndStatusFilter">
+      <with-param name="statutPaiement" query-param="statutPaiement" />
+      <with-param name="yearParam" query-param="yearParam" />
+    </call-query>
+  </resource>
+  <resource path="bills/fiscVersments" method="GET">
+    <description>Fetch Fisc versement by dates</description>
+    <call-query href="fiscVersments">
+      <with-param name="startdate" query-param="startdate" />
+      <with-param name="enddate" query-param="enddate" />
+    </call-query>
+  </resource>
+  <resource path="bills/updateFacturePaiementState" method="PUT">
+    <description>Update Facture paiement state</description>
+    <call-query href="updateFacturePaiementState">
+      <with-param name="refFacture" query-param="refFacture" />
+      <with-param name="statutPaiement" query-param="statutPaiement" />
+      <with-param name="receivedby" query-param="receivedby" />
+    </call-query>
+  </resource>
 </data>
