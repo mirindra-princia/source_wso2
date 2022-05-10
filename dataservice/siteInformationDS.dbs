@@ -103,4 +103,16 @@
     	INNER JOIN public.components_card_status_card_statuses desc_status ON TRIM(desc_status.accronym_legal_status_fr) = TRIM(status."STATUS") OR TRIM(desc_status.acronym_legal_status_fr) = TRIM(status."STATUS")</sql>
     <result outputType="json">{"data":{"legalStatus":[{"id":$id, "status":"$acronym", "label":"$label", "note_fr": "$note_fr"}]}}</result>
   </query>
+
+  <query id="companyActivity" useConfig="siteInformationDS">
+    <sql>SELECT id, "descriptivesCategorie_fr" FROM public."categorieActivite" where "id"=:idActivity</sql>
+    <param type="IN" name="idActivity" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data":{"descriptivesCategorie_fr":"$descriptivesCategorie_fr", "id":"$id"}}</result>
+  </query>
+  <resource path="companyInterOp/activity/{idActivity}" method="GET">
+    <description />
+    <call-query href="companyActivity">
+      <with-param name="idActivity" query-param="idActivity" />
+    </call-query>
+  </resource>
 </data>

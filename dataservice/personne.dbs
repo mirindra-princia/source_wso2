@@ -856,4 +856,43 @@
             <with-param name="uid" query-param="uid" />
         </call-query>
     </resource>
+
+    <query id="companyPerson" useConfig="personneDS">
+        <sql>SELECT "idPersonne", "nom", "prenom", "tel", "pieceIdentite"."numeroPiece", "adresse"
+            FROM public.personne INNER join "pieceIdentite" on "pieceIdentite".id = personne."idPieceIdentite"
+            inner join public.adresse on adresse."idAdresse" = personne."idadresse"
+            where "idPersonne"=:idPerson
+        </sql>
+        <param type="IN" name="idPerson" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+        <result outputType="json">{"data":{"idPersonne": "$idPersonne", "nom": "$nom", "adresse": "$adresse",
+            "prenom": "$prenom", "tel": "$tel", "numeroPiece": "$numeroPiece"}}
+        </result>
+    </query>
+
+    <resource path="companyInterOp/person/{idPerson}" method="GET">
+        <description />
+        <call-query href="companyPerson">
+            <with-param name="idPerson" query-param="idPerson" />
+        </call-query>
+    </resource>
+
+    <query id="companyPersonMorale" useConfig="personneDS">
+        <sql>SELECT personne."idPersonne", "nom", "prenom", "tel", "pieceIdentite"."numeroPiece", "adresse"
+            FROM public."personneMorale" inner join personne on "personneMorale"."idPersonne" = personne."idPersonne"
+            left join "pieceIdentite" on "pieceIdentite".id = personne."idPieceIdentite"
+            left join public.adresse on adresse."idAdresse" = personne."idadresse"
+            where personne."idPersonne"=:idPerson
+        </sql>
+        <param type="IN" name="idPerson" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+        <result outputType="json">{"data":{"idPersonne": "$idPersonne", "nom": "$nom", "adresse": "$adresse",
+            "prenom": "$prenom", "tel": "$tel", "numeroPiece": "$numeroPiece"}}
+        </result>
+    </query>
+
+    <resource path="companyInterOp/person/morale/{idPerson}" method="GET">
+        <description />
+        <call-query href="companyPersonMorale">
+            <with-param name="idPerson" query-param="idPerson" />
+        </call-query>
+    </resource>
 </data>

@@ -1429,4 +1429,29 @@
     <param type="IN" name="adresseSiegeSocial" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"id":$id, "name": $name}}</result>
   </query>
+
+  <query id="societeSiegeData" useConfig="societeDS">
+    <sql>select "siegeSocial"."adresseSiegeSocial" ,
+      societe."denominationSocial",
+      adresse.adresse, societe."activiteImportExport",
+      societe."activitePrincipal", "siegeSocial"."idBailleurPersonne",
+      "siegeSocial"."idBailleurPersonneMoral",
+      "siegeSocial"."idTypeBailleur",
+      "siegeSocial"."idTypeContrat"
+      from "siegeSocial"
+      inner join adresse ON adresse."idAdresse" = "siegeSocial"."adresseSiegeSocial"
+      inner join societe ON societe."idSiegeSocial" = "siegeSocial"."idSiege"
+      where societe."idSociete" =:idSociete
+    </sql>
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data":{"activitePrincipal": "$activitePrincipal", "adresse": "$adresse", "adresseSiegeSocial": "$adresseSiegeSocial",
+      "activiteImportExport": "$activiteImportExport", "idBailleurPersonne": "$idBailleurPersonne", "denominationSocial": "$denominationSocial",
+      "idBailleurPersonneMoral": "$idBailleurPersonneMoral", "idTypeBailleur": "$idTypeBailleur", "idTypeContrat": "$idTypeContrat"}}</result>
+  </query>
+  <resource path="companyInterOp/siegeSociale/{idSociete}" method="GET">
+    <description />
+    <call-query href="societeSiegeData">
+      <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
 </data>
