@@ -1391,4 +1391,22 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
       <with-param name="receivedby" query-param="receivedby" />
     </call-query>
   </resource>
+  <resource path="updateProforma" method="PUT">
+    <description />
+    <call-query href="updateProforma">
+      <with-param name="idFactureData" query-param="idFactureData" />
+      <with-param name="label" query-param="label" />
+      <with-param name="value" query-param="value" />
+      <with-param name="idOwner" query-param="idOwner" />
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="updateProforma" useConfig="dossierSomissionDS">
+    <sql>UPDATE public."factureDataDossier" SET "idFactureData"=:idFactureData, label=:label, value=:value, "idOwner"=:idOwner WHERE id=:id</sql>
+    <param type="IN" name="idFactureData" paramType="SCALAR" sqlType="INTEGER" optional="true" />
+    <param type="IN" name="label" paramType="SCALAR" sqlType="STRING" optional="true" />
+    <param type="IN" name="idOwner" paramType="SCALAR" sqlType="INTEGER" optional="true" />
+    <param type="IN" name="value" paramType="SCALAR" sqlType="DOUBLE" optional="false" />
+    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+  </query>
 </data>
