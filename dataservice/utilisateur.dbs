@@ -1,20 +1,21 @@
 <data name="utilisateur" serviceNamespace="" serviceGroup="" transports="http https">
   <description />
    <!-- CONFIGURATION PROD -->
- <!--  <config id="utilisateurDS">
+  <config id="utilisateurDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/utilisateur</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
-  </config> -->
+  </config>
    <!-- CONFIGURATION TEST -->
+
 <!--   <config id="utilisateurDS">
  	 <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://13.246.0.44:5432/utilisateur</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
-  </config>
--->
+  </config> -->
+
    <!-- CONFIGURATION DEV -->
 <!--   <config id="utilisateurDS"> -->
 <!--  	 <property name="driverClassName">org.postgresql.Driver</property> -->

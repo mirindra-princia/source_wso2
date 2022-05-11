@@ -9,6 +9,7 @@
 	  <property name="password">devedbmdb</property>
 	</config> 
 		<!-- CONFIGURATION TEST -->
+
 <!-- 	<config id="messagerieDS">
     	<property name="driverClassName">org.postgresql.Driver</property>
 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/messagerie</property>
