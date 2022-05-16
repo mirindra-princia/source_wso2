@@ -904,7 +904,7 @@
 	public.devise devise on associe."idDevise"=devise."idDevise" LEFT JOIN 
 	public.devise "deviseM" on associe."idDeviseMontantApportEnNature"="deviseM"."idDevise"  WHERE "idSociete"=:idSociete</sql>
     <param type="IN" name="idSociete " sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <result outputType="json">{"associates":{"associate":[{
+    <result outputType="json">{"data":{"associates":[{
 					"idStatutSociete":"$idStatutSociete",
 					"idAssocie":"$idAssocie",
 					"isDefault":"$isDefault",
@@ -1418,4 +1418,15 @@
       <with-param name="denominationSocial" query-param="denominationSocial" />
     </call-query>
   </resource>
+  
+  <resource path="reset/associate" method="PUT">
+    <description />
+    <call-query href="resetAsscoaiteRole">
+      <with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="resetAsscoaiteRole" useConfig="societeDS">
+    <sql>UPDATE associe SET "idStatutSociete" = NULL WHERE "idAssocie"=ANY(:ids::int[])</sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING"/>
+  </query>
 </data>
