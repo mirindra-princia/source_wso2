@@ -1,5 +1,6 @@
 <data name="localisation" serviceGroup="mg.gov.edbm.societe.localisationDS" transports="http https">
   <description>Service adresse</description>
+
   	<!-- CONFIGURATION PROD -->
    <config id="localisationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
@@ -21,6 +22,7 @@
 <!--     <property name="username">postgres</property> -->
 <!--     <property name="password">postgres</property> -->
 <!--   </config> -->
+
   <resource path="province" method="GET">
     <description>List of all province</description>
     <call-query href="selectAllProvinces" />

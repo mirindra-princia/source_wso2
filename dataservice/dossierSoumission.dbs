@@ -8,19 +8,21 @@
     <property name="password">devedbmdb</property>
   </config> 
   <!-- CONFIGURATION TEST -->
- <!--  <config id="dossierSomissionDS">
+
+  <!-- <config id="dossierSomissionDS">
     	<property name="driverClassName">org.postgresql.Driver</property>
 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/dossier_somission</property>
 	    <property name="username">devedbmdb</property>
 	    <property name="password">devedbmdb</property>
    	</config> -->
    	<!-- CONFIGURATION DEV -->
-<!--    	<config id="dossierSomissionDS"> -->
+<!--   <config id="dossierSomissionDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property> -->
 <!--     <property name="username">postgres</property> -->
 <!--     <property name="password">postgres</property> -->
 <!--   </config> -->
+
   <query id="addNumeroDossier" useConfig="dossierSomissionDS">
     <sql>INSERT INTO public.dossier(
 	 "numeroDossier","idIpAdress")
@@ -203,7 +205,7 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
 	FROM public."rendezVous" WHERE "idDossier"=:idDossier ORDER BY "dateRendezVous" DESC, "heureRdv" DESC</sql>
     <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">
-{"rdvs":{"rdv":[{"idRendezVous":"$idRendezVous", "idDossier":"$idDossier", "dateRendezVous":"$dateRendezVous", "idUtilisateur":"$idUtilisateur", "heureRdv":"$heureRdv","idTypeRendezVous":"$idTypeRendezVous"}]}}</result>
+{"rdvs":{"rdv":[{"idRendezVous":"$idRendezVous", "idDossier":"$idDossier", "dateRendezVous":"$dateRendezVous", "idUtilisateur":"$idUtilisateur", "heureRdv":"$heureRdv"}]}}</result>
   </query>
   <resource path="getListRdvByType" method="GET">
     <description>liste des rendez d'un dossier relative au type données</description>
@@ -1391,22 +1393,4 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
       <with-param name="receivedby" query-param="receivedby" />
     </call-query>
   </resource>
-  <resource path="updateProforma" method="PUT">
-    <description />
-    <call-query href="updateProforma">
-      <with-param name="idFactureData" query-param="idFactureData" />
-      <with-param name="label" query-param="label" />
-      <with-param name="value" query-param="value" />
-      <with-param name="idOwner" query-param="idOwner" />
-      <with-param name="id" query-param="id" />
-    </call-query>
-  </resource>
-  <query id="updateProforma" useConfig="dossierSomissionDS">
-    <sql>UPDATE public."factureDataDossier" SET "idFactureData"=:idFactureData, label=:label, value=:value, "idOwner"=:idOwner WHERE id=:id</sql>
-    <param type="IN" name="idFactureData" paramType="SCALAR" sqlType="INTEGER" optional="true" />
-    <param type="IN" name="label" paramType="SCALAR" sqlType="STRING" optional="true" />
-    <param type="IN" name="idOwner" paramType="SCALAR" sqlType="INTEGER" optional="true" />
-    <param type="IN" name="value" paramType="SCALAR" sqlType="DOUBLE" optional="false" />
-    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-  </query>
 </data>
