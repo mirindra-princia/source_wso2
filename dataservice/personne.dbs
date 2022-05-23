@@ -21,6 +21,7 @@
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config>
+  
   <query id="addPerson" useConfig="personneDS">
     <sql>INSERT INTO public.personne(nom,prenom,"nomPere", "nomMere", "dateNaissance", "lieuNaissance", "situationMatrimonial", 
 	    "idPieceIdentite", sexe, societe_mandataire, idadresse, idrole, tel,e_mail,"idUtilisateur", engagement, civilite, 
@@ -52,6 +53,7 @@
     <param type="IN" name="nationalite" paramType="SCALAR" sqlType="STRING" optional="true" />
     <result outputType="json">{"data":{"idPersonne":"$idPersonne"}}</result>
   </query>
+  
   <query id="updatePersonProfil" useConfig="personneDS">
     <sql>
         UPDATE public.personne
@@ -203,6 +205,7 @@
 	    }}
 	</result>
   </query>
+  
   <query id="getPersonCompany" useConfig="personneDS">
     <sql>
     	SELECT * FROM public."personneSociete" societe LEFT JOIN public.adresse adresse ON adresse."idAdresse" = societe."idAdresseSociete" WHERE societe."idPersonneSociete"=:id
@@ -299,6 +302,7 @@
     <param type="IN" name="latitude" paramType="SCALAR" sqlType="STRING" optional="true" />
     <result outputType="json">{"adresse":{"idAdresse":$idAdresse}}</result>
   </query>
+  
   <query id="updatePersonIdentity" useConfig="personneDS">
     <sql>
         UPDATE public."pieceIdentite"
@@ -371,6 +375,8 @@
     <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" optional="false" />
     <result outputType="json">{"idPersonne":{"idPersonne":"$idPersonne"}}</result>
   </query>
+  
+  
   <query id="addLegalEntity" useConfig="personneDS">
     <sql>INSERT INTO public."personneMorale"(
 	 "idFormeJuridique", "capitalSocial", "idAdresse", "RCS", "KBIS", "NIF", "idGreffeRCS", qualite,"STAT","denominationSocial","idPersonne","idDeviseCapitalSocial")
@@ -515,6 +521,7 @@
     <param type="IN" name="idConjoint" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="mailConjoint" paramType="SCALAR" sqlType="STRING" optional="false" />
   </query>
+  
   <resource path="addPerson" method="POST">
     <description />
     <call-query href="addPerson">
@@ -596,6 +603,8 @@
       <with-param name="idAdressePerson" query-param="idAdressePerson" />
     </call-query>
   </resource>
+  
+  
   <resource path="getPersonInformationByPersonId" method="GET">
     <description>get person information for dashboard</description>
     <call-query href="getPersonInformationByPersonId">
@@ -828,6 +837,8 @@
 		   	}
 	    }</result>
   </query>
+  
+  
   <resource method="GET" path="personRole/{uid}">
     <description />
     <call-query href="personRole">
@@ -1005,6 +1016,8 @@
 	    }}
 	</result>
   </query>
+  
+  
   
   <resource path="personData/email/{email}" method="GET">
     <description />
@@ -1203,5 +1216,93 @@
         "longitude": $longitude,
         "latitude": $latitude
     }}</result>
+  </query>
+  
+  <resource path="setPersonAddress" method="PUT">
+    <description />
+    <call-query href="setPersonAddress">
+      <with-param name="idPersonne" query-param="idPersonne" />
+      <with-param name="idadresse" query-param="idadresse" />
+    </call-query>
+  </resource>
+  <query id="setPersonAddress" useConfig="personneDS">
+    <sql>
+        UPDATE personne
+     	SET idadresse = :idadresse
+        WHERE personne."idPersonne"=:idPersonne
+        RETURNING "idPersonne"
+    </sql>
+    <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idadresse" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"data":{
+    	"idPersonne": $idPersonne
+    }}
+    </result>
+  </query>
+  
+  <resource path="setPersonIdentity" method="PUT">
+    <description />
+    <call-query href="setPersonIdentity">
+      <with-param name="idPersonne" query-param="idPersonne" />
+      <with-param name="idPieceIdentite" query-param="idPieceIdentite" />
+    </call-query>
+  </resource>
+  <query id="setPersonIdentity" useConfig="personneDS">
+    <sql>
+        UPDATE personne
+     	SET "idPieceIdentite" = :idPieceIdentite
+        WHERE personne."idPersonne"=:idPersonne
+        RETURNING "idPersonne"
+    </sql>
+    <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idPieceIdentite" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"data":{
+    	"idPersonne": $idPersonne
+    }}
+    </result>
+  </query>
+  
+  <resource path="setPersonCompany" method="PUT">
+    <description />
+    <call-query href="setPersonCompany">
+      <with-param name="idPersonne" query-param="idPersonne" />
+      <with-param name="idPersonneSociete" query-param="idPersonneSociete" />
+    </call-query>
+  </resource>
+  <query id="setPersonCompany" useConfig="personneDS">
+    <sql>
+        UPDATE personne
+     	SET "idPersonneSociete" = :idPersonneSociete
+        WHERE personne."idPersonne"=:idPersonne
+        RETURNING "idPersonne"
+    </sql>
+    <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idPersonneSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"data":{
+    	"idPersonne": $idPersonne
+    }}
+    </result>
+  </query>
+  
+  <resource path="setPersonPartner" method="PUT">
+    <description />
+    <call-query href="setPersonPartner">
+      <with-param name="idPersonne" query-param="idPersonne" />
+      <with-param name="idConjoint" query-param="idConjoint" />
+    </call-query>
+  </resource>
+  <query id="setPersonPartner" useConfig="personneDS">
+    <sql>
+        UPDATE personne
+     	SET "idConjoint" = :idConjoint
+        WHERE personne."idPersonne"=:idPersonne
+        RETURNING "idPersonne"
+    </sql>
+    <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idConjoint" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <result outputType="json">{"data":{
+    	"idPersonne": $idPersonne
+    }}
+    </result>
   </query>
 </data>
