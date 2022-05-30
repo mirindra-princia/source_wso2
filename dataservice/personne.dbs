@@ -8,12 +8,12 @@
 <!--     <property name="password">devedbmdb</property> -->
 <!--   </config> -->
   <!-- CONFIGURATION TEST -->
-  <config id="personneDS">
+ <!--  <config id="personneDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://13.246.0.44:5432/personne</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
-  </config>
+  </config> -->
   	<!-- CONFIGURATION DEV -->
 <!--   <config id="personneDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
@@ -491,8 +491,11 @@
     <result outputType="json">{"personne":{"idPersonneMorale":$idPersonneMorale}}</result>
   </query>
   <query id="selectAllRole" useConfig="personneDS">
-    <sql>SELECT id_role, libelle_role, id_parent FROM public.role ;</sql>
-    <result outputType="json">{"roles":{"role":[{"id_role":"$id_role","libelle_role":"$libelle_role","id_parent":"$id_parent"}]}}</result>
+    <sql>SELECT id_role, libelle_role, id_parent, code_role, ordre, "idRoleDgi"
+	FROM public.role LEFT JOIN "roleMapping" on role.id_role="roleMapping"."idRoleOrinasa"
+	;</sql>
+    <result outputType="json">{"roles":
+    {"role":[{"id_role":"$id_role","libelle_role":"$libelle_role","id_parent":"$id_parent","ordre":"$ordre","roleMapping":{"idRoleDgi":"$idRoleDgi"}}]}}</result>
   </query>
   <query id="getRoles" useConfig="personneDS">
     <sql>SELECT * FROM public.role WHERE id_role=ANY(:ids::int[])</sql>
