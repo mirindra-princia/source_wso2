@@ -674,16 +674,16 @@
       <with-param name="idPersonneSociete" query-param="idPersonneSociete" />
     </call-query>
   </resource>
-  <resource path="getPersonIdentityById" method="GET">
+  <resource path="getPersonIdentityById/{id}" method="GET">
     <description />
     <call-query href="getPersonIdentityById">
       <with-param name="id" query-param="id" />
     </call-query>
   </resource>
-  <resource path="getPersonIdentityByNumeroPiece" method="GET">
+  <resource path="getPersonIdentityByNumeroPiece/{number}" method="GET">
     <description />
     <call-query href="getPersonIdentityByNumeroPiece">
-      <with-param name="numeroPiece" query-param="numeroPiece" />
+      <with-param name="numeroPiece" query-param="number" />
     </call-query>
   </resource>
   <resource path="addPersonIdentity" method="POST">
@@ -941,6 +941,7 @@
     	LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" 
     	LEFT JOIN public.nationalite ON nationalite.code = personne.nationalite 
     	LEFT JOIN public."situationMatrimoniale" sm ON sm."idSituationMatrimonial" = personne."situationMatrimonial"
+    	LEFT JOIN public."personneSociete" ps ON ps."idPersonneSociete" = personne."idPersonneSociete"
     	WHERE "idPersonne"=:idPersonne
 	</sql>
     <param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" />
@@ -1012,6 +1013,16 @@
 		    "maritalSituation": {
 		    	"libelleSituationMatrimonial": "$libelleSituationMatrimonial",
 		    	"codeSituationMatrimonial": "$codeSituationMatrimonial"
+		    },
+		    "personneSociete": {
+		    	"idPersonneSociete": $idPersonneSociete,
+		    	"nomSociete": "$nomSociete",
+		    	"idAdresseSociete": $idAdresseSociete,
+		    	"idSociete": $idSociete,
+		    	"telSociete": "$telSociete",
+		    	"capital": $capital,
+		    	"idDevise": $idDevise,
+		    	"rcs": "$rcs"
 		    }
 	    }}
 	</result>
@@ -1035,6 +1046,7 @@
     	LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" 
     	LEFT JOIN public.nationalite ON nationalite.code = personne.nationalite 
     	LEFT JOIN public."situationMatrimoniale" sm ON sm."idSituationMatrimonial" = personne."situationMatrimonial"
+    	LEFT JOIN public."personneSociete" ps ON ps."idPersonneSociete" = personne."idPersonneSociete"
     	WHERE "e_mail"=:email
 	</sql>
     <param type="IN" name="email" paramType="SCALAR" sqlType="STRING" />
@@ -1085,7 +1097,17 @@
 	    "maritalSituation": {
 	    	"libelleSituationMatrimonial": "$libelleSituationMatrimonial",
 	    	"codeSituationMatrimonial": "$codeSituationMatrimonial"
-	    }
+	    },
+	    "personneSociete": {
+		    	"idPersonneSociete": $idPersonneSociete,
+		    	"nomSociete": "$nomSociete",
+		    	"idAdresseSociete": $idAdresseSociete,
+		    	"idSociete": $idSociete,
+		    	"telSociete": "$telSociete",
+		    	"capital": $capital,
+		    	"idDevise": $idDevise,
+		    	"rcs": "$rcs"
+		}
 	    }}
 	</result>
   </query>
@@ -1106,6 +1128,7 @@
     	LEFT JOIN public.conjoint conjoint ON conjoint."idConjoint" = personne."idConjoint" 
     	LEFT JOIN public.nationalite ON nationalite.code = personne.nationalite 
     	LEFT JOIN public."situationMatrimoniale" sm ON sm."idSituationMatrimonial" = personne."situationMatrimonial"
+    	LEFT JOIN public."personneSociete" ps ON ps."idPersonneSociete" = personne."idPersonneSociete"
     	WHERE "idUtilisateur"=:idUtilisateur
 	</sql>
     <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" />
@@ -1156,7 +1179,17 @@
 	    "maritalSituation": {
 	    	"libelleSituationMatrimonial": "$libelleSituationMatrimonial",
 	    	"codeSituationMatrimonial": "$codeSituationMatrimonial"
-	    }
+	    },
+	    "personneSociete": {
+		    	"idPersonneSociete": $idPersonneSociete,
+		    	"nomSociete": "$nomSociete",
+		    	"idAdresseSociete": $idAdresseSociete,
+		    	"idSociete": $idSociete,
+		    	"telSociete": "$telSociete",
+		    	"capital": $capital,
+		    	"idDevise": $idDevise,
+		    	"rcs": "$rcs"
+		}
 	    }}
 	</result>
   </query>
