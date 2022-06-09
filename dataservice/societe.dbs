@@ -8,19 +8,19 @@
 <!--     <property name="password">devedbmdb</property> -->
 <!--   </config> -->
   <!-- CONFIGURATION TEST -->
- <!--  <config id="societeDS">
+  <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://13.246.0.44:5432/societe</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
-  </config> -->
+  </config>
   <!-- CONFIGURATION DEV -->
-  <config id="societeDS">
+<!--   <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/societe</property>
     <property name="username">postgres</property>
     <property name="password">postgres</property>
-  </config>
+  </config> -->
   <resource path="addSocietyForm" method="POST">
     <description>add society from online form</description>
     <call-query href="addSociety">
@@ -1429,4 +1429,28 @@
     <sql>UPDATE associe SET "idStatutSociete" = NULL WHERE "idAssocie"=ANY(:ids::int[])</sql>
     <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING"/>
   </query>
+  <query id="societeSiegeData" useConfig="societeDS">
+    <sql>select "siegeSocial"."adresseSiegeSocial" ,
+      societe."denominationSocial",
+      adresse.adresse, societe."activiteImportExport",
+      societe."activitePrincipal", "siegeSocial"."idBailleurPersonne",
+      "siegeSocial"."idBailleurPersonneMoral",
+      "siegeSocial"."idTypeBailleur",
+      "siegeSocial"."idTypeContrat"
+      from "siegeSocial"
+      inner join adresse ON adresse."idAdresse" = "siegeSocial"."adresseSiegeSocial"
+      inner join societe ON societe."idSiegeSocial" = "siegeSocial"."idSiege"
+      where societe."idSociete" =:idSociete
+    </sql>
+    <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data":{"activitePrincipal": "$activitePrincipal", "adresse": "$adresse", "adresseSiegeSocial": "$adresseSiegeSocial",
+      "activiteImportExport": "$activiteImportExport", "idBailleurPersonne": "$idBailleurPersonne", "denominationSocial": "$denominationSocial",
+      "idBailleurPersonneMoral": "$idBailleurPersonneMoral", "idTypeBailleur": "$idTypeBailleur", "idTypeContrat": "$idTypeContrat"}}</result>
+  </query>
+  <resource path="companyInterOp/siegeSociale/{idSociete}" method="GET">
+    <description />
+    <call-query href="societeSiegeData">
+      <with-param name="idSociete" query-param="idSociete" />
+    </call-query>
+  </resource>
 </data>

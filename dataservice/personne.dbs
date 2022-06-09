@@ -8,19 +8,19 @@
 <!--     <property name="password">devedbmdb</property> -->
 <!--   </config> -->
   <!-- CONFIGURATION TEST -->
- <!--  <config id="personneDS">
+  <config id="personneDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://13.246.0.44:5432/personne</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
-  </config> -->
+  </config>
   	<!-- CONFIGURATION DEV -->
-  <config id="personneDS">
+  <!-- <config id="personneDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/personne</property>
     <property name="username">postgres</property>
     <property name="password">postgres</property>
-  </config>
+  </config> -->
   <query id="addPerson" useConfig="personneDS">
     <sql>INSERT INTO public.personne(nom,prenom,"nomPere", "nomMere", "dateNaissance", "lieuNaissance", "situationMatrimonial", 
 	    "idPieceIdentite", sexe, societe_mandataire, idadresse, idrole, tel,e_mail,"idUtilisateur", engagement, civilite, 
@@ -857,6 +857,44 @@
         <description />
         <call-query href="getPersonByUUID">
             <with-param name="uid" query-param="uid" />
+        </call-query>
+    </resource>
+    <query id="companyPerson" useConfig="personneDS">
+        <sql>SELECT "idPersonne", "nom", "prenom", "tel", "pieceIdentite"."numeroPiece", "adresse"
+            FROM public.personne INNER join "pieceIdentite" on "pieceIdentite".id = personne."idPieceIdentite"
+            inner join public.adresse on adresse."idAdresse" = personne."idadresse"
+            where "idPersonne"=:idPerson
+        </sql>
+        <param type="IN" name="idPerson" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+        <result outputType="json">{"data":{"idPersonne": "$idPersonne", "nom": "$nom", "adresse": "$adresse",
+            "prenom": "$prenom", "tel": "$tel", "numeroPiece": "$numeroPiece"}}
+        </result>
+    </query>
+
+    <resource path="companyInterOp/person/{idPerson}" method="GET">
+        <description />
+        <call-query href="companyPerson">
+            <with-param name="idPerson" query-param="idPerson" />
+        </call-query>
+    </resource>
+
+    <query id="companyPersonMorale" useConfig="personneDS">
+        <sql>SELECT personne."idPersonne", "nom", "prenom", "tel", "pieceIdentite"."numeroPiece", "adresse"
+            FROM public."personneMorale" inner join personne on "personneMorale"."idPersonne" = personne."idPersonne"
+            left join "pieceIdentite" on "pieceIdentite".id = personne."idPieceIdentite"
+            left join public.adresse on adresse."idAdresse" = personne."idadresse"
+            where personne."idPersonne"=:idPerson
+        </sql>
+        <param type="IN" name="idPerson" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+        <result outputType="json">{"data":{"idPersonne": "$idPersonne", "nom": "$nom", "adresse": "$adresse",
+            "prenom": "$prenom", "tel": "$tel", "numeroPiece": "$numeroPiece"}}
+        </result>
+    </query>
+
+    <resource path="companyInterOp/person/morale/{idPerson}" method="GET">
+        <description />
+        <call-query href="companyPersonMorale">
+            <with-param name="idPerson" query-param="idPerson" />
         </call-query>
     </resource>
 </data>
