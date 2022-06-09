@@ -18,8 +18,8 @@
 <!--   <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/societe</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
   </config> -->
   <resource path="addSocietyForm" method="POST">
     <description>add society from online form</description>
@@ -1452,7 +1452,7 @@
       "siegeSocial"."idTypeContrat",
       "siegeSocial"."siegePrincipal",
       "siegeSocial"."idSiege",
-      "societe"."dateStatut",
+      "societe"."dateStatut"
       from "siegeSocial"
       inner join adresse ON adresse."idAdresse" = "siegeSocial"."adresseSiegeSocial"
       inner join societe ON societe."idSiegeSocial" = "siegeSocial"."idSiege"
