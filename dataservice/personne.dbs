@@ -1,19 +1,19 @@
 <data name="personne" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.personneDS" transports="http https">
   <description />
   <!-- CONFIGURATION PROD -->
-<!--   <config id="personneDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/personne</property> -->
-<!--     <property name="username">devedbmdb</property> -->
-<!--     <property name="password">devedbmdb</property> -->
-<!--   </config> -->
-  <!-- CONFIGURATION TEST -->
   <config id="personneDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/personne</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
+  </config>
+  <!-- CONFIGURATION TEST -->
+ <!--  <config id="personneDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://13.246.0.44:5432/personne</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
-  </config>
+  </config> -->
   	<!-- CONFIGURATION DEV -->
 <!--   <config id="personneDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
