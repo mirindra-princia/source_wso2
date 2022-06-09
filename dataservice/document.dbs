@@ -10,7 +10,7 @@
   </config> 
   <!-- CONFIGURATION TEST  -->
 
- <!--  <config id="documentDS">
+<!--   <config id="documentDS">
     	<property name="driverClassName">org.postgresql.Driver</property>
 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/document</property>
 	    <property name="username">devedbmdb</property>

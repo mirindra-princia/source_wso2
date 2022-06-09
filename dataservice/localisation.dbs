@@ -9,7 +9,7 @@
     <property name="password">devedbmdb</property>
   </config>
   	<!-- CONFIGURATION TEST -->
-   <!--  <config id="localisationDS">
+  <!--   <config id="localisationDS">
 		<property name="driverClassName">org.postgresql.Driver</property>
 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/localisation</property>
 	    <property name="username">devedbmdb</property>
