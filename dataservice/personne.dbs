@@ -879,14 +879,14 @@
     </resource>
 
     <query id="companyPersonMorale" useConfig="personneDS">
-        <sql>SELECT personne."idPersonne", "nom", "prenom", "tel", "pieceIdentite"."numeroPiece", "adresse"
-            FROM public."personneMorale" inner join personne on "personneMorale"."idPersonne" = personne."idPersonne"
+        <sql>SELECT personne."idPersonne", "nom", "prenom", "tel", "pieceIdentite"."numeroPiece", "adresse", "personneMorale"."NIF" as nif
+            FROM public."personne" left join "personneMorale" on "personneMorale"."idPersonne" = personne."idPersonne"
             left join "pieceIdentite" on "pieceIdentite".id = personne."idPieceIdentite"
             left join public.adresse on adresse."idAdresse" = personne."idadresse"
-            where personne."idPersonne"=:idPerson
+            where "personneMorale"."idPersonneMorale"=:idPerson
         </sql>
         <param type="IN" name="idPerson" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-        <result outputType="json">{"data":{"idPersonne": "$idPersonne", "nom": "$nom", "adresse": "$adresse",
+        <result outputType="json">{"data":{"idPersonne": "$idPersonne", "nom": "$nom", "adresse": "$adresse", "nif": "$nif",
             "prenom": "$prenom", "tel": "$tel", "numeroPiece": "$numeroPiece"}}
         </result>
     </query>
