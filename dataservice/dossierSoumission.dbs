@@ -201,11 +201,11 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     <result outputType="json">{"validationStatuses":{"validationStatus":[{"idStatutValidation":"$idStatutValidation","libelleStatutValidation":"$libelleStatutValidation"}]}}</result>
   </query>
   <query id="listRdv" useConfig="dossierSomissionDS">
-    <sql>SELECT *
-	FROM public."rendezVous" WHERE "idDossier"=:idDossier ORDER BY "dateRendezVous" DESC, "heureRdv" DESC</sql>
-    <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
-    <result outputType="json">
-{"rdvs":{"rdv":[{"idRendezVous":"$idRendezVous", "idDossier":"$idDossier", "dateRendezVous":"$dateRendezVous", "idUtilisateur":"$idUtilisateur", "heureRdv":"$heureRdv"}]}}</result>
+        <sql>SELECT *
+            FROM public."rendezVous" WHERE "idDossier"=:idDossier ORDER BY "dateRendezVous" DESC, "heureRdv" DESC</sql>
+        <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+        <result outputType="json">
+            {"rdvs":{"rdv":[{"idRendezVous":"$idRendezVous", "idDossier":"$idDossier", "dateRendezVous":"$dateRendezVous", "idUtilisateur":"$idUtilisateur", "heureRdv":"$heureRdv","idTypeRendezVous":"$idTypeRendezVous"}]}}</result>
   </query>
   <resource path="getListRdvByType" method="GET">
     <description>liste des rendez d'un dossier relative au type données</description>
@@ -1063,11 +1063,11 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
     <description />
     <call-query href="listAllValidationStatus" />
   </resource>
-  <resource path="getListRdv" method="GET">
-    <description>liste des rendez d'un dossier</description>
-    <call-query href="listRdv">
-      <with-param name="idDossier" query-param="folderId" />
-    </call-query>
+  <resource path="getListRdv/{idDossier}" method="GET">
+        <description>liste des rendez d'un dossier</description>
+        <call-query href="listRdv">
+            <with-param name="idDossier" query-param="idDossier" />
+        </call-query>
   </resource>
   <resource path="listStatutDepot" method="GET">
     <description />
