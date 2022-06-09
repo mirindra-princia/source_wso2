@@ -1451,7 +1451,8 @@
       "siegeSocial"."idTypeBailleur",
       "siegeSocial"."idTypeContrat",
       "siegeSocial"."siegePrincipal",
-      "siegeSocial"."idSiege"
+      "siegeSocial"."idSiege",
+      "societe"."dateStatut",
       from "siegeSocial"
       inner join adresse ON adresse."idAdresse" = "siegeSocial"."adresseSiegeSocial"
       inner join societe ON societe."idSiegeSocial" = "siegeSocial"."idSiege"
@@ -1461,7 +1462,7 @@
     <result outputType="json">{"data":{"activitePrincipal": "$activitePrincipal", "adresse": "$adresse", "adresseSiegeSocial": "$adresseSiegeSocial",
       "activiteImportExport": "$activiteImportExport", "idBailleurPersonne": "$idBailleurPersonne", "denominationSocial": "$denominationSocial",
       "idBailleurPersonneMoral": "$idBailleurPersonneMoral", "idTypeBailleur": "$idTypeBailleur", "idTypeContrat": "$idTypeContrat", "idSiege": "$idSiege",
-      "siegePrincipal": "$siegePrincipal"}}
+      "siegePrincipal": "$siegePrincipal", "dateStatut": "$dateStatut"}}
     </result>
   </query>
   <resource path="companyInterOp/siegeSociale/{idSociete}" method="GET">
