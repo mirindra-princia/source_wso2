@@ -16,12 +16,12 @@
 	    <property name="password">devedbmdb</property>
 	</config>
 		<!-- CONFIGURATION DEV -->
-<!--   <config id="localisationDS">
-	<property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/localisation</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config> -->
+<!--   <config id="localisationDS"> -->
+<!-- 	<property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/localisation</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
   <resource path="province" method="GET">
     <description>List of all province</description>
     <call-query href="selectAllProvinces" />
@@ -267,7 +267,9 @@
 	    district.name as d_name, district.id as d_id, 
 	    region.name as r_name, region.id as r_id, 
 	    province.name as p_name, province.id as p_id,
-	    region_mapping."idRegionRncs"
+	    region_mapping.*,
+	    province_mapping.*,
+	    fokontany_mapping.*
 		FROM public.province
 		LEFT JOIN public.region ON region.province_id = province.id
 		LEFT JOIN public.district ON district.region_id = region.id
@@ -275,6 +277,8 @@
 		LEFT JOIN public.borough ON borough.common_id = common.id
 		LEFT JOIN public.fokontany ON fokontany.borough_id = borough.id
 		LEFT JOIN public.region_mapping ON region_mapping."idRegion" = region.id
+		LEFT JOIN public."provinceMapping" province_mapping ON province_mapping."idProvinceOrinasa" = province.id
+		LEFT JOIN public."fokontanyMapping" fokontany_mapping ON fokontany_mapping."idFokontanyOrinasa" = fokontany.id
 		WHERE common.id= :idCommune AND district.id= :idDistrict AND region.id= :idRegion AND province.id= :idProvince AND borough.id= :idArrondissement AND fokontany.id= :idFokontany
 	</sql>
     <param type="IN" name="idFokontany" sqlType="INTEGER" paramType="SCALAR" />
@@ -286,7 +290,10 @@
     <result outputType="json">{"adresse":{
     "province":{
     	"id": $p_id,
-    	"name": "$p_name"
+    	"name": "$p_name",
+    	"provinceMapping": {
+    		"idProvinceDgi": $idProvinceDgi
+    	}
     },
     "region":{
     	"id": $r_id,
@@ -294,7 +301,8 @@
     	"province_id": $p_id
     },
     "regionMapping": {
-    	"idRegionRncs": "$idRegionRncs"
+    	"idRegionRncs": "$idRegionRncs",
+    	"idRegionDgi": "$idRegionDgi"
     },
     "district":{
     	"id": $d_id,
@@ -314,7 +322,10 @@
     "fokontany":{
     	"id": $f_id,
     	"name": "$f_name",
-    	"borough_id": $b_id
+    	"borough_id": $b_id,
+    	"fokontanyMapping": {
+    		"idFokontanyDgi": $idFokontanyDgi
+    	}
     }}}</result>
   </query>
   <query id="addCommonOther" useConfig="localisationDS">
@@ -364,7 +375,7 @@
   <query id="commonMapping" useConfig="localisationDS">
     <sql>SELECT * FROM public.common_mapping WHERE "idCommon" = :commonId</sql>
     <param type="IN" name="commonId" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <result outputType="json">{"data": {"commonMappings":[{"id":$id, "idCommon":$idCommon, "idCommonRncs":"$idCommonRncs"}]}}</result>
+    <result outputType="json">{"data": {"commonMappings":[{"id":$id, "idCommon":$idCommon, "idCommonRncs":"$idCommonRncs", "idCommonDgi":$idCommonDgi}]}}</result>
   </query>
   <resource path="districtMapping" method="GET">
     <description />
@@ -375,7 +386,7 @@
   <query id="districtMapping" useConfig="localisationDS">
     <sql>SELECT * FROM public.district_mapping WHERE "idDistrict" = :districtId</sql>
     <param type="IN" name="districtId" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <result outputType="json">{"data": {"districtMappings":[{"id":$id, "idDistrict":$idDistrict, "idDistrictRncs":"$idDistrictRncs"}]}}</result>
+    <result outputType="json">{"data": {"districtMappings":[{"id":$id, "idDistrict":$idDistrict, "idDistrictRncs":"$idDistrictRncs", "idDistrictDgi":$idDistrictDgi}]}}</result>
   </query>
   <query id="countryByCode" useConfig="localisationDS">
     <sql>SELECT * FROM public.country WHERE country."codePays" = :codePays</sql>
