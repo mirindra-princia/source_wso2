@@ -1395,7 +1395,7 @@
       }]}}</result>
   </query>
   <query id="companyByFolderIds" useConfig="societeDS">
-    <sql>select  s."denominationSocial",s."idSociete", s."formeJuridique", s."idDossier",
+    <sql>select  s."denominationSocial",s."idSociete", s."formeJuridique", s."idDossier", sg."dureebail",
       s."idFormeJuridique",  s."nomCommercial", "capital"::text, "montantBail"::text, "NIF"
       from public."societe" as s inner join public."siegeSocial" as sg on sg."idSiege" = s."idSiegeSocial"
       WHERE s."idDossier" =ANY(:idDossier::int[])
@@ -1404,7 +1404,7 @@
     <result outputType="json">{"data":{"societes":[{"denominationSocial":"$denominationSocial",
       "idDossier":"$idDossier","idSociete":"$idSociete","formeJuridique":"$formeJuridique",
       "nomCommercial": "$nomCommercial", "nif": "$NIF",
-      "montantBail": "$montantBail", "capital": "$capital"
+      "montantBail": "$montantBail", "capital": "$capital", "dureebail": "$dureebail"
       }]}}</result>
   </query>
   <query id="checkDenomination" useConfig="societeDS">
