@@ -15,12 +15,12 @@
     <property name="password">devedbmdb</property>
   </config>
   	<!-- CONFIGURATION DEV -->
-<!--   <config id="personneDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://localhost:5432/personne</property> -->
-<!--     <property name="username">postgres</property> -->
-<!--     <property name="password">postgres</property> -->
-<!--   </config> -->
+ <!--  <config id="personneDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/personne</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config> -->
   <query id="addPerson" useConfig="personneDS">
     <sql>INSERT INTO public.personne(nom,prenom,"nomPere", "nomMere", "dateNaissance", "lieuNaissance", "situationMatrimonial", 
 	    "idPieceIdentite", sexe, societe_mandataire, idadresse, idrole, tel,e_mail,"idUtilisateur", engagement, civilite, 
@@ -491,8 +491,11 @@
     <result outputType="json">{"personne":{"idPersonneMorale":$idPersonneMorale}}</result>
   </query>
   <query id="selectAllRole" useConfig="personneDS">
-    <sql>SELECT id_role, libelle_role, id_parent FROM public.role ;</sql>
-    <result outputType="json">{"roles":{"role":[{"id_role":"$id_role","libelle_role":"$libelle_role","id_parent":"$id_parent"}]}}</result>
+    <sql>SELECT id_role, libelle_role, id_parent, code_role, ordre, "idRoleDgi"
+	FROM public.role LEFT JOIN "roleMapping" on role.id_role="roleMapping"."idRoleOrinasa"
+	;</sql>
+    <result outputType="json">{"roles":
+    {"role":[{"id_role":"$id_role","libelle_role":"$libelle_role","id_parent":"$id_parent","ordre":"$ordre","roleMapping":{"idRoleDgi":"$idRoleDgi"}}]}}</result>
   </query>
   <query id="getRoles" useConfig="personneDS">
     <sql>SELECT * FROM public.role WHERE id_role=ANY(:ids::int[])</sql>
@@ -854,6 +857,44 @@
         <description />
         <call-query href="getPersonByUUID">
             <with-param name="uid" query-param="uid" />
+        </call-query>
+    </resource>
+    <query id="companyPerson" useConfig="personneDS">
+        <sql>SELECT "idPersonne", "nom", "prenom", "tel", "pieceIdentite"."numeroPiece", "adresse"
+            FROM public.personne INNER join "pieceIdentite" on "pieceIdentite".id = personne."idPieceIdentite"
+            inner join public.adresse on adresse."idAdresse" = personne."idadresse"
+            where "idPersonne"=:idPerson
+        </sql>
+        <param type="IN" name="idPerson" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+        <result outputType="json">{"data":{"idPersonne": "$idPersonne", "nom": "$nom", "adresse": "$adresse",
+            "prenom": "$prenom", "tel": "$tel", "numeroPiece": "$numeroPiece"}}
+        </result>
+    </query>
+
+    <resource path="companyInterOp/person/{idPerson}" method="GET">
+        <description />
+        <call-query href="companyPerson">
+            <with-param name="idPerson" query-param="idPerson" />
+        </call-query>
+    </resource>
+
+    <query id="companyPersonMorale" useConfig="personneDS">
+        <sql>SELECT personne."idPersonne", "nom", "prenom", "tel", "pieceIdentite"."numeroPiece", "adresse", "personneMorale"."NIF" as nif
+            FROM public."personne" left join "personneMorale" on "personneMorale"."idPersonne" = personne."idPersonne"
+            left join "pieceIdentite" on "pieceIdentite".id = personne."idPieceIdentite"
+            left join public.adresse on adresse."idAdresse" = personne."idadresse"
+            where "personneMorale"."idPersonneMorale"=:idPerson
+        </sql>
+        <param type="IN" name="idPerson" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+        <result outputType="json">{"data":{"idPersonne": "$idPersonne", "nom": "$nom", "adresse": "$adresse", "nif": "$nif",
+            "prenom": "$prenom", "tel": "$tel", "numeroPiece": "$numeroPiece"}}
+        </result>
+    </query>
+
+    <resource path="companyInterOp/person/morale/{idPerson}" method="GET">
+        <description />
+        <call-query href="companyPersonMorale">
+            <with-param name="idPerson" query-param="idPerson" />
         </call-query>
     </resource>
 </data>

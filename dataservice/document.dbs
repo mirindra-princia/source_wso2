@@ -9,7 +9,6 @@
 <!--     <property name="password">devedbmdb</property> -->
 <!--   </config>  -->
   <!-- CONFIGURATION TEST  -->
-
   <config id="documentDS">
     	<property name="driverClassName">org.postgresql.Driver</property>
 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/document</property>
@@ -17,13 +16,12 @@
 	    <property name="password">devedbmdb</property>
    	</config>
   <!-- CONFIGURATION DEV -->
-  	<!--  <config id="documentDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://localhost:5432/document</property> -->
-<!--     <property name="username">postgres</property> -->
-<!--     <property name="password">postgres</property> -->
-<!--   </config> -->
- 
+  <!-- 	 <config id="documentDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/document</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config> -->
   <resource method="GET" path="listdocumentToUploadByLegalStatus">
     <description />
     <call-query href="documentToUploadByLegalStatus">
