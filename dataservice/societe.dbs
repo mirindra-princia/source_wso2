@@ -72,6 +72,8 @@
       <with-param name="siegePrincipal" query-param="siegePrincipal" />
       <with-param name="idBailleurPersonneMoral" query-param="idBailleurPersonneMoral" />
       <with-param name="idBailleurPersonne" query-param="idBailleurPersonne" />
+      <with-param name="idTypeEtablissement" query-param="idTypeEtablissement" />
+      <with-param name="debutBail" query-param="debutBail" />
     </call-query>
   </resource>
   <resource path="getTypeContrat" method="GET">
@@ -161,6 +163,8 @@
       <with-param name="idBailleurPersonne" query-param="idBailleurPersonne" />
       <with-param name="montantBail" query-param="montantBail" />
       <with-param name="idSiege" query-param="idSiege" />
+      <with-param name="idTypeEtablissement" query-param="idTypeEtablissement" />
+      <with-param name="debutBail" query-param="debutBail" />
     </call-query>
   </resource>
   <resource path="addCompany" method="POST">
@@ -651,8 +655,8 @@
   </query>
   <query id="addSiegeSocial" useConfig="societeDS">
     <sql>INSERT INTO public."siegeSocial"(
-  dureebail, "montantBail",  "adresseSiegeSocial", "idTypeBailleur", "idTypeContrat","autorisationProp","idBailleurPersonne","idBailleurPersonneMoral","siegePrincipal")
-	VALUES (  :dureebail, :montantBail, :adresseSiegeSocial, :idTypeBailleur, :idTypeContrat,:autorisationProp,:idBailleurPersonne,:idBailleurPersonneMoral,:siegePrincipal) RETURNING "idSiege";</sql>
+  dureebail, "montantBail",  "adresseSiegeSocial", "idTypeBailleur", "idTypeContrat","autorisationProp","idBailleurPersonne","idBailleurPersonneMoral","siegePrincipal", "idTypeEtablissement", "debutBail")
+	VALUES (  :dureebail, :montantBail, :adresseSiegeSocial, :idTypeBailleur, :idTypeContrat,:autorisationProp,:idBailleurPersonne,:idBailleurPersonneMoral,:siegePrincipal, :idTypeEtablissement, :debutBail) RETURNING "idSiege";</sql>
     <param type="IN" name="dureebail" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="adresseSiegeSocial" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="idTypeBailleur" sqlType="INTEGER" paramType="SCALAR" />
@@ -662,11 +666,14 @@
     <param type="IN" name="idBailleurPersonneMoral" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <param type="IN" name="idBailleurPersonne" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <param type="IN" name="montantBail" sqlType="DOUBLE" paramType="SCALAR" optional="false" />
+    <param type="IN" name="idTypeEtablissement" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="debutBail" sqlType="DATE" paramType="SCALAR" optional="true" />
     <result outputType="json">{"idSiege":{"idSiege":$idSiege}}</result>
   </query>
   <query id="updateSiegeSocial" useConfig="societeDS">
     <sql>UPDATE public."siegeSocial" SET
-  dureebail=:dureebail, "montantBail"=:montantBail,  "adresseSiegeSocial"=:adresseSiegeSocial, "idTypeBailleur"=:idTypeBailleur, "idTypeContrat"=:idTypeContrat,"autorisationProp"=:autorisationProp,"idBailleurPersonne"=:idBailleurPersonne,"idBailleurPersonneMoral"=:idBailleurPersonneMoral,"siegePrincipal"=:siegePrincipal
+  dureebail=:dureebail, "montantBail"=:montantBail, "adresseSiegeSocial"=:adresseSiegeSocial, "idTypeBailleur"=:idTypeBailleur, "idTypeContrat"=:idTypeContrat,"autorisationProp"=:autorisationProp,"idBailleurPersonne"=:idBailleurPersonne,
+  "idBailleurPersonneMoral"=:idBailleurPersonneMoral,"siegePrincipal"=:siegePrincipal, "idTypeEtablissement"= :idTypeEtablissement, "debutBail"=:debutBail
   WHERE "idSiege"=:idSiege</sql>
     <param type="IN" name="dureebail" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="adresseSiegeSocial" sqlType="INTEGER" paramType="SCALAR" />
@@ -678,6 +685,8 @@
     <param type="IN" name="idBailleurPersonne" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <param type="IN" name="montantBail" sqlType="DOUBLE" paramType="SCALAR" optional="false" />
     <param type="IN" name="idSiege" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="idTypeEtablissement" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="debutBail" sqlType="DATE" paramType="SCALAR" optional="true" />
   </query>
   <query id="getListTypeBailleur" useConfig="societeDS">
     <sql>SELECT "idTypeBailleur", "nomTypeBailleur"
@@ -741,7 +750,8 @@
   <query id="getSiegeSocial" useConfig="societeDS">
     <sql>SELECT *	FROM public."siegeSocial" siege LEFT JOIN adresse on adresse."idAdresse"=siege."adresseSiegeSocial" WHERE "idSiege"=:idSiege</sql>
     <param type="IN" name="idSiege" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"siegeSocial":{"idSiege":"$idSiege","dureebail":"$dureebail","montantBail":"$montantBail","adresseSiegeSocial":"$adresseSiegeSocial","idTypeBailleur":"$idTypeBailleur","idTypeContrat":"$idTypeContrat","idBailleurPersonne":"$idBailleurPersonne", "idBailleurPersonneMoral":"$idBailleurPersonneMoral", "autorisationProp":"$autorisationProp", "siegePrincipal":"$siegePrincipal", "adresse": {
+    <result outputType="json">{"siegeSocial":{"idSiege":"$idSiege","dureebail":"$dureebail","montantBail":"$montantBail","adresseSiegeSocial":"$adresseSiegeSocial","idTypeBailleur":"$idTypeBailleur","idTypeContrat":"$idTypeContrat",
+    "idBailleurPersonne":"$idBailleurPersonne", "idBailleurPersonneMoral":"$idBailleurPersonneMoral", "idTypeEtablissement":$idTypeEtablissement, "debutBail":"$debutBail", "autorisationProp":"$autorisationProp", "siegePrincipal":"$siegePrincipal", "adresse": {
 	    	"idAdresse":"$idAdresse",
 	    	"idFokontany":"$idFokontany",
 	    	"idCommune":"$idCommune",
@@ -926,10 +936,11 @@
 	</result>
   </query>
   <query id="getExploitationPlace" useConfig="societeDS">
-    <sql>SELECT "idSiege", dureebail, "montantBail", "adresseSiegeSocial", "idTypeBailleur", "idTypeContrat", "idBailleurPersonne", "idBailleurPersonneMoral", "autorisationProp", "siegePrincipal"
+    <sql>SELECT "idSiege", dureebail, "montantBail", "adresseSiegeSocial", "idTypeBailleur", "idTypeContrat", "idBailleurPersonne", "idBailleurPersonneMoral", "autorisationProp", "siegePrincipal", "idTypeEtablissement", "debutBail"
 	FROM public."siegeSocial" WHERE "siegePrincipal"=:siegePrincipal</sql>
     <param type="IN" name="siegePrincipal" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <result outputType="json">{"data":{"exploitations":[{"idSiege":"$idSiege","dureebail":"$dureebail","montantBail":"$montantBail","adresseSiegeSocial":"$adresseSiegeSocial","idTypeBailleur":"$idTypeBailleur","idTypeContrat":"$idTypeContrat","idBailleurPersonne":"$idBailleurPersonne", "idBailleurPersonneMoral":"$idBailleurPersonneMoral", "autorisationProp":"$autorisationProp", "siegePrincipal":"$siegePrincipal"
+    <result outputType="json">{"data":{"exploitations":[{"idSiege":"$idSiege","dureebail":"$dureebail","montantBail":"$montantBail","adresseSiegeSocial":"$adresseSiegeSocial","idTypeBailleur":"$idTypeBailleur","idTypeContrat":"$idTypeContrat",
+    "idBailleurPersonne":"$idBailleurPersonne", "idBailleurPersonneMoral":"$idBailleurPersonneMoral", "autorisationProp":"$autorisationProp", "siegePrincipal":"$siegePrincipal", "idTypeEtablissement": $idTypeEtablissement, "debutBail": "$debutBail"
 }]}}</result>
   </query>
   <query id="getGreffeCode" useConfig="societeDS">
@@ -1335,7 +1346,9 @@
 			        "autorisationProp": $autorisationProp,
 			        "idBailleurPersonne": $idBailleurPersonne,
 			        "idBailleurPersonneMoral": $idBailleurPersonneMoral,
-			        "siegePrincipal": $siegePrincipal
+			        "siegePrincipal": $siegePrincipal,
+			        "idTypeEtablissement": $idTypeEtablissement,
+			        "debutBail": "$debutBail"
 	    		}]
     		}
     	}
@@ -1357,7 +1370,9 @@
 			        "autorisationProp": $autorisationProp,
 			        "idBailleurPersonne": $idBailleurPersonne,
 			        "idBailleurPersonneMoral": $idBailleurPersonneMoral,
-			        "siegePrincipal": $siegePrincipal
+			        "siegePrincipal": $siegePrincipal,
+			        "idTypeEtablissement": $idTypeEtablissement,
+			        "debutBail": "$debutBail"
 	    		}]
     		}
     	}
@@ -1378,7 +1393,9 @@
 			        "autorisationProp": $autorisationProp,
 			        "idBailleurPersonne": $idBailleurPersonne,
 			        "idBailleurPersonneMoral": $idBailleurPersonneMoral,
-			        "siegePrincipal": $siegePrincipal
+			        "siegePrincipal": $siegePrincipal,
+			        "idTypeEtablissement": $idTypeEtablissement,
+			        "debutBail": "$debutBail"
 	    		}]
     		}
     	}
@@ -1464,6 +1481,8 @@
       "siegeSocial"."idTypeContrat",
       "siegeSocial"."siegePrincipal",
       "siegeSocial"."idSiege",
+      "siegeSocial"."idTypeEtablissement",
+      "siegeSocial"."debutBail",
       "societe"."dateStatut"
       from "siegeSocial"
       inner join adresse ON adresse."idAdresse" = "siegeSocial"."adresseSiegeSocial"
@@ -1474,7 +1493,7 @@
     <result outputType="json">{"data":{"activitePrincipal": "$activitePrincipal", "adresse": "$adresse", "adresseSiegeSocial": "$adresseSiegeSocial",
       "activiteImportExport": "$activiteImportExport", "idBailleurPersonne": "$idBailleurPersonne", "denominationSocial": "$denominationSocial",
       "idBailleurPersonneMoral": "$idBailleurPersonneMoral", "idTypeBailleur": "$idTypeBailleur", "idTypeContrat": "$idTypeContrat", "idSiege": "$idSiege",
-      "siegePrincipal": "$siegePrincipal", "dateStatut": "$dateStatut"}}
+      "siegePrincipal": "$siegePrincipal", "dateStatut": "$dateStatut", "idTypeEtablissement": $idTypeEtablissement, "debutBail":"$debutBail"}}
     </result>
   </query>
   <resource path="companyInterOp/siegeSociale/{idSociete}" method="GET">
@@ -1491,7 +1510,9 @@
       "siegeSocial"."idBailleurPersonne",
       "siegeSocial"."idBailleurPersonneMoral",
       "siegeSocial"."idTypeBailleur",
-      "siegeSocial"."idTypeContrat"
+      "siegeSocial"."idTypeContrat",
+      "siegeSocial"."idTypeEtablissement",
+      "siegeSocial"."debutBail"
       from "siegeSocial"
       inner join adresse ON adresse."idAdresse" = "siegeSocial"."adresseSiegeSocial"
       where "siegeSocial"."siegePrincipal" =:idSiegePrincipale
@@ -1499,7 +1520,7 @@
     <param type="IN" name="idSiegePrincipale" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{ "siegeDatas": [{"siegePrincipal": "$siegePrincipal", "adresse": "$adresse", "adresseSiegeSocial": "$adresseSiegeSocial",
       "idBailleurPersonne": "$idBailleurPersonne", "idBailleurPersonneMoral": "$idBailleurPersonneMoral",
-      "idTypeBailleur": "$idTypeBailleur", "idTypeContrat": "$idTypeContrat"}]}}
+      "idTypeBailleur": "$idTypeBailleur", "idTypeContrat": "$idTypeContrat", "idTypeEtablissement":$idTypeEtablissement, "debutBail":"$debutBail"}]}}
     </result>
   </query>
   <resource path="companyInterOp/siegeSociale/exploitation/{idSiegePrincipale}" method="GET">
