@@ -15,12 +15,12 @@
     <property name="password">devedbmdb</property>
   </config>
   <!-- CONFIGURATION DEV -->
-  <!-- <config id="siteInformationDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/siteWebInformation</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config> -->
+<!--   <config id="siteInformationDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/siteWebInformation</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
   <operation name="getCategoryName">
     <call-query href="categoryName">
       <with-param name="id" query-param="id" />
@@ -78,7 +78,7 @@
     </call-query>
   </resource>
   <query id="category" useConfig="siteInformationDS">
-    <sql>SELECT * FROM public."categorieActivite" activite WHERE id =:id</sql>
+    <sql>SELECT * FROM public."categorieActivite" activite WHERE id =:id LIMIT 1</sql>
     <param type="IN" name="id" sqlType="STRING" paramType="SCALAR" />
     <result outputType="json">{"categorie":{"id":"$id", "descriptivesCategorie_fr":"$descriptivesCategorie_fr", "secteur":"$secteur"}}</result>
   </query>
@@ -104,7 +104,7 @@
     <result outputType="json">{"data":{"legalStatus":[{"id":$id, "status":"$acronym", "label":"$label", "note_fr": "$note_fr"}]}}</result>
   </query>
   <query id="companyActivity" useConfig="siteInformationDS">
-    <sql>SELECT id, "descriptivesCategorie_fr" FROM public."categorieActivite" where "id"=:idActivity</sql>
+    <sql>SELECT id, "descriptivesCategorie_fr" FROM public."categorieActivite" where "id"=:idActivity LIMIT 1</sql>
     <param type="IN" name="idActivity" sqlType="STRING" paramType="SCALAR" optional="false" />
     <result outputType="json">{"data":{"descriptivesCategorie_fr":"$descriptivesCategorie_fr", "id":"$id"}}</result>
   </query>
