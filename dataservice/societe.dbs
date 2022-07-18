@@ -15,12 +15,14 @@
     <property name="password">devedbmdb</property>
   </config>
   <!-- CONFIGURATION DEV -->
-<!--   <config id="societeDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://localhost:5432/societe</property> -->
-<!--     <property name="username">postgres</property> -->
-<!--     <property name="password">postgres</property> -->
-<!--   </config> -->
+
+ <!--  <config id="societeDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/societe</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config> -->
+
   <resource path="addSocietyForm" method="POST">
     <description>add society from online form</description>
     <call-query href="addSociety">
