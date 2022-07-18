@@ -821,7 +821,8 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
           (case when ("label" like 'PR PVAGC%') then value  else 0 end )) as statut_pr,
 
           sum((case when ("label" like 'Enregistrement contrat de bail%') then value  else 0 end) +
-          (case when ("label" like 'Enregistrement contrat de bail Lieu(x) d%') then value  else 0 end)) as bails_de,
+          (case when ("label" like 'Enregistrement contrat de bail Lieu(x) d%') then value  else 0 end) + 
+          (case when ("label" like 'DE BAIL%') then value  else 0 end )) as bails_de,
 
           sum(case when ("label" like 'PR BAIL%') then value  else 0 end ) as bails_pr,
           sum(case when ("label" like 'AND BAIL%') then value  else 0 end ) as bails_and,
