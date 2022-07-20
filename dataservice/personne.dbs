@@ -363,12 +363,11 @@
 	<resource path="addPersonCompany" method="POST">
 		<description />
 		<call-query href="addPersonCompany">
-			<with-param name="nomSociete" query-param="nomSociete" />
-			<with-param name="idAdresseSociete"
-				query-param="idAdresseSociete" />
-			<with-param name="telSociete" query-param="telSociete" />
+			<with-param name="nomSociete" query-param="denominationSocial" />
+			<with-param name="idAdresseSociete" query-param="addressId" />
+			<with-param name="telSociete" query-param="phone" />
 			<with-param name="capital" query-param="capital" />
-			<with-param name="idDevise" query-param="idDevise" />
+			<with-param name="idDevise" query-param="deviseId" />
 			<with-param name="rcs" query-param="rcs" />
 		</call-query>
 	</resource>
@@ -391,7 +390,15 @@
 			sqlType="INTEGER" optional="true" />
 		<param type="IN" name="rcs" paramType="SCALAR" sqlType="STRING"
 			optional="true" />
-		<result outputType="json">{"personneSociete":{"idPersonneSociete":$idPersonneSociete}}
+		<result outputType="json">{"personneSociete":{
+			"id":$idPersonneSociete,
+			"denominationSocial":"$nomSociete", 
+			"addressId":$idAdresseSociete,
+			"phone":"$telSociete", 
+			"capital":"$capital", 
+			"deviseId":$idDevise, 
+			"rcs":"$rcs"
+		}}
 		</result>
 	</query>
 	<resource path="updatePersonCompany" method="PUT">
@@ -1773,14 +1780,40 @@
 
 	<resource path="delete/person" method="DELETE">
 		<description />
-		<call-query href="deletePerson">
+		<call-query href="deletePersonData">
 			<with-param name="idPersonne" query-param="id" />
 		</call-query>
 	</resource>
-	<query id="deletePerson" useConfig="personneDS">
+	<query id="deletePersonData" useConfig="personneDS">
 		<sql>
 			DELETE FROM personne WHERE "idPersonne" = :idPersonne
 		</sql>
 		<param type="IN" name="idPersonne" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+	</query>
+	
+	<resource path="delete/address" method="DELETE">
+		<description />
+		<call-query href="deleteAddress">
+			<with-param name="idAdresse" query-param="id" />
+		</call-query>
+	</resource>
+	<query id="deleteAddress" useConfig="personneDS">
+		<sql>
+			DELETE FROM adresse WHERE "idAdresse" = :idAdresse
+		</sql>
+		<param type="IN" name="idAdresse" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+	</query>
+	
+	<resource path="delete/company" method="DELETE">
+		<description />
+		<call-query href="deleteCompany">
+			<with-param name="idPersonneSociete" query-param="id" />
+		</call-query>
+	</resource>
+	<query id="deleteCompany" useConfig="personneDS">
+		<sql>
+			DELETE FROM "personneSociete" WHERE "idPersonneSociete" = :idPersonneSociete
+		</sql>
+		<param type="IN" name="idPersonneSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
 	</query>
 </data>
