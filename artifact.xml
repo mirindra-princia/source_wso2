@@ -26,4 +26,7 @@
     <artifact name="personne" groupId="com.example.edbm_dematerialisation.dataservice" version="1.0.0" type="service/dataservice" serverRole="DataServicesServer">
         <file>dataservice/personne.dbs</file>
     </artifact>
+    <artifact name="entite" groupId="com.example.edbm_dematerialisation.dataservice" version="1.0.0" type="service/dataservice" serverRole="DataServicesServer">
+        <file>dataservice/entite.dbs</file>
+    </artifact>
 </artifacts>
