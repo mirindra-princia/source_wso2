@@ -339,14 +339,14 @@
 		<param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
 		<result outputType="json">
 			{"data":{
-			"idPersonneSociete": "$idPersonneSociete",
-			"nomSociete": "$nomSociete",
-			"idAdresseSociete": "$idAdresseSociete",
-			"telSociete": "$telSociete",
+			"id": "$idPersonneSociete",
+			"denominationSocial": "$nomSociete",
+			"addressId": "$idAdresseSociete",
+			"phone": "$telSociete",
 			"capital": $capital,
-			"idDevise": $idDevise,
+			"deviseId": $idDevise,
 			"rcs": "$rcs",
-			"adresse": {
+			"address": {
 			"idAdresse":"$idAdresse",
 			"idFokontany":"$idFokontany",
 			"idCommune":"$idCommune",
@@ -404,12 +404,11 @@
 	<resource path="updatePersonCompany" method="PUT">
 		<description />
 		<call-query href="updatePersonCompany">
-			<with-param name="idPersonneSociete"
-				query-param="idPersonneSociete" />
-			<with-param name="nomSociete" query-param="nomSociete" />
-			<with-param name="telSociete" query-param="telSociete" />
+			<with-param name="idPersonneSociete" query-param="id" />
+			<with-param name="nomSociete" query-param="denominationSocial" />
+			<with-param name="telSociete" query-param="phone" />
 			<with-param name="capital" query-param="capital" />
-			<with-param name="idDevise" query-param="idDevise" />
+			<with-param name="idDevise" query-param="deviseId" />
 			<with-param name="rcs" query-param="rcs" />
 		</call-query>
 	</resource>
@@ -432,7 +431,7 @@
 			optional="true" />
 		<param type="IN" name="idPersonneSociete" paramType="SCALAR"
 			sqlType="INTEGER" optional="false" />
-		<result outputType="json">{"personneSociete":{"idPersonneSociete":$idPersonneSociete}}
+		<result outputType="json">{"personneSociete":{"id":$idPersonneSociete}}
 		</result>
 	</query>
 	<query id="updatePersonAddress" useConfig="personneDS">
