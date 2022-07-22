@@ -16,7 +16,7 @@
   </config>
   <!-- CONFIGURATION DEV -->
 
- <!--  <config id="societeDS">
+<!--   <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/societe</property>
     <property name="username">postgres</property>
