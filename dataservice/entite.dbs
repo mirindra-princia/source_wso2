@@ -1,33 +1,76 @@
-<data transports="http https" serviceGroup="mg.gov.edbm.societe.entite"  name="entite">
-  <description />
-  <!-- CONFIGURATION PROD -->
-<!--    <config id="entiteDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/document</property> -->
-<!--     <property name="username">devedbmdb</property> -->
-<!--     <property name="password">devedbmdb</property> -->
-<!--   </config>  -->
-  <!-- CONFIGURATION TEST  -->
-  <config id="entiteDS">
-    	<property name="driverClassName">org.postgresql.Driver</property>
-	    <property name="url">jdbc:postgresql://13.246.0.44:5432/entite</property>
-	    <property name="username">devedbmdb</property>
-	    <property name="password">devedbmdb</property>
-   	</config>
-   	<!-- CONFIGURATION DEV -->
-  <!-- <config id="entiteDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/entite</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config>
-   -->
-  <resource method="GET" path="listOfAuthorization">
-    <description />
-    <call-query href="listofAuthorization" />
-  </resource>
-  <query id="listofAuthorization" useConfig="entiteDS">
-    <sql>Select * from droit</sql>
-    <result outputType="json">{"droits":{"droit":[{"id":$id,"name":"$name"}]}}</result>
-  </query>
+<data transports="http https" serviceGroup="mg.gov.edbm.societe.entite" name="entite">
+    <description/>
+    <!-- CONFIGURATION PROD -->
+    <!--    <config id="entiteDS"> -->
+    <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+    <!--     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/document</property> -->
+    <!--     <property name="username">devedbmdb</property> -->
+    <!--     <property name="password">devedbmdb</property> -->
+    <!--   </config>  -->
+    <!-- CONFIGURATION TEST  -->
+     <config id="entiteDS">
+        <property name="driverClassName">org.postgresql.Driver</property>
+        <property name="url">jdbc:postgresql://13.246.0.44:5432/entite</property>
+        <property name="username">devedbmdb</property>
+        <property name="password">devedbmdb</property>
+    </config>
+    <!-- CONFIGURATION DEV -->
+<!--    <config id="entiteDS">
+      <property name="driverClassName">org.postgresql.Driver</property>
+      <property name="url">jdbc:postgresql://localhost:5432/entite</property>
+      <property name="username">devedbmdb</property>
+      <property name="password">devedbmdb</property>
+    </config>-->
+    
+    <resource method="GET" path="listOfAuthorization">
+        <description/>
+        <call-query href="listofAuthorization"/>
+    </resource>
+    <query id="listofAuthorization" useConfig="entiteDS">
+        <sql>Select * from droit</sql>
+        <result outputType="json">{"droits":{"droit":[{"id":$id,"name":"$name"}]}}</result>
+    </query>
+
+    <resource method="GET" path="listSecteurs">
+        <description/>
+        <call-query href="allSecteurs"/>
+    </resource>
+    <query id="allSecteurs" useConfig="entiteDS">
+        <sql>Select * from secteur</sql>
+        <result outputType="json">{"data":{"secteurs":[{"id":$id,"name":"$name"}]}}</result>
+    </query>
+
+    <resource method="GET" path="listSecteursRegion/{idRegion}">
+        <description/>
+        <call-query href="listSecteursRegion"/>
+    </resource>
+    <query id="listSecteursRegion" useConfig="entiteDS">
+        <sql>Select * from secteurRegion where "idRegion" =:idRegion</sql>
+        <result outputType="json">{"data":{"secteursRegions":[{"idSecteur":"$idSecteur","idRegion":"$idRegion"}]}}</result>
+    </query>
+
+    <resource method="GET" path="listCentres">
+        <description/>
+        <call-query href="allCentres"/>
+    </resource>
+    <query id="allCentres" useConfig="entiteDS">
+        <sql>Select * from centre</sql>
+        <result outputType="json">{"data":{"centres":[{"id":$id,"name":"$name", "idRegion": "$idRegion"}]}}</result>
+    </query>
+
+    <resource method="POST" path="saveSecteurRegion">
+        <description/>
+        <call-query href="saveSecteurRegion">
+            <with-param name="idSecteur" query-param="idSecteur"/>
+            <with-param name="idRegion" query-param="idRegion"/>
+        </call-query>
+    </resource>
+    <query id="saveSecteurRegion" useConfig="entiteDS">
+        <sql>INSERT INTO public.secteurRegion(
+            "idSecteur", "idRegion")
+            VALUES (:idSecteur, :idRegion);
+        </sql>
+        <param type="IN" name="idSecteur" paramType="SCALAR" sqlType="INTEGER"/>
+        <param type="IN" name="idRegion" paramType="SCALAR" sqlType="INTEGER"/>
+    </query>
 </data>
