@@ -1476,7 +1476,7 @@
   <query id="societeSiegeData" useConfig="societeDS">
     <sql>select "siegeSocial"."adresseSiegeSocial" ,
       societe."denominationSocial",
-      adresse.adresse, societe."activiteImportExport",
+      adresse.adresse, societe."activiteImportExport",societe."objetSocial",
       societe."activitePrincipal", "siegeSocial"."idBailleurPersonne",
       "siegeSocial"."idBailleurPersonneMoral",
       "siegeSocial"."idTypeBailleur",
@@ -1495,7 +1495,7 @@
     <result outputType="json">{"data":{"activitePrincipal": "$activitePrincipal", "adresse": "$adresse", "adresseSiegeSocial": "$adresseSiegeSocial",
       "activiteImportExport": "$activiteImportExport", "idBailleurPersonne": "$idBailleurPersonne", "denominationSocial": "$denominationSocial",
       "idBailleurPersonneMoral": "$idBailleurPersonneMoral", "idTypeBailleur": "$idTypeBailleur", "idTypeContrat": "$idTypeContrat", "idSiege": "$idSiege",
-      "siegePrincipal": "$siegePrincipal", "dateStatut": "$dateStatut", "idTypeEtablissement": $idTypeEtablissement, "debutBail":"$debutBail"}}
+      "siegePrincipal": "$siegePrincipal", "dateStatut": "$dateStatut", "idTypeEtablissement": $idTypeEtablissement, "debutBail":"$debutBail", "objetSocial": "$objetSocial"}}
     </result>
   </query>
   <resource path="companyInterOp/siegeSociale/{idSociete}" method="GET">
