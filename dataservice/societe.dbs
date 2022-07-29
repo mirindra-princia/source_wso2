@@ -8,7 +8,7 @@
 <!--     <property name="password">devedbmdb</property> -->
 <!--   </config> -->
   <!-- CONFIGURATION TEST -->
-  <config id="societeDS">
+   <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://13.246.0.44:5432/societe</property>
     <property name="username">devedbmdb</property>
@@ -16,12 +16,12 @@
   </config>
   <!-- CONFIGURATION DEV -->
 
-<!--   <config id="societeDS">
+  <!--<config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/societe</property>
     <property name="username">postgres</property>
     <property name="password">postgres</property>
-  </config> -->
+  </config>-->
 
   <resource path="addSocietyForm" method="POST">
     <description>add society from online form</description>
@@ -1172,7 +1172,7 @@
   <query id="checkStatusTable" useConfig="societeDS">
     <sql>SELECT * FROM public."statutInteroperabilite" WHERE "idSociete"=:idSociete</sql>
     <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <result outputType="json">{"company":{"idSociete":"$idSociete", "rcs": $RCS, "instat": $INSTAT}}</result>
+    <result outputType="json">{"company":{"idSociete":"$idSociete", "rcs": $RCS, "instat": $INSTAT,"dgi":"$DGI","edbm":"$EDBM"}}</result>
   </query>
   <query id="getActiviteReglemente" useConfig="societeDS">
     <sql>SELECT * FROM public."secteurActivite" activity WHERE activity."idSecteurActivite" =:id</sql>
