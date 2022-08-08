@@ -110,6 +110,22 @@
 	    }}</result>
   	</query>
   	
+  	<resource method="GET" path="agent/topics/count">
+	    <description>get topics counter</description>
+	    <call-query href="agentTopicsCounter">
+	    </call-query>
+  	</resource>
+  	<query id="agentTopicsCounter" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT COUNT(id) as count
+			FROM public.message mes 
+			WHERE sujet IS NOT NULL AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
+		</sql>
+	    <result outputType="json">{"counter": {
+	    	"count": $count
+	    }}</result>
+  	</query>
+  	
   	
   	<resource method="GET" path="count/unread">
 	    <description>get unread message counter</description>
