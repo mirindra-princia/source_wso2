@@ -117,4 +117,34 @@
 	    }}
 	 </result>
   </query>
+  
+  <resource method="GET" path="filter/by/name/{firstName}/{lastName}">
+    <description>user filter</description>
+    <call-query href="userFilterByName"> 
+    	<with-param name="firstName" query-param="firstName" />
+    	<with-param name="lastName" query-param="lastName" />
+    </call-query>
+  </resource>
+  <query id="userFilterByName" useConfig="utilisateurDS">
+    <sql>
+	    SELECT 
+	    	entity.id as userid, entity.first_name, entity.last_name, entity.email, entity.username, entity.enabled, entity.email_verified 
+	    FROM public.user_entity entity 
+    	WHERE LOWER(TRIM("firstName")) LIKE CONCAT(:firstName, '%') OR LOWER(TRIM("lastName")) LIKE CONCAT(:lastName, '%')
+    </sql>
+    <param type="IN" name="firstName" paramType="SCALAR" sqlType="STRING"/>
+    <param type="IN" name="lastName" paramType="SCALAR" sqlType="STRING"/>
+    <result outputType="json">{"data": {
+		    "users": [{
+	   			"id":$userid,
+	   			"firstName":$first_name,
+	   			"lastName": "$last_name",
+	   			"email": $email,
+	   			"username": "$username",
+	   			"enabled": "$enabled",
+	   			"emailVerified": "$email_verified"
+		   	}]
+	    }}
+	 </result>
+  </query>
 </data>
