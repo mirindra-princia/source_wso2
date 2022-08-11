@@ -8,7 +8,7 @@
 <!--     <property name="password">devedbmdb</property> -->
 <!--   </config> -->
   <!-- CONFIGURATION TEST -->
-   <config id="societeDS">
+    <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://13.246.0.44:5432/societe</property>
     <property name="username">devedbmdb</property>
@@ -16,11 +16,11 @@
   </config>
   <!-- CONFIGURATION DEV -->
 
-  <!--<config id="societeDS">
+<!--  <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/societe</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
   </config>-->
 
   <resource path="addSocietyForm" method="POST">
@@ -1485,7 +1485,7 @@
       "siegeSocial"."idSiege",
       "siegeSocial"."idTypeEtablissement",
       "siegeSocial"."debutBail",
-      "societe"."dateStatut"
+      "societe"."dateStatut", "societe"."nomCommercial"
       from "siegeSocial"
       inner join adresse ON adresse."idAdresse" = "siegeSocial"."adresseSiegeSocial"
       inner join societe ON societe."idSiegeSocial" = "siegeSocial"."idSiege"
@@ -1495,7 +1495,8 @@
     <result outputType="json">{"data":{"activitePrincipal": "$activitePrincipal", "adresse": "$adresse", "adresseSiegeSocial": "$adresseSiegeSocial",
       "activiteImportExport": "$activiteImportExport", "idBailleurPersonne": "$idBailleurPersonne", "denominationSocial": "$denominationSocial",
       "idBailleurPersonneMoral": "$idBailleurPersonneMoral", "idTypeBailleur": "$idTypeBailleur", "idTypeContrat": "$idTypeContrat", "idSiege": "$idSiege",
-      "siegePrincipal": "$siegePrincipal", "dateStatut": "$dateStatut", "idTypeEtablissement": $idTypeEtablissement, "debutBail":"$debutBail", "objetSocial": "$objetSocial"}}
+      "siegePrincipal": "$siegePrincipal", "dateStatut": "$dateStatut", "idTypeEtablissement": $idTypeEtablissement, "debutBail":"$debutBail",
+      "objetSocial": "$objetSocial", "nomCommercial":"$nomCommercial"}}
     </result>
   </query>
   <resource path="companyInterOp/siegeSociale/{idSociete}" method="GET">
