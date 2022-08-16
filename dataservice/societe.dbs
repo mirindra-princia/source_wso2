@@ -1532,4 +1532,55 @@
       <with-param name="idSiegePrincipale" query-param="idSiegePrincipale"/>
     </call-query>
   </resource>
+  
+  <resource path="agent/filter/by/name" method="POST">
+    <description />
+    <call-query href="filterCompanyByName">
+      <with-param name="name" query-param="name" />
+    </call-query>
+  </resource>
+  <query id="filterCompanyByName" useConfig="societeDS">
+    <sql>SELECT * FROM company WHERE LOWER(TRIM("denominationSocial")) LIKE CONCAT(:name, '%') </sql>
+    <param type="IN" name="name" paramType="SCALAR" sqlType="STRING"/>
+    <result>
+    	{
+    		"data": {
+    			"companies": [{
+	    			"idSociete":$idSociete,
+			        "formeJuridique": "$formeJuridique",
+			        "idFormeJuridique": "$idFormeJuridique",
+			        "denominationSocial": "$denominationSocial",
+			        "nomCommercial": "$nomCommercial",
+			        "sigle": "$sigle",
+			        "objetSocial": "$objetSocial",
+			        "idSecteurActivite": "$idSecteurActivite",
+			        "activitePrincipal": "$activitePrincipal",
+			        "activiteImportExport": "$activiteImportExport",
+			        "activiteIndustrielCollecteur": "$activiteIndustrielCollecteur",
+			        "activiteGrossiste": "$activiteGrossiste",
+			        "capital":"$capital",
+			        "montantPartSocial": "$montantPartSocial",
+			        "dateStatut": "$dateStatut",
+			        "choixImposition": "$choixImposition",
+			        "tva":"$tva",
+			        "duree":"$duree",
+			        "finExerciceSocial": "$finExerciceSocial",
+			        "idPersonne": "$idPersonne",
+			        "idDossier": "$idDossier",
+			        "idSiegeSocial": "$idSiegeSocial",
+			        "idDevise": "$idDevise",
+			        "idDevisePartAssocie": "$idDevisePartAssocie",
+			        "NIF":"$NIF",
+			        "dateNIF":"$dateNIF",
+			        "STAT":"$STAT",
+			        "RCS":"$RCS",
+			        "dateSTAT":"$dateSTAT",
+			        "dateRCS":"$dateRCS",
+			        "ubi":"$ubi",
+			        "activiteSecondaire": "$activiteSecondaire"
+	    		}]
+    		}
+    	}
+    </result>
+  </query>
 </data>
