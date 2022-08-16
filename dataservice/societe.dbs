@@ -16,12 +16,12 @@
   </config>
   <!-- CONFIGURATION DEV -->
 
-<!--  <config id="societeDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/societe</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config>-->
+<!--  <config id="societeDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/societe</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
 
   <resource path="addSocietyForm" method="POST">
     <description>add society from online form</description>
@@ -365,27 +365,27 @@
   <resource path="updateSTAT" method="PUT">
     <description />
     <call-query href="updateSTAT">
-      <with-param name="STAT" query-param="STAT" />
-      <with-param name="idSociete" query-param="idSociete" />
+      <with-param name="STAT" query-param="number" />
+      <with-param name="idSociete" query-param="immatDate" />
       <with-param name="dateSTAT " query-param="dateSTAT " />
     </call-query>
   </resource>
   <resource path="updateRCS" method="PUT">
     <description />
     <call-query href="updateRCS">
-      <with-param name="RCS" query-param="RCS" />
-      <with-param name="idSociete" query-param="idSociete" />
-      <with-param name="dateRCS " query-param="dateRCS " />
+      <with-param name="RCS" query-param="number" />
+      <with-param name="idSociete" query-param="companyId" />
+      <with-param name="dateRCS " query-param="immatDate " />
     </call-query>
   </resource>
   <resource path="addStatutInteroperabilite" method="POST">
     <description />
     <call-query href="statutInteroperabilite">
       <with-param name="idSociete" query-param="idSociete" />
-      <with-param name="INSTAT" query-param="INSTAT" />
-      <with-param name="RCS" query-param="RCS" />
-      <with-param name="DGI" query-param="DGI" />
-      <with-param name="EDBM" query-param="EDBM" />
+      <with-param name="INSTAT" query-param="instat" />
+      <with-param name="RCS" query-param="rcs" />
+      <with-param name="DGI" query-param="dgi" />
+      <with-param name="EDBM" query-param="edbm" />
     </call-query>
   </resource>
   <resource path="getCreatedCompanyId" method="GET">
@@ -1086,10 +1086,10 @@
 	 "idSociete", "RCS", "INSTAT", "DGI", "EDBM")
 	VALUES ( :idSociete, :RCS, :INSTAT, :DGI, :EDBM);</sql>
     <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="INSTAT" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="RCS" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="DGI" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="EDBM" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="INSTAT" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="RCS" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="DGI" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="EDBM" sqlType="INTEGER" paramType="SCALAR" optional="true" />
   </query>
   <query id="getCreatedCompanyId" useConfig="societeDS">
     <sql>SELECT status.id, status."idSociete" FROM public."statutInteroperabilite" status
