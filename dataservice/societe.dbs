@@ -366,8 +366,8 @@
     <description />
     <call-query href="updateSTAT">
       <with-param name="STAT" query-param="number" />
-      <with-param name="idSociete" query-param="immatDate" />
-      <with-param name="dateSTAT " query-param="dateSTAT " />
+      <with-param name="idSociete" query-param="companyId" />
+      <with-param name="dateSTAT " query-param="immatDate " />
     </call-query>
   </resource>
   <resource path="updateRCS" method="PUT">
