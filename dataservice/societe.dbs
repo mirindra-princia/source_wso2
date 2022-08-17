@@ -1540,9 +1540,9 @@
     </call-query>
   </resource>
   <query id="filterCompanyByName" useConfig="societeDS">
-    <sql>SELECT * FROM company WHERE LOWER(TRIM("denominationSocial")) LIKE CONCAT(:name, '%') </sql>
+    <sql>SELECT * FROM societe WHERE LOWER(TRIM("denominationSocial")) LIKE CONCAT(:name, '%') </sql>
     <param type="IN" name="name" paramType="SCALAR" sqlType="STRING"/>
-    <result>
+    <result outputType="json">
     	{
     		"data": {
     			"companies": [{
