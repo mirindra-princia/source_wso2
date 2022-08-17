@@ -15,12 +15,12 @@
 	    <property name="password">devedbmdb</property>
    	</config>
    	<!-- CONFIGURATION DEV -->
-   	<!--<config id="dossierSomissionDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config>-->
+<!--    	<config id="dossierSomissionDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
   <query id="addNumeroDossier" useConfig="dossierSomissionDS">
     <sql>INSERT INTO public.dossier(
 	 "numeroDossier","idIpAdress")
@@ -1401,7 +1401,7 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
     </call-query>
   </resource>
   <query id="filterFolderByNumber" useConfig="dossierSomissionDS">
-    <sql>SELECT * FROM dossier WHERE "numeroDossier" = :number</sql>
+    <sql>SELECT * FROM dossier WHERE LOWER(TRIM("numeroDossier")) LIKE CONCAT(:number, '%')</sql>
     <param type="IN" name="number" paramType="SCALAR" sqlType="STRING"/>
     <result outputType="json">
 	    {"data":
