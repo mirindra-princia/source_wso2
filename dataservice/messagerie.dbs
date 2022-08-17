@@ -16,12 +16,12 @@
 	    <property name="password">devedbmdb</property>
    	</config>
    		<!-- CONFIGURATION DEV -->
-    <!--<config id="messagerieDS">
-    	<property name="driverClassName">org.postgresql.Driver</property>
-	    <property name="url">jdbc:postgresql://localhost:5432/messagerie</property>
-	    <property name="username">postgres</property>
-	    <property name="password">postgres</property>
- 	</config>-->
+<!--     <config id="messagerieDS"> -->
+<!--     	<property name="driverClassName">org.postgresql.Driver</property> -->
+<!-- 	    <property name="url">jdbc:postgresql://localhost:5432/messagerie</property> -->
+<!-- 	    <property name="username">postgres</property> -->
+<!-- 	    <property name="password">postgres</property> -->
+<!--  	</config> -->
 
 	<resource method="POST" path="addMessage">
 	    <description>add message</description>
@@ -59,7 +59,9 @@
 				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where (m.id = mes.id or m."idMessageParent" = mes.id) and m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :uid) ) ELSE 0 END unread,
 				CASE WHEN EXISTS (select "createdAt" from public.message m where m."idMessageParent" = mes.id) THEN (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id) ELSE mes."createdAt" END "createdAt",
 				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
-			FROM public.message mes WHERE sujet IS NOT NULL AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id) ) ORDER BY "createdAt" DESC
+			FROM public.message mes WHERE sujet IS NOT NULL 
+				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id)) 
+			ORDER BY "createdAt" DESC
 		</sql>
 		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
 	    <result outputType="json">{"data": {
@@ -91,7 +93,9 @@
 				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where (m.id = mes.id or m."idMessageParent" = mes.id) and m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :uid) ) ELSE 0 END unread,
 				CASE WHEN EXISTS (select "createdAt" from public.message m where m."idMessageParent" = mes.id) THEN (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id) ELSE mes."createdAt" END "createdAt",
 				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
-			FROM public.message mes WHERE sujet IS NOT NULL AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id) ) ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
+			FROM public.message mes WHERE sujet IS NOT NULL 
+				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id)) 
+			ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
 		</sql>
 		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
 		<param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
@@ -127,7 +131,7 @@
 	    </result>
   	</query>
   	
-  	<resource method="GET" path="agent/{uid}/topics/filters/{filterTopic}/{filterMessage}/{limit}/{offset}">
+  	<resource method="POST" path="agent/topics/filters/by/message">
 	    <description>get topics list filter</description>
 	    <call-query href="agentTopicsFilter">
 	    	<with-param name="uid" query-param="uid" />
@@ -145,7 +149,9 @@
 				CASE WHEN EXISTS (select "createdAt" from public.message m where m."idMessageParent" = mes.id) THEN (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id) ELSE mes."createdAt" END "createdAt",
 				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
 			FROM public.message mes
-			WHERE sujet IS NOT NULL AND (LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%'))) ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
+			WHERE sujet IS NOT NULL 
+				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
+				AND (LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%'))) ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
 		</sql>
 		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
 		<param type="IN" name="filterTopic" paramType="SCALAR" sqlType="STRING" />
@@ -165,7 +171,7 @@
 	    }}</result>
   	</query>
   	
-  	<resource method="GET" path="agent/topics/counter/filters/{filterTopic}/{filterMessage}">
+  	<resource method="POST" path="agent/topics/counter/filters/by/message">
 	    <description>get topics list filter counter</description>
 	    <call-query href="agentTopicsFilterCounter">
 	    	<with-param name="filterTopic" query-param="filterTopic" />
@@ -177,7 +183,9 @@
 	    	SELECT 
 	    		COUNT(mes.id) AS count
 			FROM public.message mes
-			WHERE sujet IS NOT NULL AND (LOWER(TRIM(sujet)) LIKE CONCAT(:filterTopic,'%') OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
+			WHERE sujet IS NOT NULL
+				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
+				AND (LOWER(TRIM(sujet)) LIKE CONCAT(:filterTopic,'%') OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
 		</sql>
 		<param type="IN" name="filterTopic" paramType="SCALAR" sqlType="STRING" />
 		<param type="IN" name="filterMessage" paramType="SCALAR" sqlType="STRING" />
@@ -188,7 +196,7 @@
 	    </result>
   	</query>
   	
-  	<resource method="GET" path="agent/topics/filters/by/folders">
+  	<resource method="POST" path="agent/topics/filters/by/folders">
 	    <description>get topics list filter by folders</description>
 	    <call-query href="agentTopicsFilterByFolders">
 	    	<with-param name="uid" query-param="uid" />
@@ -205,10 +213,13 @@
 				CASE WHEN EXISTS (select "createdAt" from public.message m where m."idMessageParent" = mes.id) THEN (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id) ELSE mes."createdAt" END "createdAt",
 				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
 			FROM public.message mes
-			WHERE sujet IS NOT NULL AND mes."idDossier" = ANY(:folderIds::int[]) ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
+			WHERE sujet IS NOT NULL 
+				AND mes."idDossier" IN (:folderIds) 
+				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
+			ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
 		</sql>
 		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
-		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="STRING" />
+		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="INTEGER" />
 		<param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
 		<param type="IN" name="offset" paramType="SCALAR" sqlType="INTEGER" />
 	    <result outputType="json">{"data": {
@@ -224,7 +235,7 @@
 	    }}</result>
   	</query>
   	
-  	<resource method="GET" path="agent/topics/filters/counter/by/folders">
+  	<resource method="POST" path="agent/topics/filters/counter/by/folders">
 	    <description>get topics list filter by folders counter</description>
 	    <call-query href="agentTopicsFilterByFoldersCount">
 	    	<with-param name="folderIds" query-param="folderIds" />
@@ -235,9 +246,11 @@
 	    	SELECT 
 	    		COUNT(mes.id) AS count
 			FROM public.message mes
-			WHERE sujet IS NOT NULL AND mes."idDossier" = ANY(:folderIds::int[])
+			WHERE sujet IS NOT NULL 
+				AND mes."idDossier" IN (:folderIds) 
+				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
 		</sql>
-		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="STRING" />
+		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="INTEGER" />
 	    <result outputType="json">
 	    	{"counter": {
 	    		"count": $count
@@ -245,7 +258,7 @@
 	    </result>
   	</query>
   	
-  	<resource method="GET" path="agent/topics/filters/by/messages-folders">
+  	<resource method="POST" path="agent/topics/filters/by/messages-folders">
 	    <description>get topics list filter by messages and folders</description>
 	    <call-query href="agentTopicsFilterByMessagesAndFolders">
 	    	<with-param name="uid" query-param="uid" />
@@ -267,11 +280,12 @@
 			WHERE 
 				sujet IS NOT NULL 
 				AND (LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
-				AND mes."idDossier" = ANY(:folderIds::int[]) 
+				AND mes."idDossier" IN (:folderIds)
+				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
 			ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
 		</sql>
 		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
-		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="STRING" />
+		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="INTEGER" />
 		<param type="IN" name="filterTopic" paramType="SCALAR" sqlType="STRING" />
 		<param type="IN" name="filterMessage" paramType="SCALAR" sqlType="STRING" />
 		<param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
@@ -289,7 +303,7 @@
 	    }}</result>
   	</query>
   	
-  	<resource method="GET" path="agent/topics/filters/counter/by/messages-folders">
+  	<resource method="POST" path="agent/topics/filters/counter/by/messages-folders">
 	    <description>get topics list filter by messages and folders counter</description>
 	    <call-query href="agentTopicsFilterByMessagesAndFoldersCount">
 	    	<with-param name="folderIds" query-param="folderIds" />
@@ -305,9 +319,10 @@
 			WHERE 
 				sujet IS NOT NULL 
 				AND (LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
-				AND mes."idDossier" = ANY(:folderIds::int[])
+				AND mes."idDossier" IN (:folderIds)
+				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
 		</sql>
-		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="STRING" />
+		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="INTEGER" />
 		<param type="IN" name="filterTopic" paramType="SCALAR" sqlType="STRING" />
 		<param type="IN" name="filterMessage" paramType="SCALAR" sqlType="STRING" />
 	    <result outputType="json">
@@ -317,7 +332,7 @@
 	    </result>
   	</query>
   	
-  	<resource method="GET" path="agent/topics/filters/by/messages-folders-sender">
+  	<resource method="POST" path="agent/topics/filters/by/messages-folders-sender">
 	    <description>get topics list filter by messages and folders and sender</description>
 	    <call-query href="agentTopicsFilterByMessagesAndFoldersAndSender">
 	    	<with-param name="uid" query-param="uid" />
@@ -340,12 +355,13 @@
 			FROM public.message mes
 			WHERE 
 				sujet IS NOT NULL 
-				AND ((LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') AND expediteur = ANY(:topicSender::int[])) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur = ANY(:messageSender::int[]) AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
-				AND mes."idDossier" = ANY(:folderIds::int[]) 
+				AND ((LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') AND expediteur IN (:topicSender)) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur IN (:messageSender) AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
+				AND mes."idDossier" IN (:folderIds) 
+				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
 			ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
 		</sql>
 		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
-		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="STRING" />
+		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="INTEGER" />
 		<param type="IN" name="filterTopic" paramType="SCALAR" sqlType="STRING" />
 		<param type="IN" name="filterMessage" paramType="SCALAR" sqlType="STRING" />
 		<param type="IN" name="topicSender" paramType="ARRAY" sqlType="STRING" />
@@ -365,7 +381,7 @@
 	    }}</result>
   	</query>
   	
-  	<resource method="GET" path="agent/topics/filters/counter/by/messages-folders-sender">
+  	<resource method="POST" path="agent/topics/filters/counter/by/messages-folders-sender">
 	    <description>get topics list filter by messages and folders and sender counter</description>
 	    <call-query href="agentTopicsFilterByMessagesAndFoldersAndSenderCount">
 	    	<with-param name="folderIds" query-param="folderIds" />
@@ -382,10 +398,11 @@
 			FROM public.message mes
 			WHERE 
 				sujet IS NOT NULL 
-				AND ((LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') AND expediteur = ANY(:topicSender::int[])) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur = ANY(:messageSender::int[]) AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
-				AND mes."idDossier" = ANY(:folderIds::int[])
+				AND ((LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') AND expediteur IN (:topicSender)) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur IN (:messageSender) AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
+				AND mes."idDossier" IN (:folderIds)
+				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
 		</sql>
-		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="STRING" />
+		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="INTEGER" />
 		<param type="IN" name="filterTopic" paramType="SCALAR" sqlType="STRING" />
 		<param type="IN" name="filterMessage" paramType="SCALAR" sqlType="STRING" />
 		<param type="IN" name="topicSender" paramType="ARRAY" sqlType="STRING" />
@@ -397,7 +414,7 @@
 	    </result>
   	</query>
   	
-  	<resource method="GET" path="agent/topics/filters/by/folders-sender">
+  	<resource method="POST" path="agent/topics/filters/by/folders-sender">
 	    <description>get topics list filter by folders and sender</description>
 	    <call-query href="agentTopicsFilterByFoldersAndSender">
 	    	<with-param name="uid" query-param="uid" />
@@ -418,12 +435,12 @@
 			FROM public.message mes
 			WHERE 
 				sujet IS NOT NULL 
-				AND (expediteur = ANY(:topicSender::int[]) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur = ANY(:messageSender::int[])))
-				AND mes."idDossier" = ANY(:folderIds::int[]) 
+				AND (expediteur IN (:topicSender) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur IN (:messageSender)))
+				AND mes."idDossier" IN (:folderIds)
 			ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
 		</sql>
 		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
-		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="STRING" />
+		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="INTEGER" />
 		<param type="IN" name="topicSender" paramType="ARRAY" sqlType="STRING" />
 		<param type="IN" name="messageSender" paramType="ARRAY" sqlType="STRING" />
 		<param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
@@ -441,7 +458,7 @@
 	    }}</result>
   	</query>
   	
-  	<resource method="GET" path="agent/topics/filters/counter/by/folders-sender">
+  	<resource method="POST" path="agent/topics/filters/counter/by/folders-sender">
 	    <description>get topics list filter by olders and sender counter</description>
 	    <call-query href="agentTopicsFilterByFoldersAndSenderCount">
 	    	<with-param name="folderIds" query-param="folderIds" />
@@ -456,10 +473,10 @@
 			FROM public.message mes
 			WHERE 
 				sujet IS NOT NULL 
-				AND (expediteur = ANY(:topicSender::int[]) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur = ANY(:messageSender::int[])))
-				AND mes."idDossier" = ANY(:folderIds::int[])
+				AND (expediteur IN (:topicSender) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur IN (:messageSender)))
+				AND mes."idDossier" IN (:folderIds)
 		</sql>
-		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="STRING" />
+		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="INTEGER" />
 		<param type="IN" name="topicSender" paramType="ARRAY" sqlType="STRING" />
 		<param type="IN" name="messageSender" paramType="ARRAY" sqlType="STRING" />
 	    <result outputType="json">
@@ -469,7 +486,7 @@
 	    </result>
   	</query>
   	
-  	<resource method="GET" path="agent/topics/filters/by/messages-sender">
+  	<resource method="POST" path="agent/topics/filters/by/messages-sender">
 	    <description>get topics list filter by messages and sender</description>
 	    <call-query href="agentTopicsFilterByMessagesAndSender">
 	    	<with-param name="uid" query-param="uid" />
@@ -490,8 +507,8 @@
 				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
 			FROM public.message mes
 			WHERE 
-				sujet IS NOT NULL 
-				AND ((LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') AND expediteur = ANY(:topicSender::int[])) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur = ANY(:messageSender::int[]) AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
+				sujet IS NOT NULL
+				AND ((LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') AND expediteur IN (:topicSender)) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur IN (:messageSender) AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
 			ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
 		</sql>
 		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
@@ -514,7 +531,7 @@
 	    }}</result>
   	</query>
   	
-  	<resource method="GET" path="agent/topics/filters/counter/by/messages-sender">
+  	<resource method="POST" path="agent/topics/filters/counter/by/messages-sender">
 	    <description>get topics list filter by messages and sender counter</description>
 	    <call-query href="agentTopicsFilterByMessagesAndSenderCount">
 	    	<with-param name="filterTopic" query-param="filterTopic" />
@@ -530,7 +547,7 @@
 			FROM public.message mes
 			WHERE 
 				sujet IS NOT NULL 
-				AND ((LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') AND expediteur = ANY(:topicSender::int[])) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur = ANY(:messageSender::int[]) AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
+				AND ((LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') AND expediteur IN (:topicSender)) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur IN (:messageSender) AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
 		</sql>
 		<param type="IN" name="filterTopic" paramType="SCALAR" sqlType="STRING" />
 		<param type="IN" name="filterMessage" paramType="SCALAR" sqlType="STRING" />
@@ -543,7 +560,7 @@
 	    </result>
   	</query>
   	
-  	<resource method="GET" path="agent/topics/filters/by/sender">
+  	<resource method="POST" path="agent/topics/filters/by/sender">
 	    <description>get topics list filter by sender</description>
 	    <call-query href="agentTopicsFilterBySender">
 	    	<with-param name="uid" query-param="uid" />
@@ -563,7 +580,7 @@
 			FROM public.message mes
 			WHERE 
 				sujet IS NOT NULL 
-				AND (expediteur = ANY(:topicSender::int[]) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur = ANY(:messageSender::int[])))
+				AND (expediteur IN (:topicSender) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur IN (:messageSender)))
 			ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
 		</sql>
 		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
@@ -584,7 +601,7 @@
 	    }}</result>
   	</query>
   	
-  	<resource method="GET" path="agent/topics/filters/counter/by/sender">
+  	<resource method="POST" path="agent/topics/filters/counter/by/sender">
 	    <description>get topics list filter by sender counter</description>
 	    <call-query href="agentTopicsFilterBySenderCount">
 	    	<with-param name="topicSender" query-param="topicSender" />
@@ -597,8 +614,8 @@
 	    		COUNT(mes.id) AS count
 			FROM public.message mes
 			WHERE 
-				sujet IS NOT NULL 
-				AND (expediteur = ANY(:topicSender::int[]) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur = ANY(:messageSender::int[])))
+				sujet IS NOT NULL
+				AND (expediteur IN (:topicSender) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur IN (:messageSender)))
 				AND mes."idDossier" = ANY(:folderIds::int[])
 		</sql>
 		<param type="IN" name="topicSender" paramType="ARRAY" sqlType="STRING" />
