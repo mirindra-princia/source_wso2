@@ -15,12 +15,12 @@
     <property name="password">devedbmdb</property>
   </config>
    <!-- CONFIGURATION DEV -->
-  <!--<config id="utilisateurDS">
- 	 <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/utilisateur</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config>-->
+<!--   <config id="utilisateurDS"> -->
+<!--  	 <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/utilisateur</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
   <resource method="GET" path="agents">
     <description>get agent list</description>
     <call-query href="agents"> 
@@ -130,7 +130,7 @@
 	    SELECT 
 	    	entity.id as userid, entity.first_name, entity.last_name, entity.email, entity.username, entity.enabled, entity.email_verified 
 	    FROM public.user_entity entity 
-    	WHERE LOWER(TRIM("firstName")) LIKE CONCAT(:firstName, '%') OR LOWER(TRIM("lastName")) LIKE CONCAT(:lastName, '%')
+    	WHERE LOWER(TRIM("first_name")) LIKE CONCAT(:firstName, '%') OR LOWER(TRIM("last_name")) LIKE CONCAT(:lastName, '%')
     </sql>
     <param type="IN" name="firstName" paramType="SCALAR" sqlType="STRING"/>
     <param type="IN" name="lastName" paramType="SCALAR" sqlType="STRING"/>
