@@ -1192,5 +1192,86 @@
 	    	}}
 	    </result>
   	</query>
+  	
+  	<resource method="POST" path="user/topics/filters/by/messages-sender">
+	    <description>get topics list filter by messages and sender</description>
+	    <call-query href="userTopicsFilterByMessagesAndSender">
+	    	<with-param name="uid" query-param="uid" />
+	    	<with-param name="userFolderIds" query-param="userFolderIds" />
+	    	<with-param name="folderIdsUseByUnread" query-param="folderIdsUseByUnread" />
+	    	<with-param name="filterTopic" query-param="filterTopic" />
+	    	<with-param name="filterMessage" query-param="filterMessage" />
+	    	<with-param name="topicSender" query-param="topicSender" />
+	    	<with-param name="messageSender" query-param="messageSender" />
+	    	<with-param name="offset" query-param="offset" />
+	    	<with-param name="limit" query-param="limit" />
+	    </call-query>
+  	</resource>
+  	<query id="userTopicsFilterByMessagesAndSender" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT 
+	    		mes.id, mes.sujet, mes."idDossier", mes.expediteur, 
+				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where m."idDossier" IN (:folderIdsUseByUnread) AND (m.id = mes.id or m."idMessageParent" = mes.id) AND m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :uid)) ELSE 0 END unread,
+				CASE WHEN EXISTS (select "createdAt" from public.message m where m."idMessageParent" = mes.id) THEN (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id) ELSE mes."createdAt" END "createdAt",
+				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
+			FROM public.message mes
+			WHERE 
+				sujet IS NOT NULL
+				AND mes."idDossier" IN (:userFolderIds)
+				AND ((LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') AND expediteur IN (:topicSender)) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur IN (:messageSender) AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
+			ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
+		</sql>
+		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
+		<param type="IN" name="userFolderIds" paramType="ARRAY" sqlType="INTEGER" />
+		<param type="IN" name="folderIdsUseByUnread" paramType="ARRAY" sqlType="INTEGER" />
+		<param type="IN" name="filterTopic" paramType="SCALAR" sqlType="STRING" />
+		<param type="IN" name="filterMessage" paramType="SCALAR" sqlType="STRING" />
+		<param type="IN" name="topicSender" paramType="ARRAY" sqlType="STRING" />
+		<param type="IN" name="messageSender" paramType="ARRAY" sqlType="STRING" />
+		<param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
+		<param type="IN" name="offset" paramType="SCALAR" sqlType="INTEGER" />
+	    <result outputType="json">{"data": {
+		    "messages": [{
+	   			"id":$id,
+	   			"subject": "$sujet",
+	   			"folderId": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"content": "$contenu",
+	   			"senderUid": "$expediteur",
+	   			"unread": $unread
+		   	}]
+	    }}</result>
+  	</query>
+  	<resource method="POST" path="user/topics/filters/by/messages-sender/counter">
+	    <description>get topics list filter by messages and sender counter</description>
+	    <call-query href="userTopicsFilterByMessagesAndSenderCount">
+	    	<with-param name="userFolderIds" query-param="userFolderIds" />
+	    	<with-param name="filterTopic" query-param="filterTopic" />
+	    	<with-param name="filterMessage" query-param="filterMessage" />
+	    	<with-param name="topicSender" query-param="topicSender" />
+	    	<with-param name="messageSender" query-param="messageSender" />
+	    </call-query>
+  	</resource>
+  	<query id="userTopicsFilterByMessagesAndSenderCount" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT 
+	    		COUNT(mes.id) AS count
+			FROM public.message mes
+			WHERE 
+				sujet IS NOT NULL 
+				AND mes."idDossier" IN (:userFolderIds)
+				AND ((LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') AND expediteur IN (:topicSender)) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur IN (:messageSender) AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
+		</sql>
+		<param type="IN" name="userFolderIds" paramType="ARRAY" sqlType="INTEGER" />
+		<param type="IN" name="filterTopic" paramType="SCALAR" sqlType="STRING" />
+		<param type="IN" name="filterMessage" paramType="SCALAR" sqlType="STRING" />
+		<param type="IN" name="topicSender" paramType="ARRAY" sqlType="STRING" />
+		<param type="IN" name="messageSender" paramType="ARRAY" sqlType="STRING" />
+	    <result outputType="json">
+	    	{"counter": {
+	    		"count": $count
+	    	}}
+	    </result>
+  	</query>
   	<!--#CLIENT AGENT FILTER  -->
 </data>
