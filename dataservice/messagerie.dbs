@@ -9,19 +9,19 @@
 <!-- 	  <property name="password">devedbmdb</property> -->
 <!-- 	</config>  -->
 		<!-- CONFIGURATION TEST -->
-	 <config id="messagerieDS">
-    	<property name="driverClassName">org.postgresql.Driver</property>
-	    <property name="url">jdbc:postgresql://13.246.0.44:5432/messagerie</property>
-	    <property name="username">devedbmdb</property>
-	    <property name="password">devedbmdb</property>
-   	</config>
-   		<!-- CONFIGURATION DEV -->
-<!--     <config id="messagerieDS"> -->
+<!-- 	 <config id="messagerieDS"> -->
 <!--     	<property name="driverClassName">org.postgresql.Driver</property> -->
-<!-- 	    <property name="url">jdbc:postgresql://localhost:5432/messagerie</property> -->
-<!-- 	    <property name="username">postgres</property> -->
-<!-- 	    <property name="password">postgres</property> -->
-<!--  	</config> -->
+<!-- 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/messagerie</property> -->
+<!-- 	    <property name="username">devedbmdb</property> -->
+<!-- 	    <property name="password">devedbmdb</property> -->
+<!--    	</config> -->
+   		<!-- CONFIGURATION DEV -->
+    <config id="messagerieDS">
+    	<property name="driverClassName">org.postgresql.Driver</property>
+	    <property name="url">jdbc:postgresql://localhost:5432/messagerie</property>
+	    <property name="username">postgres</property>
+	    <property name="password">postgres</property>
+ 	</config>
 
 	<resource method="POST" path="addMessage">
 	    <description>add message</description>
@@ -627,38 +627,6 @@
 	    </result>
   	</query>
   	
-  	<resource method="GET" path="user/topics">
-	    <description>user topics list</description>
-	    <call-query href="userTopics">
-	      <with-param name="counterIds" query-param="counterIds" />
-	      <with-param name="uid" query-param="uid" />
-	      <with-param name="ids" query-param="ids" />
-	    </call-query>
-  	</resource>
-  	<query id="userTopics" useConfig="messagerieDS">
-	    <sql>
-	    	SELECT mes.id, mes.sujet, mes."idDossier", mes.expediteur, 
-				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where m."idDossier"=ANY(:counterIds::int[]) AND (m.id = mes.id or m."idMessageParent" = mes.id) AND m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :uid)) ELSE 0 END unread,
-				CASE WHEN EXISTS (select "createdAt" from public.message m where m."idMessageParent" = mes.id) THEN (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id) ELSE mes."createdAt" END "createdAt",
-				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
-			FROM public.message mes WHERE sujet IS NOT NULL AND "idDossier"=ANY(:ids::int[]) ORDER BY "createdAt" DESC
-	    </sql>
-	    <param type="IN" name="counterIds" paramType="ARRAY" sqlType="STRING" />
-	    <param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
-	    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING" />
-	    <result outputType="json">{"data": {
-		    "messages": [{
-	   			"id":$id,
-	   			"subject": "$sujet",
-	   			"folderId": $idDossier,
-	   			"createdAt": "$createdAt",
-	   			"content": "$contenu",
-	   			"senderUid": "$expediteur",
-	   			"unread": $unread
-		   	}]
-	    }}
-	    </result>
-  	</query>
   	<resource method="GET" path="messages/{topicId}">
 	    <description>messages list</description>
 	    <call-query href="messages">
@@ -844,4 +812,68 @@
 	    }}
 	    </result>
   	</query>
+  	
+  	<!-- CLIENT AGENT FILTER  -->
+  	<resource method="POST" path="user/topics">
+	    <description>user topics list</description>
+	    <call-query href="userTopics">
+	      <with-param name="uid" query-param="uid" />
+	      <with-param name="userFolderIds" query-param="userFolderIds" />
+	      <with-param name="folderIdsUseByUnread" query-param="folderIdsUseByUnread" />
+	      <with-param name="limit" query-param="limit" />
+	      <with-param name="offset" query-param="offset" />
+	    </call-query>
+  	</resource>
+  	<query id="userTopics" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT mes.id, mes.sujet, mes."idDossier", mes.expediteur, 
+				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where m."idDossier" IN (:folderIds2) AND (m.id = mes.id or m."idMessageParent" = mes.id) AND m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :uid)) ELSE 0 END unread,
+				CASE WHEN EXISTS (select "createdAt" from public.message m where m."idMessageParent" = mes.id) THEN (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id) ELSE mes."createdAt" END "createdAt",
+				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
+			FROM public.message mes 
+			WHERE sujet IS NOT NULL 
+				AND "idDossier" IN (:userFolderIds) 
+			ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
+	    </sql>
+	    <param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
+	    <param type="IN" name="userFolderIds" paramType="ARRAY" sqlType="INTEGER" />
+	    <param type="IN" name="folderIdsUseByUnread" paramType="ARRAY" sqlType="INTEGER" />
+	    <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
+	    <param type="IN" name="offset" paramType="SCALAR" sqlType="INTEGER" />
+	    <result outputType="json">{"data": {
+		    "messages": [{
+	   			"id":$id,
+	   			"subject": "$sujet",
+	   			"folderId": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"content": "$contenu",
+	   			"senderUid": "$expediteur",
+	   			"unread": $unread
+		   	}]
+	    }}
+	    </result>
+  	</query>
+  	
+  	<resource method="POST" path="user/topics/counter">
+	    <description>get topics list counter</description>
+	    <call-query href="userTopicsCount">
+	    	<with-param name="userFolderIds" query-param="userFolderIds" />
+	    </call-query>
+  	</resource>
+  	<query id="userTopicsCount" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT 
+	    		COUNT(mes.id) AS count
+			FROM public.message mes
+			WHERE sujet IS NOT NULL 
+				AND "idDossier" IN (:userFolderIds) 
+		</sql>
+		<param type="IN" name="userFolderIds" paramType="ARRAY" sqlType="INTEGER" />
+	    <result outputType="json">
+	    	{"counter": {
+	    		"count": $count
+	    	}}
+	    </result>
+  	</query>
+  	<!--#CLIENT AGENT FILTER  -->
 </data>
