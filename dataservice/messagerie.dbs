@@ -9,19 +9,19 @@
 <!-- 	  <property name="password">devedbmdb</property> -->
 <!-- 	</config>  -->
 		<!-- CONFIGURATION TEST -->
-<!-- 	 <config id="messagerieDS"> -->
-<!--     	<property name="driverClassName">org.postgresql.Driver</property> -->
-<!-- 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/messagerie</property> -->
-<!-- 	    <property name="username">devedbmdb</property> -->
-<!-- 	    <property name="password">devedbmdb</property> -->
-<!--    	</config> -->
-   		<!-- CONFIGURATION DEV -->
-    <config id="messagerieDS">
+	 <config id="messagerieDS">
     	<property name="driverClassName">org.postgresql.Driver</property>
-	    <property name="url">jdbc:postgresql://localhost:5432/messagerie</property>
-	    <property name="username">postgres</property>
-	    <property name="password">postgres</property>
- 	</config>
+	    <property name="url">jdbc:postgresql://13.246.0.44:5432/messagerie</property>
+	    <property name="username">devedbmdb</property>
+	    <property name="password">devedbmdb</property>
+   	</config>
+   		<!-- CONFIGURATION DEV -->
+<!--     <config id="messagerieDS"> -->
+<!--     	<property name="driverClassName">org.postgresql.Driver</property> -->
+<!-- 	    <property name="url">jdbc:postgresql://localhost:5432/messagerie</property> -->
+<!-- 	    <property name="username">postgres</property> -->
+<!-- 	    <property name="password">postgres</property> -->
+<!--  	</config> -->
 
 	<resource method="POST" path="addMessage">
 	    <description>add message</description>
@@ -1338,6 +1338,78 @@
 		<param type="IN" name="userFolderIds" paramType="ARRAY" sqlType="INTEGER" />
 		<param type="IN" name="topicSender" paramType="ARRAY" sqlType="STRING" />
 		<param type="IN" name="messageSender" paramType="ARRAY" sqlType="STRING" />
+	    <result outputType="json">
+	    	{"counter": {
+	    		"count": $count
+	    	}}
+	    </result>
+  	</query>
+  	
+  	<resource method="POST" path="user/topics/filters/by/message">
+	    <description>get topics list filter</description>
+	    <call-query href="userTopicsFilter">
+	    	<with-param name="uid" query-param="uid" />
+	    	<with-param name="userFolderIds" query-param="userFolderIds" />
+	    	<with-param name="folderIdsUseByUnread" query-param="folderIdsUseByUnread" />
+	    	<with-param name="filterTopic" query-param="filterTopic" />
+	    	<with-param name="filterMessage" query-param="filterMessage" />
+	    	<with-param name="offset" query-param="offset" />
+	    	<with-param name="limit" query-param="limit" />
+	    </call-query>
+  	</resource>
+  	<query id="userTopicsFilter" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT 
+	    		mes.id, mes.sujet, mes."idDossier", mes.expediteur, 
+				CASE WHEN EXISTS (select * from public.message m where m.id = mes.id or m."idMessageParent" = mes.id) THEN (select COUNT(*) from public.message m where m."idDossier" IN (:folderIdsUseByUnread) AND (m.id = mes.id or m."idMessageParent" = mes.id) AND m.id not in (select "idMessage" from public."messageLu" seen where seen."idUtilisateur" = :uid)) ELSE 0 END unread,
+				CASE WHEN EXISTS (select "createdAt" from public.message m where m."idMessageParent" = mes.id) THEN (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id) ELSE mes."createdAt" END "createdAt",
+				CASE WHEN EXISTS (select contenu from public.message m where m."idMessageParent" = mes.id) THEN (select contenu from public.message m where m."idMessageParent" = mes.id and m."createdAt" = (select MAX("createdAt") from public.message m where m."idMessageParent" = mes.id)) ELSE mes.contenu END contenu
+			FROM public.message mes
+			WHERE sujet IS NOT NULL 
+				AND mes."idDossier" IN (:userFolderIds)
+				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
+				AND (LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%'))) ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
+		</sql>
+		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
+		<param type="IN" name="userFolderIds" paramType="ARRAY" sqlType="INTEGER" />
+		<param type="IN" name="folderIdsUseByUnread" paramType="ARRAY" sqlType="INTEGER" />
+		<param type="IN" name="filterTopic" paramType="SCALAR" sqlType="STRING" />
+		<param type="IN" name="filterMessage" paramType="SCALAR" sqlType="STRING" />
+		<param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
+		<param type="IN" name="offset" paramType="SCALAR" sqlType="INTEGER" />
+	    <result outputType="json">{"data": {
+		    "messages": [{
+	   			"id":$id,
+	   			"subject": "$sujet",
+	   			"folderId": $idDossier,
+	   			"createdAt": "$createdAt",
+	   			"content": "$contenu",
+	   			"senderUid": "$expediteur",
+	   			"unread": $unread
+		   	}]
+	    }}</result>
+  	</query>
+  	<resource method="POST" path="user/topics/filters/by/message/counter">
+	    <description>get topics list filter counter</description>
+	    <call-query href="userTopicsFilterCounter">
+	    	<with-param name="userFolderIds" query-param="userFolderIds" />
+	    	<with-param name="filterTopic" query-param="filterTopic" />
+	    	<with-param name="filterMessage" query-param="filterMessage" />
+	    </call-query>
+  	</resource>
+  	<query id="agentTopicsFilterCounter" useConfig="messagerieDS">
+	    <sql>
+	    	SELECT 
+	    		COUNT(mes.id) AS count
+			FROM public.message mes
+			WHERE sujet IS NOT NULL
+				AND mes."idDossier" IN (:userFolderIds)
+				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
+				AND (LOWER(TRIM(sujet)) LIKE CONCAT(:filterTopic,'%') OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
+		</sql>
+		<param type="IN" name="userFolderIds" paramType="ARRAY" sqlType="INTEGER" />
+		<param type="IN" name="filterTopic" paramType="SCALAR" sqlType="STRING" />
+		<param type="IN" name="filterMessage" paramType="SCALAR" sqlType="STRING" />
 	    <result outputType="json">
 	    	{"counter": {
 	    		"count": $count
