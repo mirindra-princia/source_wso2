@@ -902,7 +902,6 @@
 				AND mes."idDossier" IN (:userFolderIds) 
 				AND ((LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') AND expediteur IN (:topicSender)) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur IN (:messageSender) AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
 				AND mes."idDossier" IN (:folderIds) 
-				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
 			ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
 		</sql>
 		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
@@ -948,7 +947,6 @@
 				AND mes."idDossier" IN (:userFolderIds)
 				AND ((LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') AND expediteur IN (:topicSender)) OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND expediteur IN (:messageSender) AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
 				AND mes."idDossier" IN (:folderIds) 
-				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
 		</sql>
 		<param type="IN" name="userFolderIds" paramType="ARRAY" sqlType="INTEGER" />
 		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="INTEGER" />
@@ -989,7 +987,6 @@
 				AND mes."idDossier" IN (:userFolderIds)
 				AND (LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
 				AND mes."idDossier" IN (:folderIds)
-				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
 			ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
 		</sql>
 		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
@@ -1031,7 +1028,6 @@
 				AND mes."idDossier" IN (:userFolderIds)
 				AND (LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
 				AND mes."idDossier" IN (:folderIds)
-				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
 		</sql>
 		<param type="IN" name="userFolderIds" paramType="ARRAY" sqlType="INTEGER" />
 		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="INTEGER" />
@@ -1144,8 +1140,7 @@
 			FROM public.message mes
 			WHERE sujet IS NOT NULL 
 				AND mes."idDossier" IN (:userFolderIds)
-				AND mes."idDossier" IN (:folderIds) 
-				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
+				AND mes."idDossier" IN (:folderIds)
 			ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
 		</sql>
 		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
@@ -1180,8 +1175,7 @@
 			FROM public.message mes
 			WHERE sujet IS NOT NULL
 				AND mes."idDossier" IN (:userFolderIds) 
-				AND mes."idDossier" IN (:folderIds) 
-				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
+				AND mes."idDossier" IN (:folderIds)
 		</sql>
 		<param type="IN" name="userFolderIds" paramType="ARRAY" sqlType="INTEGER" />
 		<param type="IN" name="folderIds" paramType="ARRAY" sqlType="INTEGER" />
@@ -1367,8 +1361,7 @@
 			FROM public.message mes
 			WHERE sujet IS NOT NULL 
 				AND mes."idDossier" IN (:userFolderIds)
-				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
-				AND (LOWER(TRIM(sujet)) like CONCAT(:filterTopic,'%') OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%'))) ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
+				AND (REPLACE(LOWER(TRIM(sujet)), ' ','') like CONCAT(:filterTopic,'%') OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND REPLACE(LOWER(TRIM(contenu)), ' ','') LIKE CONCAT(:filterMessage, '%'))) ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
 		</sql>
 		<param type="IN" name="uid" paramType="SCALAR" sqlType="STRING" />
 		<param type="IN" name="userFolderIds" paramType="ARRAY" sqlType="INTEGER" />
@@ -1397,14 +1390,13 @@
 	    	<with-param name="filterMessage" query-param="filterMessage" />
 	    </call-query>
   	</resource>
-  	<query id="agentTopicsFilterCounter" useConfig="messagerieDS">
+  	<query id="userTopicsFilterCounter" useConfig="messagerieDS">
 	    <sql>
 	    	SELECT 
 	    		COUNT(mes.id) AS count
 			FROM public.message mes
 			WHERE sujet IS NOT NULL
 				AND mes."idDossier" IN (:userFolderIds)
-				AND (expediteur IS NOT NULL OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id))
 				AND (LOWER(TRIM(sujet)) LIKE CONCAT(:filterTopic,'%') OR EXISTS(SELECT * FROM public.message WHERE "idMessageParent" = mes.id AND LOWER(TRIM(contenu)) LIKE CONCAT(:filterMessage, '%')))
 		</sql>
 		<param type="IN" name="userFolderIds" paramType="ARRAY" sqlType="INTEGER" />
