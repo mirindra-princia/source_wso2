@@ -8,20 +8,20 @@
 <!--     <property name="password">devedbmdb</property> -->
 <!--   </config>  -->
   <!-- CONFIGURATION TEST  -->
-  <config id="entiteDS">
+   <config id="entiteDS">
     	<property name="driverClassName">org.postgresql.Driver</property>
 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/entite</property>
 	    <property name="username">devedbmdb</property>
 	    <property name="password">devedbmdb</property>
    	</config>
    	<!-- CONFIGURATION DEV -->
-  <!-- <config id="entiteDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/entite</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config>
-   -->
+<!--   <config id="entiteDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/entite</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
+  
   <resource method="GET" path="listOfAuthorization">
     <description />
     <call-query href="listofAuthorization" />
@@ -30,4 +30,54 @@
     <sql>Select * from droit</sql>
     <result outputType="json">{"droits":{"droit":[{"id":$id,"name":"$name"}]}}</result>
   </query>
+  
+  <!-- CENTER -->
+  <resource method="GET" path="centers/group/{groupId}">
+    <description />
+    <call-query href="centersByGroup">
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="centersByGroup" useConfig="entiteDS">
+    <sql>
+    	SELECT centre.* FROM centre 
+    	JOIN public."centreGroupe" cg ON cg."centerId" = centre.id
+    	WHERE cg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"data":{"centers":[{"id":$id,"name":"$name", "regionId": $regionId}]}}</result>
+  </query>
+  
+  <resource method="GET" path="centers/group/{groupId}/region/{regionId}">
+    <description />
+    <call-query href="centersByGroupRegion">
+      <with-param name="groupId" query-param="groupId" />
+      <with-param name="regionId" query-param="regionId" />
+    </call-query>
+  </resource>
+  <query id="centersByGroupRegion" useConfig="entiteDS">
+    <sql>
+    	SELECT centre.* FROM centre 
+    	JOIN public."centreGroupe" cg ON cg."centerId" = centre.id
+    	WHERE centre."regionId" = :regionId AND cg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="regionId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"centers":[{"id":$id,"name":"$name", "regionId": $regionId}]}}</result>
+  </query>
+  
+  <resource method="GET" path="centers/{id}">
+    <description />
+    <call-query href="center">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="center" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM centre WHERE centre.id = :id
+    </sql>
+    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"center":{"id":$id,"name":"$name", "regionId": $regionId}}</result>
+  </query>
+  <!-- #CENTER -->
 </data>

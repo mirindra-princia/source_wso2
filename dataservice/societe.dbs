@@ -8,7 +8,7 @@
 <!--     <property name="password">devedbmdb</property> -->
 <!--   </config> -->
   <!-- CONFIGURATION TEST -->
-  <config id="societeDS">
+    <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://13.246.0.44:5432/societe</property>
     <property name="username">devedbmdb</property>
@@ -16,12 +16,12 @@
   </config>
   <!-- CONFIGURATION DEV -->
 
- <!--  <config id="societeDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/societe</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config> -->
+<!--  <config id="societeDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/societe</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
 
   <resource path="addSocietyForm" method="POST">
     <description>add society from online form</description>
@@ -365,27 +365,27 @@
   <resource path="updateSTAT" method="PUT">
     <description />
     <call-query href="updateSTAT">
-      <with-param name="STAT" query-param="STAT" />
-      <with-param name="idSociete" query-param="idSociete" />
-      <with-param name="dateSTAT " query-param="dateSTAT " />
+      <with-param name="STAT" query-param="number" />
+      <with-param name="idSociete" query-param="companyId" />
+      <with-param name="dateSTAT " query-param="immatDate " />
     </call-query>
   </resource>
   <resource path="updateRCS" method="PUT">
     <description />
     <call-query href="updateRCS">
-      <with-param name="RCS" query-param="RCS" />
-      <with-param name="idSociete" query-param="idSociete" />
-      <with-param name="dateRCS " query-param="dateRCS " />
+      <with-param name="RCS" query-param="number" />
+      <with-param name="idSociete" query-param="companyId" />
+      <with-param name="dateRCS " query-param="immatDate " />
     </call-query>
   </resource>
   <resource path="addStatutInteroperabilite" method="POST">
     <description />
     <call-query href="statutInteroperabilite">
       <with-param name="idSociete" query-param="idSociete" />
-      <with-param name="INSTAT" query-param="INSTAT" />
-      <with-param name="RCS" query-param="RCS" />
-      <with-param name="DGI" query-param="DGI" />
-      <with-param name="EDBM" query-param="EDBM" />
+      <with-param name="INSTAT" query-param="instat" />
+      <with-param name="RCS" query-param="rcs" />
+      <with-param name="DGI" query-param="dgi" />
+      <with-param name="EDBM" query-param="edbm" />
     </call-query>
   </resource>
   <resource path="getCreatedCompanyId" method="GET">
@@ -1086,10 +1086,10 @@
 	 "idSociete", "RCS", "INSTAT", "DGI", "EDBM")
 	VALUES ( :idSociete, :RCS, :INSTAT, :DGI, :EDBM);</sql>
     <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="INSTAT" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="RCS" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="DGI" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <param type="IN" name="EDBM" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <param type="IN" name="INSTAT" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="RCS" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="DGI" sqlType="INTEGER" paramType="SCALAR" optional="true" />
+    <param type="IN" name="EDBM" sqlType="INTEGER" paramType="SCALAR" optional="true" />
   </query>
   <query id="getCreatedCompanyId" useConfig="societeDS">
     <sql>SELECT status.id, status."idSociete" FROM public."statutInteroperabilite" status
@@ -1172,7 +1172,7 @@
   <query id="checkStatusTable" useConfig="societeDS">
     <sql>SELECT * FROM public."statutInteroperabilite" WHERE "idSociete"=:idSociete</sql>
     <param type="IN" name="idSociete" sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <result outputType="json">{"company":{"idSociete":"$idSociete", "rcs": $RCS, "instat": $INSTAT}}</result>
+    <result outputType="json">{"company":{"idSociete":"$idSociete", "rcs": $RCS, "instat": $INSTAT,"dgi":"$DGI","edbm":"$EDBM"}}</result>
   </query>
   <query id="getActiviteReglemente" useConfig="societeDS">
     <sql>SELECT * FROM public."secteurActivite" activity WHERE activity."idSecteurActivite" =:id</sql>
@@ -1476,7 +1476,7 @@
   <query id="societeSiegeData" useConfig="societeDS">
     <sql>select "siegeSocial"."adresseSiegeSocial" ,
       societe."denominationSocial",
-      adresse.adresse, societe."activiteImportExport",
+      adresse.adresse, societe."activiteImportExport",societe."objetSocial",
       societe."activitePrincipal", "siegeSocial"."idBailleurPersonne",
       "siegeSocial"."idBailleurPersonneMoral",
       "siegeSocial"."idTypeBailleur",
@@ -1485,7 +1485,7 @@
       "siegeSocial"."idSiege",
       "siegeSocial"."idTypeEtablissement",
       "siegeSocial"."debutBail",
-      "societe"."dateStatut"
+      "societe"."dateStatut", "societe"."nomCommercial"
       from "siegeSocial"
       inner join adresse ON adresse."idAdresse" = "siegeSocial"."adresseSiegeSocial"
       inner join societe ON societe."idSiegeSocial" = "siegeSocial"."idSiege"
@@ -1495,7 +1495,8 @@
     <result outputType="json">{"data":{"activitePrincipal": "$activitePrincipal", "adresse": "$adresse", "adresseSiegeSocial": "$adresseSiegeSocial",
       "activiteImportExport": "$activiteImportExport", "idBailleurPersonne": "$idBailleurPersonne", "denominationSocial": "$denominationSocial",
       "idBailleurPersonneMoral": "$idBailleurPersonneMoral", "idTypeBailleur": "$idTypeBailleur", "idTypeContrat": "$idTypeContrat", "idSiege": "$idSiege",
-      "siegePrincipal": "$siegePrincipal", "dateStatut": "$dateStatut", "idTypeEtablissement": $idTypeEtablissement, "debutBail":"$debutBail"}}
+      "siegePrincipal": "$siegePrincipal", "dateStatut": "$dateStatut", "idTypeEtablissement": $idTypeEtablissement, "debutBail":"$debutBail",
+      "objetSocial": "$objetSocial", "nomCommercial":"$nomCommercial"}}
     </result>
   </query>
   <resource path="companyInterOp/siegeSociale/{idSociete}" method="GET">
@@ -1531,4 +1532,55 @@
       <with-param name="idSiegePrincipale" query-param="idSiegePrincipale"/>
     </call-query>
   </resource>
+  
+  <resource path="agent/filter/by/name" method="POST">
+    <description />
+    <call-query href="filterCompanyByName">
+      <with-param name="name" query-param="name" />
+    </call-query>
+  </resource>
+  <query id="filterCompanyByName" useConfig="societeDS">
+    <sql>SELECT * FROM societe WHERE LOWER(TRIM("denominationSocial")) LIKE CONCAT(:name, '%') </sql>
+    <param type="IN" name="name" paramType="SCALAR" sqlType="STRING"/>
+    <result outputType="json">
+    	{
+    		"data": {
+    			"companies": [{
+	    			"idSociete":$idSociete,
+			        "formeJuridique": "$formeJuridique",
+			        "idFormeJuridique": "$idFormeJuridique",
+			        "denominationSocial": "$denominationSocial",
+			        "nomCommercial": "$nomCommercial",
+			        "sigle": "$sigle",
+			        "objetSocial": "$objetSocial",
+			        "idSecteurActivite": "$idSecteurActivite",
+			        "activitePrincipal": "$activitePrincipal",
+			        "activiteImportExport": "$activiteImportExport",
+			        "activiteIndustrielCollecteur": "$activiteIndustrielCollecteur",
+			        "activiteGrossiste": "$activiteGrossiste",
+			        "capital":"$capital",
+			        "montantPartSocial": "$montantPartSocial",
+			        "dateStatut": "$dateStatut",
+			        "choixImposition": "$choixImposition",
+			        "tva":"$tva",
+			        "duree":"$duree",
+			        "finExerciceSocial": "$finExerciceSocial",
+			        "idPersonne": "$idPersonne",
+			        "idDossier": "$idDossier",
+			        "idSiegeSocial": "$idSiegeSocial",
+			        "idDevise": "$idDevise",
+			        "idDevisePartAssocie": "$idDevisePartAssocie",
+			        "NIF":"$NIF",
+			        "dateNIF":"$dateNIF",
+			        "STAT":"$STAT",
+			        "RCS":"$RCS",
+			        "dateSTAT":"$dateSTAT",
+			        "dateRCS":"$dateRCS",
+			        "ubi":"$ubi",
+			        "activiteSecondaire": "$activiteSecondaire"
+	    		}]
+    		}
+    	}
+    </result>
+  </query>
 </data>

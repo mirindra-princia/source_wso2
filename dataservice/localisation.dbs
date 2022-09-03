@@ -1,11 +1,17 @@
 <data transports="http https" serviceGroup="mg.gov.edbm.societe.localisationDS" name="localisation">
   <description>Service adresse</description>
-  <config id="localisationDS">
+   <config id="localisationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://13.246.0.44:5432/localisation</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config>
+   <!--<config id="localisationDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/localisation</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config>-->
   <resource method="GET" path="province">
     <description>List of all province</description>
     <call-query href="selectAllProvinces" />
@@ -417,5 +423,22 @@
     	"id": $city_id,
     	"name": "$city_name"
     }}}</result>
+  </query>
+  
+  <resource method="GET" path="regions/{id}">
+    <description />
+    <call-query href="region">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="region" useConfig="localisationDS">
+    <sql>SELECT * FROM region WHERE id = :id</sql>
+    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    {"region":{
+    	"id": $id,
+    	"name": "$name"
+    }}
+    </result>
   </query>
 </data>
