@@ -8,19 +8,19 @@
 <!--     <property name="password">devedbmdb</property> -->
 <!--   </config>  -->
   <!-- CONFIGURATION TEST  -->
-   <config id="entiteDS">
-    	<property name="driverClassName">org.postgresql.Driver</property>
-	    <property name="url">jdbc:postgresql://13.246.0.44:5432/entite</property>
-	    <property name="username">devedbmdb</property>
-	    <property name="password">devedbmdb</property>
-   	</config>
+<!--    <config id="entiteDS"> -->
+<!--     	<property name="driverClassName">org.postgresql.Driver</property> -->
+<!-- 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/entite</property> -->
+<!-- 	    <property name="username">devedbmdb</property> -->
+<!-- 	    <property name="password">devedbmdb</property> -->
+<!--    	</config> -->
    	<!-- CONFIGURATION DEV -->
-  <!--<config id="entiteDS">
+  <config id="entiteDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/entite</property>
     <property name="username">postgres</property>
     <property name="password">postgres</property>
-  </config>-->
+  </config>
   
   <resource method="GET" path="listOfAuthorization">
     <description />
@@ -30,4 +30,22 @@
     <sql>Select * from droit</sql>
     <result outputType="json">{"droits":{"droit":[{"id":$id,"name":"$name"}]}}</result>
   </query>
+  
+  <!-- CENTER -->
+  <resource method="GET" path="centers/group/{groupId}">
+    <description />
+    <call-query href="centersByGroup">
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="centersByGroup" useConfig="entiteDS">
+    <sql>
+    	SELECT centre.* FROM centre 
+    	JOIN public."centreGroupe" cg ON cg."centerId" = centre.id
+    	WHERE cg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"datas":{"centers":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+  <!-- #CENTER -->
 </data>
