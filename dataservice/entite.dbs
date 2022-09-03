@@ -65,5 +65,19 @@
     <param type="IN" name="regionId" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">{"datas":{"centers":[{"id":$id,"name":"$name"}]}}</result>
   </query>
+  
+  <resource method="GET" path="centers/{id}">
+    <description />
+    <call-query href="center">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="center" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM centre WHERE centre.id = :id
+    </sql>
+    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"center":{"id":$id,"name":"$name"}}</result>
+  </query>
   <!-- #CENTER -->
 </data>
