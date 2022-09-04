@@ -80,4 +80,37 @@
     <result outputType="json">{"center":{"id":$id,"name":"$name", "regionId": $regionId}}</result>
   </query>
   <!-- #CENTER -->
+  
+  <!-- SECTOR -->
+  <resource method="GET" path="sectors/group/{groupId}">
+    <description />
+    <call-query href="sectorsByGroup">
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="sectorsByGroup" useConfig="entiteDS">
+    <sql>
+    	SELECT secteur.* FROM secteur 
+    	JOIN public."secteurGroupe" sg ON sg."sectorId" = secteur.id
+    	WHERE sg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"data":{"sectors":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+  
+  <resource method="GET" path="regions/sector/{sectorId}">
+    <description />
+    <call-query href="regionsBySector">
+      <with-param name="sectorId" query-param="sectorId" />
+    </call-query>
+  </resource>
+  <query id="regionsBySector" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM "secteurRegion" 
+    	WHERE "sectorId" = :sectorId
+    </sql>
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"sectorRegions":[{"sectorId":$sectorId,"regionId":$regionId}]}}</result>
+  </query>
+  <!-- #SECTOR -->
 </data>
