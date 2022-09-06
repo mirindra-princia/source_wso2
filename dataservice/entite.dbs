@@ -274,4 +274,20 @@
     <result outputType="json">{"data":{"groupRoles":[{"groupId":"$groupId","roleId":"$roleId"}]}}</result>
   </query>
   <!-- #ROLE -->
+
+  <resource method="GET" path="checkUserRightService">
+    <description />
+    <call-query href="checkUserRightService">
+      <with-param name="idUtilisateur" query-param="idUtilisateur" />
+      <with-param name="idService" query-param="idService" />
+      <with-param name="idDroit" query-param="idDroit" />
+    </call-query>
+  </resource>
+  <query id="checkUserRightService" useConfig="entiteDS">
+    <sql>select * from public."utilisateurDroit" where "idUtilisateur" =:idUtilisateur AND "idService" =:idService and "idDroit" =:idDroit</sql>
+    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="idService" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idDroit" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"idUtilisateur":"$idUtilisateur","idService":"$idService", "idDroit": "$idDroit"}}</result>
+  </query>
 </data>
