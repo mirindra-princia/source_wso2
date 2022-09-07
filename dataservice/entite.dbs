@@ -45,7 +45,7 @@
     	WHERE cg."groupId" = :groupId
     </sql>
     <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
-    <result outputType="json">{"data":{"centers":[{"id":$id,"name":"$name", "regionId": $regionId}]}}</result>
+    <result outputType="json">{"data":{"centers":[{"id":$id,"name":"$name"}]}}</result>
   </query>
   
   <resource method="GET" path="centers/group/{groupId}/region/{regionId}">
@@ -64,7 +64,26 @@
     </sql>
     <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
     <param type="IN" name="regionId" paramType="SCALAR" sqlType="INTEGER" />
-    <result outputType="json">{"data":{"centers":[{"id":$id,"name":"$name", "regionId": $regionId}]}}</result>
+    <result outputType="json">{"data":{"centers":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+  
+  <resource method="GET" path="centers/group/{groupId}/sectors/{sectorId}">
+    <description />
+    <call-query href="centersByGroupSector">
+      <with-param name="groupId" query-param="groupId" />
+      <with-param name="sectorId" query-param="sectorId" />
+    </call-query>
+  </resource>
+  <query id="centersByGroupSector" useConfig="entiteDS">
+    <sql>
+    	SELECT centre.* FROM centre 
+    	JOIN public."centreGroupe" cg ON cg."centerId" = centre.id
+    	JOIN public."centreSecteur" cs ON cs."centerId" = centre.id
+    	WHERE cs."sectorId" = :sectorId AND cg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"centers":[{"id":$id,"name":"$name"}]}}</result>
   </query>
   
   <resource method="GET" path="centers/{id}">
@@ -78,7 +97,7 @@
     	SELECT * FROM centre WHERE centre.id = :id
     </sql>
     <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
-    <result outputType="json">{"center":{"id":$id,"name":"$name", "regionId": $regionId}}</result>
+    <result outputType="json">{"center":{"id":$id,"name":"$name"}}</result>
   </query>
   
   <resource method="GET" path="centers/regions/groups/{groupId}">
