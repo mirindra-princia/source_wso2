@@ -465,4 +465,44 @@
     
   </query>
   <!-- #REGION -->
+  
+  <!-- PROVINCE -->
+  <resource method="GET" path="provinces/{id}">
+    <description />
+    <call-query href="province">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="province" useConfig="localisationDS">
+    <sql>SELECT * FROM province WHERE id = :id</sql>
+    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    {"region":{
+    	"id": $id,
+    	"name": "$name"
+    }}
+    </result>
+    
+  </query>
+  
+  <resource method="POST" path="provinces/filters/by/ids">
+    <description />
+    <call-query href="provinceFilterByIds">
+      <with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="provinceFilterByIds" useConfig="localisationDS">
+    <sql>SELECT * FROM province WHERE id IN (:ids)</sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+    <result outputType="json">
+    {"data":
+    	{"regions":[{
+	    	"id": $id,
+	    	"name": "$name"
+	    }]}
+    }
+    </result>
+    
+  </query>
+  <!-- #PROVINCE -->
 </data>
