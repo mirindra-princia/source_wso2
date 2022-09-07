@@ -81,6 +81,7 @@
   </query>
   <!-- #CENTER -->
   
+  
   <!-- SECTOR -->
   <resource method="GET" path="sectors/group/{groupId}">
     <description />
@@ -98,21 +99,43 @@
     <result outputType="json">{"data":{"sectors":[{"id":$id,"name":"$name"}]}}</result>
   </query>
   
-  <resource method="GET" path="regions/sector/{sectorId}">
+  <resource method="GET" path="sectors/{sectorId}/regions/groups/{groupId}">
     <description />
-    <call-query href="regionsBySector">
+    <call-query href="regionByGroupSector">
       <with-param name="sectorId" query-param="sectorId" />
+      <with-param name="groupId" query-param="groupId" />
     </call-query>
   </resource>
-  <query id="regionsBySector" useConfig="entiteDS">
+  <query id="regionByGroupSector" useConfig="entiteDS">
     <sql>
-    	SELECT * FROM "secteurRegion" 
-    	WHERE "sectorId" = :sectorId
+    	SELECT sr.* FROM "secteurRegion" sr 
+    	JOIN secteur ON secteur.id = sr."sectorId"
+    	JOIN "secteurGroupe" sg ON sg."sectorId" = secteur.id 
+    	WHERE sr."sectorId" = :sectorId AND sg."groupId" = :groupId
     </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
     <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"sectorRegions":{"sectorId":$sectorId,"regionId":$regionId}}</result>
+  </query>
+  
+  <resource method="GET" path="sectors/regions/groups/{groupId}">
+    <description />
+    <call-query href="regionsByGroupSector">
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="regionsByGroupSector" useConfig="entiteDS">
+    <sql>
+    	SELECT sr.* FROM "secteurRegion" sr 
+    	JOIN secteur ON secteur.id = sr."sectorId"
+    	JOIN "secteurGroupe" sg ON sg."sectorId" = secteur.id 
+    	WHERE sg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
     <result outputType="json">{"data":{"sectorRegions":[{"sectorId":$sectorId,"regionId":$regionId}]}}</result>
   </query>
   <!-- #SECTOR -->
+
 
   <!-- #USER RIGHT AND SERVICE -->
   <resource method="GET" path="listSecteurs">
