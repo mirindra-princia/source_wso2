@@ -15,12 +15,12 @@
 	    <property name="password">devedbmdb</property>
    	</config>
    	<!-- CONFIGURATION DEV -->
-<!--    	<config id="dossierSomissionDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property> -->
-<!--     <property name="username">postgres</property> -->
-<!--     <property name="password">postgres</property> -->
-<!--   </config> -->
+<!--    	<config id="dossierSomissionDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
+  </config> -->
   <query id="addNumeroDossier" useConfig="dossierSomissionDS">
     <sql>INSERT INTO public.dossier(
 	 "numeroDossier","idIpAdress")
@@ -785,6 +785,7 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
           (sum("bails_de") over())::text as total_bails_de,
           (sum("bails_pr") over() )::text as total_bails_pr,
           (sum("bails_and") over())::text as total_bails_and,
+          (sum("bails_base") over())::text as total_bails_bases,
 
           (sum("df_de") over() )::text as total_df_de,
           (sum("df_pr") over() )::text as total_df_pr,
@@ -899,7 +900,8 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
       "total_ir": "$total_ir",
       "idDossier": "$idDossier",
       "date_paiement": "$date_paiement",
-      "fo_espece": "$fo_espece"
+      "fo_espece": "$fo_espece",
+      "total_bails_bases": "$total_bails_bases"
       }]}
       }
     </result>
