@@ -226,6 +226,63 @@
     <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
     <result outputType="json">{"data":{"sectorProvinces":[{"sectorId":$sectorId,"provinceId":$provinceId}]}}</result>
   </query>
+  
+  <resource method="GET" path="sectors/groups/{groupId}/regions/{regionId}">
+    <description />
+    <call-query href="sectorsByGroupRegion">
+      <with-param name="groupId" query-param="groupId" />
+      <with-param name="regionId" query-param="regionId" />
+    </call-query>
+  </resource>
+  <query id="sectorsByGroupRegion" useConfig="entiteDS">
+    <sql>
+    	SELECT secteur.* FROM secteur 
+    	JOIN public."secteurGroupe" sg ON sg."sectorId" = secteur.id
+    	JOIN public."secteurRegion" sr ON sr."sectorId" = secteur.id
+    	WHERE sr."regionId" = :regionId AND sg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="regionId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"sectors":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+  
+  <resource method="GET" path="sectors/groups/{groupId}/provinces/{provinceId}">
+    <description />
+    <call-query href="sectorsByGroupProvince">
+      <with-param name="groupId" query-param="groupId" />
+      <with-param name="provinceId" query-param="provinceId" />
+    </call-query>
+  </resource>
+  <query id="sectorsByGroupProvince" useConfig="entiteDS">
+    <sql>
+    	SELECT secteur.* FROM secteur 
+    	JOIN public."secteurGroupe" sg ON sg."sectorId" = secteur.id
+    	JOIN public."secteurProvince" sp ON sp."sectorId" = secteur.id
+    	WHERE sp."provinceId" = :provinceId AND sg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="provinceId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"sectors":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+  
+  <resource method="GET" path="sectors/groups/{groupId}/centers/{centerId}">
+    <description />
+    <call-query href="sectorsByGroupCenter">
+      <with-param name="groupId" query-param="groupId" />
+      <with-param name="centerId" query-param="centerId" />
+    </call-query>
+  </resource>
+  <query id="sectorsByGroupCenter" useConfig="entiteDS">
+    <sql>
+    	SELECT secteur.* FROM secteur 
+    	JOIN public."secteurGroupe" sg ON sg."sectorId" = secteur.id
+    	JOIN public."centreSecteur" cs ON cs."sectorId" = secteur.id
+    	WHERE cs."centerId" = :centerId AND sg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"sectors":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
   <!-- #SECTOR -->
 
 
