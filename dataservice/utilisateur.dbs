@@ -147,4 +147,29 @@
 	    }}
 	 </result>
   </query>
+  
+  <!-- ROLES -->
+  <resource method="POST" path="roles">
+    <description>fetch roles in list</description>
+    <call-query href="fetchRoles"> 
+    	<with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="fetchRoles" useConfig="utilisateurDS">
+    <sql>
+	    SELECT 
+	    	role.id as id, role.name as name 
+	    FROM keycloak_role role
+    	WHERE role.id IN (:ids)
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING"/>
+    <result outputType="json">{"data": {
+		    "roles": [{
+	   			"id":$id,
+	   			"name":"$name"
+		   	}]
+	    }}
+	 </result>
+  </query>
+  <!-- #ROLES -->
 </data>
