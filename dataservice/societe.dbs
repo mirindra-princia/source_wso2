@@ -16,12 +16,12 @@
   </config>
   <!-- CONFIGURATION DEV -->
 
-<!--  <config id="societeDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://localhost:5432/societe</property> -->
-<!--     <property name="username">postgres</property> -->
-<!--     <property name="password">postgres</property> -->
-<!--   </config> -->
+<!--  <config id="societeDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/societe</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
+  </config> -->
 
   <resource path="addSocietyForm" method="POST">
     <description>add society from online form</description>
@@ -570,6 +570,7 @@
       <with-param name="idDossier" query-param="idDossier" />
     </call-query>
   </resource>
+
   <query id="addSociety" useConfig="societeDS">
     <sql>INSERT INTO public.societe(
 	 "denominationSocial" , "activitePrincipal", "formeJuridique", "dateStatut", capital,  "activiteImportExport", "activiteIndustrielCollecteur",  "objetSocial", "activiteGrossiste", "autreActiviteReglemente", "choixImposition", "nombreAssociePersPhysique", "nombreAssociePersMorale", "nombreDirigeant", "idPersonne","idSiegeSocial","idFormeJuridique",tva)
@@ -1426,6 +1427,72 @@
       "montantBail": "$montantBail", "capital": "$capital", "dureebail": "$dureebail"
       }]}}</result>
   </query>
+
+  <query id="companyWithBailsByFolderIds" useConfig="societeDS">
+    <sql>
+      SELECT
+      r1."idSociete",
+      r1.capital::text,
+      r1."idDossier",
+      r1."formeJuridique",
+      r1."idFormeJuridique",
+      r1."nomCommercial",
+      r1."denominationSocial",
+      r1.nif,
+      sum(totalBailSiege) / count(*) as totalBailSiege,
+      sum(totalBailExploitation) as totalBailExploitation,
+      sum(totalBailSiege) / count(*) + sum(totalBailExploitation) as totalBailBase
+      FROM
+
+      (
+        SELECT s."idSociete",
+        s."denominationSocial",
+        s."idDossier",
+        "siegePrincipal",
+        (dureebail::double precision * "montantBail"::double precision) as totalBailSiege,
+        "idSiege",
+        dureebail,
+        "montantBail",
+        s.capital,
+        s."formeJuridique",
+        s."idFormeJuridique",
+        s."nomCommercial",
+        s."NIF" as nif
+        FROM "siegeSocial"
+        LEFT JOIN societe s on "siegeSocial"."idSiege" = s."idSiegeSocial"
+      ) as r1
+
+      LEFT JOIN
+
+      (
+        SELECT "siegePrincipal",
+        "idSiege",
+        (dureebail::double precision * "montantBail"::double precision) as totalBailExploitation,
+        dureebail,
+        "montantBail"
+        FROM "siegeSocial"
+        LEFT JOIN societe s on "siegeSocial"."idSiege" = s."idSiegeSocial"
+      ) as r2
+      on r1."idSiege" = r2."siegePrincipal"
+      WHERE r1."idDossier" =ANY(:idDossier::int[])
+      GROUP BY r1."idDossier", r1."idDossier", r1.capital, r1."formeJuridique", r1."idFormeJuridique",r1."nomCommercial",r1."nif", r1."idSociete", r1."denominationSocial"
+    </sql>
+    <param type="IN" name="idDossier" sqlType="STRING" paramType="ARRAY" optional="false"/>
+    <result outputType="json">{"data":{"societes":[{"denominationSocial":"$denominationSocial",
+      "idDossier":"$idDossier","idSociete":"$idSociete","formeJuridique":"$formeJuridique",
+      "nomCommercial": "$nomCommercial", "nif": "$nif",
+      "totalBailSiege": "$totalBailSiege", "capital": "$capital","totalBailExploitation": "$totalBailExploitation",
+      "totalBailBase": "$totalBailBase"
+      }]}}
+    </result>
+  </query>
+  <resource path="companyWithBailsByFolderIds/{idDossier}" method="GET">
+    <description>Fetch Facture by folders ids</description>
+    <call-query href="companyWithBailsByFolderIds">
+      <with-param name="idDossier" query-param="idDossier"/>
+    </call-query>
+  </resource>
+
   <query id="checkDenomination" useConfig="societeDS">
     <sql>select exists(select "idSociete" from societe where "denominationSocial"=:denominationSocial) as result</sql>
     <param type="IN" name="denominationSocial" sqlType="STRING" paramType="SCALAR" optional="false" />
