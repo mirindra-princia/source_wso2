@@ -59,7 +59,8 @@
     <sql>
     	SELECT centre.* FROM centre 
     	JOIN public."centreGroupe" cg ON cg."centerId" = centre.id
-    	WHERE centre."regionId" = :regionId AND cg."groupId" = :groupId
+    	JOIN public."centreRegion" cr ON cr."centerId" = centre.id
+    	WHERE cr."regionId" = :regionId AND cg."groupId" = :groupId
     </sql>
     <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
     <param type="IN" name="regionId" paramType="SCALAR" sqlType="INTEGER" />
@@ -78,6 +79,42 @@
     </sql>
     <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">{"center":{"id":$id,"name":"$name", "regionId": $regionId}}</result>
+  </query>
+  
+  <resource method="GET" path="centers/regions/groups/{groupId}">
+    <description />
+    <call-query href="regionsByGroupCenter">
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="regionsByGroupCenter" useConfig="entiteDS">
+    <sql>
+    	SELECT cr.* FROM "centreRegion" cr 
+    	JOIN centre ON centre.id = cr."centerId"
+    	JOIN "centreGroupe" cg ON cg."centerId" = centre.id 
+    	WHERE cg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"data":{"centerRegions":[{"centerId":$centerId,"regionId":$regionId}]}}</result>
+  </query>
+  
+  <resource method="GET" path="centers/{centerId}/regions/groups/{groupId}">
+    <description />
+    <call-query href="regionByGroupCenter">
+      <with-param name="centerId" query-param="centerId" />
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="regionByGroupCenter" useConfig="entiteDS">
+    <sql>
+    	SELECT cr.* FROM "centreRegion" cr 
+    	JOIN centre ON centre.id = cr."centerId"
+    	JOIN "centreGroupe" cg ON cg."centerId" = centre.id 
+    	WHERE cr."centerId" = :centerId AND cg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"centerRegions":{"centerId":$centerId,"regionId":$regionId}}</result>
   </query>
   <!-- #CENTER -->
   
@@ -133,6 +170,42 @@
     </sql>
     <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
     <result outputType="json">{"data":{"sectorRegions":[{"sectorId":$sectorId,"regionId":$regionId}]}}</result>
+  </query>
+  
+  <resource method="GET" path="sectors/{sectorId}/provinces/groups/{groupId}">
+    <description />
+    <call-query href="provinceByGroupSector">
+      <with-param name="sectorId" query-param="sectorId" />
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="provinceByGroupSector" useConfig="entiteDS">
+    <sql>
+    	SELECT sp.* FROM "secteurProvince" sp 
+    	JOIN secteur ON secteur.id = sp."sectorId"
+    	JOIN "secteurGroupe" sg ON sg."sectorId" = secteur.id 
+    	WHERE sp."sectorId" = :sectorId AND sg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"sectorProvinces":{"sectorId":$sectorId,"provinceId":$provinceId}}</result>
+  </query>
+  
+  <resource method="GET" path="sectors/provinces/groups/{groupId}">
+    <description />
+    <call-query href="provincesByGroupSector">
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="provincesByGroupSector" useConfig="entiteDS">
+    <sql>
+    	SELECT sp.* FROM "secteurProvince" sp 
+    	JOIN secteur ON secteur.id = sp."sectorId"
+    	JOIN "secteurGroupe" sg ON sg."sectorId" = secteur.id 
+    	WHERE sg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"data":{"sectorProvinces":[{"sectorId":$sectorId,"provinceId":$provinceId}]}}</result>
   </query>
   <!-- #SECTOR -->
 
