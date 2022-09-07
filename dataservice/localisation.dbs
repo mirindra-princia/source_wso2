@@ -424,4 +424,86 @@
     	"name": "$city_name"
     }}}</result>
   </query>
+  
+  <!-- REGION -->
+  <resource method="GET" path="regions/{id}">
+    <description />
+    <call-query href="region">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="region" useConfig="localisationDS">
+    <sql>SELECT * FROM region WHERE id = :id</sql>
+    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    {"region":{
+    	"id": $id,
+    	"name": "$name",
+    	"province_id": $province_id
+    }}
+    </result>
+    
+  </query>
+  
+  <resource method="POST" path="regions/filters/by/ids">
+    <description />
+    <call-query href="regionFilterByIds">
+      <with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="regionFilterByIds" useConfig="localisationDS">
+    <sql>SELECT * FROM region WHERE id IN (:ids)</sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+    <result outputType="json">
+    {"data":
+    	{"regions":[{
+	    	"id": $id,
+	    	"name": "$name",
+	    	"province_id": $province_id
+	    }]}
+    }
+    </result>
+    
+  </query>
+  <!-- #REGION -->
+  
+  <!-- PROVINCE -->
+  <resource method="GET" path="provinces/{id}">
+    <description />
+    <call-query href="province">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="province" useConfig="localisationDS">
+    <sql>SELECT * FROM province WHERE id = :id</sql>
+    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    {"region":{
+    	"id": $id,
+    	"name": "$name"
+    }}
+    </result>
+    
+  </query>
+  
+  <resource method="POST" path="provinces/filters/by/ids">
+    <description />
+    <call-query href="provinceFilterByIds">
+      <with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="provinceFilterByIds" useConfig="localisationDS">
+    <sql>SELECT * FROM province WHERE id IN (:ids)</sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+    <result outputType="json">
+    {"data":
+    	{"regions":[{
+	    	"id": $id,
+	    	"name": "$name"
+	    }]}
+    }
+    </result>
+    
+  </query>
+  <!-- #PROVINCE -->
 </data>
