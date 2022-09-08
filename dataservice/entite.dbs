@@ -15,20 +15,20 @@
 	    <property name="password">devedbmdb</property>
    	</config>
    	<!-- CONFIGURATION DEV -->
-  <!--<config id="entiteDS">
+<!--   <config id="entiteDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/entite</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config>-->
-  
-  <resource method="GET" path="listOfAuthorization">
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
+  </config>
+   -->
+  <resource method="GET" path="listofAuthorization">
     <description />
     <call-query href="listofAuthorization" />
   </resource>
   <query id="listofAuthorization" useConfig="entiteDS">
     <sql>Select * from droit</sql>
-    <result outputType="json">{"droits":{"droit":[{"id":$id,"name":"$name"}]}}</result>
+    <result outputType="json">{"data":{"droits":[{"id":$id,"name":"$name"}]}}</result>
   </query>
   
   <!-- CENTER -->
