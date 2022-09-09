@@ -15,13 +15,13 @@
 	    <property name="password">devedbmdb</property>
    	</config>
    	<!-- CONFIGURATION DEV -->
-<!--   <config id="entiteDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/entite</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config>
-   -->
+<!--   <config id="entiteDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/entite</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
+  
   <resource method="GET" path="listofAuthorization">
     <description />
     <call-query href="listofAuthorization" />
@@ -446,6 +446,56 @@
     <result outputType="json">{"data":{"groupRoles":[{"groupId":"$groupId","roleId":"$roleId"}]}}</result>
   </query>
   <!-- #ROLE -->
+  
+  <!-- USERS -->
+  <resource method="POST" path="users/regions">
+    <description />
+    <call-query href="saveUserRegion">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="targetId" query-param="targetId" />
+    </call-query>
+  </resource>
+  <query id="saveUserRegion" useConfig="entiteDS">
+    <sql>
+    	INSERT INTO "utilisateurRegion"("userId","targetId") VALUES(:userId,:targetId) RETURNING "userId","targetId"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="targetId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"userRegions":{"userId":"$userId","targetId":"$targetId"}}</result>
+  </query>
+  
+  <resource method="POST" path="users/centers">
+    <description />
+    <call-query href="saveUserCenter">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="centerId" query-param="centerId" />
+    </call-query>
+  </resource>
+  <query id="saveUserCenter" useConfig="entiteDS">
+    <sql>
+    	INSERT INTO "utilisateurCentre"("userId","centerId") VALUES(:userId,:centerId) RETURNING "userId","centerId"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"userCenters":{"userId":"$userId","centerId":"$centerId"}}</result>
+  </query>
+  
+  <resource method="POST" path="users/sectors">
+    <description />
+    <call-query href="saveUserSector">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="sectorId" query-param="sectorId" />
+    </call-query>
+  </resource>
+  <query id="saveUserSector" useConfig="entiteDS">
+    <sql>
+    	INSERT INTO "utilisateurSecteur"("userId","sectorId") VALUES(:userId,:sectorId) RETURNING "userId","sectorId"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"userSectors":{"userId":"$userId","sectorId":"$sectorId"}}</result>
+  </query>
+  <!-- #USERS -->
 
   <resource method="GET" path="checkUserRightService">
     <description />
