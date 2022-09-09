@@ -457,11 +457,27 @@
   </resource>
   <query id="saveUserRegion" useConfig="entiteDS">
     <sql>
-    	INSERT INTO "utilisateurRegion"("userId","targetId") VALUES(:userId,targetId) RETURNING "userId","targetId"
+    	INSERT INTO "utilisateurRegion"("userId","targetId") VALUES(:userId,:targetId) RETURNING "userId","targetId"
     </sql>
     <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
     <param type="IN" name="targetId" paramType="SCALAR" sqlType="INTEGER" />
-    <result outputType="json">{"data":{"groupRoles":[{"groupId":"$groupId","roleId":"$roleId"}]}}</result>
+    <result outputType="json">{"userRegions":{"userId":"$userId","targetId":"$targetId"}}</result>
+  </query>
+  
+  <resource method="POST" path="users/center">
+    <description />
+    <call-query href="saveUserCenter">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="centreId" query-param="centreId" />
+    </call-query>
+  </resource>
+  <query id="saveUserCenter" useConfig="entiteDS">
+    <sql>
+    	INSERT INTO "utilisateurCentre"("userId","centreId") VALUES(:userId,:centreId) RETURNING "userId","centreId"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="centreId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"userCenters":{"userId":"$userId","centreId":"$centreId"}}</result>
   </query>
   <!-- #USERS -->
 
