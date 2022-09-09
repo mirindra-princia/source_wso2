@@ -464,7 +464,7 @@
     <result outputType="json">{"userRegions":{"userId":"$userId","targetId":"$targetId"}}</result>
   </query>
   
-  <resource method="POST" path="users/center">
+  <resource method="POST" path="users/centers">
     <description />
     <call-query href="saveUserCenter">
       <with-param name="userId" query-param="userId" />
@@ -478,6 +478,22 @@
     <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
     <param type="IN" name="centreId" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">{"userCenters":{"userId":"$userId","centreId":"$centreId"}}</result>
+  </query>
+  
+  <resource method="POST" path="users/sectors">
+    <description />
+    <call-query href="saveUserSector">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="sectorId" query-param="sectorId" />
+    </call-query>
+  </resource>
+  <query id="saveUserSector" useConfig="entiteDS">
+    <sql>
+    	INSERT INTO "utilisateurCentre"("userId","sectorId") VALUES(:userId,:sectorId) RETURNING "userId","sectorId"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"userSectors":{"userId":"$userId","sectorId":"$sectorId"}}</result>
   </query>
   <!-- #USERS -->
 
