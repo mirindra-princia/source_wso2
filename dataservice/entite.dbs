@@ -8,19 +8,19 @@
 <!--     <property name="password">devedbmdb</property> -->
 <!--   </config>  -->
   <!-- CONFIGURATION TEST  -->
-<!--    <config id="entiteDS"> -->
-<!--     	<property name="driverClassName">org.postgresql.Driver</property> -->
-<!-- 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/entite</property> -->
-<!-- 	    <property name="username">devedbmdb</property> -->
-<!-- 	    <property name="password">devedbmdb</property> -->
-<!--    	</config> -->
+   <config id="entiteDS">
+    	<property name="driverClassName">org.postgresql.Driver</property>
+	    <property name="url">jdbc:postgresql://13.246.0.44:5432/entite</property>
+	    <property name="username">devedbmdb</property>
+	    <property name="password">devedbmdb</property>
+   	</config>
    	<!-- CONFIGURATION DEV -->
-  <config id="entiteDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/entite</property>
-    <property name="username">postgres</property>
-    <property name="password">postgres</property>
-  </config>
+<!--   <config id="entiteDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/entite</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
   
   <resource method="GET" path="listofAuthorization">
     <description />
@@ -468,16 +468,16 @@
     <description />
     <call-query href="saveUserCenter">
       <with-param name="userId" query-param="userId" />
-      <with-param name="centreId" query-param="centreId" />
+      <with-param name="centerId" query-param="centerId" />
     </call-query>
   </resource>
   <query id="saveUserCenter" useConfig="entiteDS">
     <sql>
-    	INSERT INTO "utilisateurCentre"("userId","centreId") VALUES(:userId,:centreId) RETURNING "userId","centreId"
+    	INSERT INTO "utilisateurCentre"("userId","centerId") VALUES(:userId,:centerId) RETURNING "userId","centerId"
     </sql>
     <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="centreId" paramType="SCALAR" sqlType="INTEGER" />
-    <result outputType="json">{"userCenters":{"userId":"$userId","centreId":"$centreId"}}</result>
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"userCenters":{"userId":"$userId","centerId":"$centerId"}}</result>
   </query>
   
   <resource method="POST" path="users/sectors">
@@ -489,7 +489,7 @@
   </resource>
   <query id="saveUserSector" useConfig="entiteDS">
     <sql>
-    	INSERT INTO "utilisateurCentre"("userId","sectorId") VALUES(:userId,:sectorId) RETURNING "userId","sectorId"
+    	INSERT INTO "utilisateurSecteur"("userId","sectorId") VALUES(:userId,:sectorId) RETURNING "userId","sectorId"
     </sql>
     <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
     <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
