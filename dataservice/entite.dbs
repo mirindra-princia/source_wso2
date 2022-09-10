@@ -306,6 +306,29 @@
     <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">{"data":{"sectors":[{"id":$id,"name":"$name"}]}}</result>
   </query>
+  
+  <resource method="POST" path="sectors/filter">
+    <description />
+    <call-query href="sectorsByIds">
+      <with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="sectorsByIds" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM secteur WHERE id IN (:ids)
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+    <result outputType="json">
+    {
+    	"data": {
+    		"sectors": [{
+    			"id": $id,
+    			"name": "$name"
+    		}]
+    	}
+    }
+    </result>
+  </query>
   <!-- #SECTOR -->
 
 
@@ -638,7 +661,7 @@
     <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
   </query>
   
-   <resource method="POST" path="users/centers/filter">
+  <resource method="POST" path="users/centers/filter">
     <description />
     <call-query href="userCentersByUserIds">
       <with-param name="userIds" query-param="userIds" />
@@ -655,6 +678,29 @@
     			"userCenters":[{
     				"userId":"$userId",
     				"centerId":"$centerId"
+    			}]
+    		}
+    	}
+    </result>
+  </query>
+  
+  <resource method="POST" path="users/sectors/filter">
+    <description />
+    <call-query href="userSectorsByUserIds">
+      <with-param name="userIds" query-param="userIds" />
+    </call-query>
+  </resource>
+  <query id="userSectorsByUserIds" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM "userSector" WHERE id IN (:userIds)
+    </sql>
+    <param type="IN" name="userIds" paramType="ARRAY" sqlType="STRING" />
+    <result outputType="json">
+    	{
+    		"data":{
+    			"userSectors":[{
+    				"userId":"$userId",
+    				"sectorId":"$sectorId"
     			}]
     		}
     	}
