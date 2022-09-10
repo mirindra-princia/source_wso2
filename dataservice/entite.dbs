@@ -476,7 +476,7 @@
     	UPDATE "utilisateurRegion" SET "targetId" = :targetId WHERE "userId" = :userId RETURNING "userId","targetId"
     </sql>
     <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="targetId" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="targetId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
     <result outputType="json">{"userRegions":{"userId":"$userId","targetId":"$targetId"}}</result>
   </query>
   
@@ -508,7 +508,7 @@
     	UPDATE "utilisateurCentre" SET "centerId" = :centerId WHERE "userId" = :userId RETURNING "userId","centerId"
     </sql>
     <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
     <result outputType="json">{"userCenters":{"userId":"$userId","centerId":"$centerId"}}</result>
   </query>
   
@@ -524,7 +524,7 @@
     	INSERT INTO "utilisateurSecteur"("userId","sectorId") VALUES(:userId,:sectorId) RETURNING "userId","sectorId"
     </sql>
     <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <result outputType="json">{"userSectors":{"userId":"$userId","sectorId":"$sectorId"}}</result>
   </query>
   
@@ -532,7 +532,7 @@
     <description />
     <call-query href="updateUserSector">
       <with-param name="userId" query-param="userId" />
-      <with-param name="sectorId" query-param="sectorId" />
+      <with-param name="sectorId" query-param="sectorId"/>
     </call-query>
   </resource>
   <query id="updateUserSector" useConfig="entiteDS">
@@ -540,7 +540,7 @@
     	UPDATE "utilisateurSecteur" SET "sectorId" = :sectorId WHERE "userId" = :userId RETURNING "userId","sectorId"
     </sql>
     <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
     <result outputType="json">{"userSectors":{"userId":"$userId","sectorId":"$sectorId"}}</result>
   </query>
   <!-- #USERS -->
