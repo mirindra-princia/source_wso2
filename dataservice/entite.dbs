@@ -8,19 +8,19 @@
 <!--     <property name="password">devedbmdb</property> -->
 <!--   </config>  -->
   <!-- CONFIGURATION TEST  -->
-   <config id="entiteDS">
-    	<property name="driverClassName">org.postgresql.Driver</property>
-	    <property name="url">jdbc:postgresql://13.246.0.44:5432/entite</property>
-	    <property name="username">devedbmdb</property>
-	    <property name="password">devedbmdb</property>
-   	</config>
+<!--    <config id="entiteDS"> -->
+<!--     	<property name="driverClassName">org.postgresql.Driver</property> -->
+<!-- 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/entite</property> -->
+<!-- 	    <property name="username">devedbmdb</property> -->
+<!-- 	    <property name="password">devedbmdb</property> -->
+<!--    	</config> -->
    	<!-- CONFIGURATION DEV -->
-<!--   <config id="entiteDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://localhost:5432/entite</property> -->
-<!--     <property name="username">postgres</property> -->
-<!--     <property name="password">postgres</property> -->
-<!--   </config> -->
+  <config id="entiteDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/entite</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config>
   
   <resource method="GET" path="listofAuthorization">
     <description />
@@ -458,6 +458,22 @@
   <query id="saveUserRegion" useConfig="entiteDS">
     <sql>
     	INSERT INTO "utilisateurRegion"("userId","targetId") VALUES(:userId,:targetId) RETURNING "userId","targetId"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="targetId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"userRegions":{"userId":"$userId","targetId":"$targetId"}}</result>
+  </query>
+  
+  <resource method="PUT" path="users/regions">
+    <description />
+    <call-query href="updateUserRegion">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="targetId" query-param="targetId" />
+    </call-query>
+  </resource>
+  <query id="updateUserRegion" useConfig="entiteDS">
+    <sql>
+    	UPDATE "utilisateurRegion" SET "targetId" = :targetId WHERE "userId" = :userId RETURNING "userId","targetId"
     </sql>
     <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
     <param type="IN" name="targetId" paramType="SCALAR" sqlType="INTEGER" />
