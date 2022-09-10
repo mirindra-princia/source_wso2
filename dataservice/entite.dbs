@@ -527,6 +527,22 @@
     <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">{"userSectors":{"userId":"$userId","sectorId":"$sectorId"}}</result>
   </query>
+  
+  <resource method="PUT" path="users/sectors">
+    <description />
+    <call-query href="updateUserSector">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="sectorId" query-param="sectorId" />
+    </call-query>
+  </resource>
+  <query id="updateUserSector" useConfig="entiteDS">
+    <sql>
+    	UPDATE "utilisateurSecteur" SET "sectorId" = :sectorId WHERE "userId" = :userId RETURNING "userId","sectorId"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"userSectors":{"userId":"$userId","sectorId":"$sectorId"}}</result>
+  </query>
   <!-- #USERS -->
 
   <resource method="GET" path="checkUserRightService">
