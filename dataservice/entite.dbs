@@ -135,6 +135,29 @@
     <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">{"centerRegions":{"centerId":$centerId,"regionId":$regionId}}</result>
   </query>
+  
+  <resource method="POST" path="centers/filter">
+    <description />
+    <call-query href="centersByIds">
+      <with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="centersByIds" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM centre WHERE id IN (:ids)
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+    <result outputType="json">
+    {
+    	"data": {
+    		"centers": [{
+    			"id": $id,
+    			"name": "$name"
+    		}]
+    	}
+    }
+    </result>
+  </query>
   <!-- #CENTER -->
   
   
@@ -613,6 +636,29 @@
     </sql>
     <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
     <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+  </query>
+  
+   <resource method="POST" path="users/centers/filter">
+    <description />
+    <call-query href="userCentersByUserIds">
+      <with-param name="userIds" query-param="userIds" />
+    </call-query>
+  </resource>
+  <query id="userCentersByUserIds" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM "userCenter" WHERE id IN (:userIds)
+    </sql>
+    <param type="IN" name="userIds" paramType="ARRAY" sqlType="STRING" />
+    <result outputType="json">
+    	{
+    		"data":{
+    			"userCenters":[{
+    				"userId":"$userId",
+    				"centerId":"$centerId"
+    			}]
+    		}
+    	}
+    </result>
   </query>
   <!-- #USERS -->
 

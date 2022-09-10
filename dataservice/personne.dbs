@@ -949,7 +949,7 @@
     <param type="IN" name="firstName" optional="true" sqlType="STRING" paramType="SCALAR" />
   </query>
   
-  <resource method="GET" path="users">
+  <resource method="GET" path="users/{limit}/{offset}">
     <description />
     <call-query href="fetchUsers">
       <with-param name="limit" query-param="limit" />
