@@ -464,6 +464,37 @@
     <result outputType="json">{"userRegions":{"userId":"$userId","targetId":"$targetId"}}</result>
   </query>
   
+  <resource method="PUT" path="users/regions">
+    <description />
+    <call-query href="updateUserRegion">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="targetId" query-param="targetId" />
+    </call-query>
+  </resource>
+  <query id="updateUserRegion" useConfig="entiteDS">
+    <sql>
+    	UPDATE "utilisateurRegion" SET "targetId" = :targetId WHERE "userId" = :userId RETURNING "userId","targetId"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="targetId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+    <result outputType="json">{"userRegions":{"userId":"$userId","targetId":"$targetId"}}</result>
+  </query>
+  
+  <resource method="DELETE" path="users/regions">
+    <description />
+    <call-query href="deleteUserRegion">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="targetId" query-param="targetId" />
+    </call-query>
+  </resource>
+  <query id="deleteUserRegion" useConfig="entiteDS">
+    <sql>
+    	DELETE FROM "utilisateurRegion" WHERE "userId" = :userId
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="targetId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+  </query>
+  
   <resource method="POST" path="users/centers">
     <description />
     <call-query href="saveUserCenter">
@@ -480,6 +511,37 @@
     <result outputType="json">{"userCenters":{"userId":"$userId","centerId":"$centerId"}}</result>
   </query>
   
+  <resource method="PUT" path="users/centers">
+    <description />
+    <call-query href="updateUserCenter">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="centerId" query-param="centerId" />
+    </call-query>
+  </resource>
+  <query id="updateUserCenter" useConfig="entiteDS">
+    <sql>
+    	UPDATE "utilisateurCentre" SET "centerId" = :centerId WHERE "userId" = :userId RETURNING "userId","centerId"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+    <result outputType="json">{"userCenters":{"userId":"$userId","centerId":"$centerId"}}</result>
+  </query>
+  
+  <resource method="DELETE" path="users/centers">
+    <description />
+    <call-query href="deleteUserCenter">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="centerId" query-param="centerId" />
+    </call-query>
+  </resource>
+  <query id="deleteUserCenter" useConfig="entiteDS">
+    <sql>
+    	DELETE FROM "utilisateurCentre" WHERE "userId" = :userId
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+  </query>
+  
   <resource method="POST" path="users/sectors">
     <description />
     <call-query href="saveUserSector">
@@ -492,8 +554,39 @@
     	INSERT INTO "utilisateurSecteur"("userId","sectorId") VALUES(:userId,:sectorId) RETURNING "userId","sectorId"
     </sql>
     <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
-    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" optional="true" />
     <result outputType="json">{"userSectors":{"userId":"$userId","sectorId":"$sectorId"}}</result>
+  </query>
+  
+  <resource method="PUT" path="users/sectors">
+    <description />
+    <call-query href="updateUserSector">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="sectorId" query-param="sectorId"/>
+    </call-query>
+  </resource>
+  <query id="updateUserSector" useConfig="entiteDS">
+    <sql>
+    	UPDATE "utilisateurSecteur" SET "sectorId" = :sectorId WHERE "userId" = :userId RETURNING "userId","sectorId"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+    <result outputType="json">{"userSectors":{"userId":"$userId","sectorId":"$sectorId"}}</result>
+  </query>
+  
+  <resource method="DELETE" path="users/sectors">
+    <description />
+    <call-query href="deleteUserSector">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="sectorId" query-param="sectorId"/>
+    </call-query>
+  </resource>
+  <query id="deleteUserSector" useConfig="entiteDS">
+    <sql>
+    	DELETE FROM "utilisateurSecteur" WHERE "userId" = :userId
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
   </query>
   <!-- #USERS -->
 

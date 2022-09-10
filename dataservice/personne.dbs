@@ -927,5 +927,26 @@
     <param type="IN" name="firstName" optional="true" sqlType="STRING" paramType="SCALAR" />
     <result outputType="json">{"personnes":{"id": "$idUtilisateur"}}</result>
   </query>
+  
+  <resource method="PUT" path="users">
+    <description />
+    <call-query href="updateUser">
+      <with-param name="id" query-param="id" />
+      <with-param name="email" query-param="email" />
+      <with-param name="matricule" query-param="matricule" />
+      <with-param name="lastName" query-param="lastName" />
+      <with-param name="firstName" query-param="firstName" />
+    </call-query>
+  </resource>
+  <query id="updateUser" useConfig="personneDS">
+    <sql>
+    	UPDATE personne SET e_mail = :email, matricule = :matricule, nom = :lastName, prenom = :firstName WHERE "idUtilisateur" = :id
+    </sql>
+    <param type="IN" name="id" optional="false" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="email" optional="false" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="matricule" optional="false" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="lastName" optional="false" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="firstName" optional="true" sqlType="STRING" paramType="SCALAR" />
+  </query>
   <!-- #USER MANAGEMENT -->
 </data>
