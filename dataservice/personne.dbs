@@ -8,18 +8,18 @@
  	  <property name="password">devedbmdb</property> 
   </config> -->
   <!-- CONFIGURATION TEST  -->
-  <config id="personneDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://13.246.0.44:5432/personne</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config>
-<!--  <config id="personneDS"> -->
+<!--   <config id="personneDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://localhost:5432/personne</property> -->
-<!--     <property name="username">postgres</property> -->
-<!--     <property name="password">postgres</property> -->
+<!--     <property name="url">jdbc:postgresql://13.246.0.44:5432/personne</property> -->
+<!--     <property name="username">devedbmdb</property> -->
+<!--     <property name="password">devedbmdb</property> -->
 <!--   </config> -->
+ <config id="personneDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/personne</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config>
   <resource method="POST" path="addPersonCompany">
     <description />
     <call-query href="addPersonCompany">
@@ -919,6 +919,28 @@
     <sql>
     	INSERT INTO personne("idUtilisateur",e_mail, matricule, nom, prenom) 
     	VALUES(:id, :email, :matricule, :lastName, :firstName) RETURNING "idUtilisateur"
+    </sql>
+    <param type="IN" name="id" optional="false" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="email" optional="false" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="matricule" optional="false" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="lastName" optional="false" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="firstName" optional="true" sqlType="STRING" paramType="SCALAR" />
+    <result outputType="json">{"personnes":{"id": "$idUtilisateur"}}</result>
+  </query>
+  
+  <resource method="PUT" path="users">
+    <description />
+    <call-query href="updateUser">
+      <with-param name="id" query-param="id" />
+      <with-param name="email" query-param="email" />
+      <with-param name="matricule" query-param="matricule" />
+      <with-param name="lastName" query-param="lastName" />
+      <with-param name="firstName" query-param="firstName" />
+    </call-query>
+  </resource>
+  <query id="updateUser" useConfig="personneDS">
+    <sql>
+    	UPDATE personne SET e_mail = :email, matricule = :matricule, nom = :lastName, prenom = :firstName WHERE "idUtilisateur" = :id RETURNING "idUtilisateur"
     </sql>
     <param type="IN" name="id" optional="false" sqlType="STRING" paramType="SCALAR" />
     <param type="IN" name="email" optional="false" sqlType="STRING" paramType="SCALAR" />
