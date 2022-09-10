@@ -496,6 +496,22 @@
     <result outputType="json">{"userCenters":{"userId":"$userId","centerId":"$centerId"}}</result>
   </query>
   
+  <resource method="PUT" path="users/centers">
+    <description />
+    <call-query href="updateUserCenter">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="centerId" query-param="centerId" />
+    </call-query>
+  </resource>
+  <query id="updateUserCenter" useConfig="entiteDS">
+    <sql>
+    	UPDATE "utilisateurCentre" SET "centerId" = :centerId WHERE "userId" = :userId RETURNING "userId","centerId"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"userCenters":{"userId":"$userId","centerId":"$centerId"}}</result>
+  </query>
+  
   <resource method="POST" path="users/sectors">
     <description />
     <call-query href="saveUserSector">
