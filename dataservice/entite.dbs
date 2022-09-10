@@ -535,6 +535,7 @@
     <call-query href="deleteUserRegion">
       <with-param name="userId" query-param="userId" />
       <with-param name="targetId" query-param="targetId" />
+      <with-param name="isProvince" query-param="isProvince" />
     </call-query>
   </resource>
   <query id="deleteUserRegion" useConfig="entiteDS">
@@ -543,6 +544,7 @@
     </sql>
     <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
     <param type="IN" name="targetId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+    <param type="IN" name="isProvince" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
   </query>
   
   <resource method="POST" path="users/regions/filter">
