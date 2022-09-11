@@ -671,7 +671,7 @@
   </resource>
   <query id="userCentersByUserIds" useConfig="entiteDS">
     <sql>
-    	SELECT * FROM "userCenter" WHERE id IN (:userIds)
+    	SELECT * FROM "utilisateurCentre" WHERE "userId" IN (:userIds)
     </sql>
     <param type="IN" name="userIds" paramType="ARRAY" sqlType="STRING" />
     <result outputType="json">
@@ -694,7 +694,7 @@
   </resource>
   <query id="userSectorsByUserIds" useConfig="entiteDS">
     <sql>
-    	SELECT * FROM "userSector" WHERE id IN (:userIds)
+    	SELECT * FROM "utilisateurSecteur" WHERE "userId" IN (:userIds)
     </sql>
     <param type="IN" name="userIds" paramType="ARRAY" sqlType="STRING" />
     <result outputType="json">
