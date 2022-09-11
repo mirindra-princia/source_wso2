@@ -964,7 +964,7 @@
     <param type="IN" name="offset" optional="true" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">
     	{"data":{
-    		"roles":[
+    		"personals":[
 	    		{
 		    		"id":"$idUtilisateur",
 		    		"email":"$e_mail", 
@@ -974,6 +974,30 @@
 		    	}
 	    	]
 	    }}
+    </result>
+  </query>
+  
+  <resource method="GET" path="users/{id}">
+    <description />
+    <call-query href="getUser">
+      <with-param name="uid" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="getUser" useConfig="personneDS">
+    <sql>
+    	SELECT * FROM personne WHERE "idUtilisateur" = :uid
+    </sql>
+    <param type="IN" name="uid" optional="false" sqlType="STRING" paramType="SCALAR" />
+    <result outputType="json">
+    	{
+    		"personals": {
+		    		"id":"$idUtilisateur",
+		    		"email":"$e_mail", 
+		    		"matricule":"$matricule",
+		    		"firstName":"$prenom",
+		    		"lastName": "$nom"
+		    }
+	    }
     </result>
   </query>
   <!-- #USER MANAGEMENT -->
