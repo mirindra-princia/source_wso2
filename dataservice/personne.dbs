@@ -948,5 +948,33 @@
     <param type="IN" name="lastName" optional="false" sqlType="STRING" paramType="SCALAR" />
     <param type="IN" name="firstName" optional="true" sqlType="STRING" paramType="SCALAR" />
   </query>
+  
+  <resource method="GET" path="users/{limit}/{offset}">
+    <description />
+    <call-query href="fetchUsers">
+      <with-param name="limit" query-param="limit" />
+      <with-param name="offset" query-param="offset" />
+    </call-query>
+  </resource>
+  <query id="fetchUsers" useConfig="personneDS">
+    <sql>
+    	SELECT * FROM personne WHERE matricule IS NOT NULL LIMIT :limit OFFSET :offset
+    </sql>
+    <param type="IN" name="limit" optional="false" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="offset" optional="true" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">
+    	{"data":{
+    		"roles":[
+	    		{
+		    		"id":"$idUtilisateur",
+		    		"email":"$e_mail", 
+		    		"matricule":"$matricule",
+		    		"firstName":"$prenom",
+		    		"lastName": "$nom"
+		    	}
+	    	]
+	    }}
+    </result>
+  </query>
   <!-- #USER MANAGEMENT -->
 </data>
