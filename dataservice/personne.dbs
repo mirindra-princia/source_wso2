@@ -1202,6 +1202,20 @@
 	    }}
     </result>
   </query>
+  <resource method="GET" path="users/count">
+    <description />
+    <call-query href="countUsers" />
+  </resource>
+  <query id="countUsers" useConfig="personneDS">
+    <sql>
+    	SELECT count("idPersonne") AS count FROM personne WHERE matricule IS NOT NULL
+    </sql>
+    <result outputType="json">
+	    	{"counter": {
+	    		"count": $count
+	    	}}
+	    </result>
+  </query>
   
   <resource method="GET" path="users/{id}">
     <description />
