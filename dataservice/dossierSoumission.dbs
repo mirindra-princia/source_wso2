@@ -15,12 +15,12 @@
 	    <property name="password">devedbmdb</property>
    	</config>
    	<!-- CONFIGURATION DEV -->
-<!--    	<config id="dossierSomissionDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config> -->
+<!--    	<config id="dossierSomissionDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
   <query id="addNumeroDossier" useConfig="dossierSomissionDS">
     <sql>INSERT INTO public.dossier(
 	 "numeroDossier","idIpAdress")
@@ -1430,42 +1430,24 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
 		    }
 	    }
     </result>
-
-      <resource method="POST" path="initEtatDossier">
-          <description />
-          <call-query href="initEtatDossier">
-              <with-param name="idDossier" query-param="idDossier" />
-              <with-param name="etat" query-param="etat" />
-          </call-query>
-      </resource>
-      <query id="initEtatDossier" useConfig="dossierSomissionDS">
-          <sql>
-              INSERT INTO public."dossier_etat"(
-              "idDossier", "etat")
-              VALUES (:idDossier, :etat);
-          </sql>
-          <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
-          <param type="IN" name="etat" paramType="SCALAR" sqlType="STRING" />
-      </query>
-
-      <resource path="updateEtatDossier" method="PUT">
-          <description />
-          <call-query href="updateEtatDossier">
-              <with-param name="person_uuid" query-param="person_uuid" />
-              <with-param name="etat" query-param="etat" />
-              <with-param name="id" query-param="id" />
-          </call-query>
-      </resource>
-
-      <query id="updateEtatDossier" useConfig="dossierSomissionDS">
-          <sql>
-              UPDATE public."dossier_etat"
-              SET "person_uuid" = :person_uuid, "createdAt" = CURRENT_TIMESTAMP, "etat" = :etat
-              WHERE "id" = :id
-          </sql>
-          <param type="IN" name="person_uuid" paramType="SCALAR" sqlType="STRING" />
-          <param type="IN" name="etat" paramType="SCALAR" sqlType="STRING" />
-          <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
-      </query>
   </query>
+  
+  <!-- RCS REQUESTS -->
+  <resource method="GET" path="rcs/extraits">
+    <description>fetch rcs extraits</description>
+    <call-query href="rcsExtraits"/>
+  </resource>
+  <query id="rcsExtraits" useConfig="dossierSomissionDS">
+    <sql>SELECT * FROM extrait</sql>
+    <result outputType="json">
+	    {"data":
+		    {"extraits":[{
+		    	"id":$id,
+		    	"name": "$name"
+		    	}]
+		    }
+	    }
+    </result>
+  </query>
+  <!-- #RCS REQUESTS -->
 </data>

@@ -158,6 +158,34 @@
     }
     </result>
   </query>
+  
+  <resource method="GET" path="centers/groups/{groupId}/districts/{districtId}">
+    <description />
+    <call-query href="centerByDistrictId">
+      <with-param name="groupId" query-param="groupId" />
+      <with-param name="districtId" query-param="districtId" />
+    </call-query>
+  </resource>
+  <query id="centerByDistrictId" useConfig="entiteDS">
+    <sql>
+    	SELECT centre.* FROM centre
+    	JOIN "centreSecteur" cs ON cs."centerId" = centre.id
+    	JOIN secteur ON secteur.id = cs."sectorId"
+    	JOIN "secteurGroupe" sg ON sg."sectorId" = secteur.id
+    	JOIN "secteurDistrict" sd ON sd."sectorId" = secteur.id
+    	WHERE sg."groupId" = :groupId AND sd."districtId" = :districtId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="districtId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    {
+   		"center": {
+   			"id": $id,
+   			"name": "$name"
+   		}
+    }
+    </result>
+  </query>
   <!-- #CENTER -->
   
   
@@ -725,4 +753,29 @@
     <param type="IN" name="idDroit" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">{"data":{"idUtilisateur":"$idUtilisateur","idService":"$idService", "idDroit": "$idDroit"}}</result>
   </query>
+  
+  <!-- USER-CENTER -->
+  <resource method="POST" path="usersCenters/list">
+    <description />
+    <call-query href="fetchUserCentersInList">
+      <with-param name="uids" query-param="uids" />
+      <with-param name="centerId" query-param="centerId" />
+    </call-query>
+  </resource>
+  <query id="fetchUserCentersInList" useConfig="entiteDS">
+    <sql>SELECT * FROM "utilisateurCentre" WHERE "centerId" = :centerId AND "userId" IN (:uids)</sql>
+    <param type="IN" name="uids" paramType="ARRAY" sqlType="STRING" />
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+		{
+			"data": {
+				"userCenters": [{
+					"centerId": $centerId,
+					"userId": "$userId"
+				}]
+			}
+		}
+	</result>
+  </query>
+  <!-- #USER-CENTER -->
 </data>

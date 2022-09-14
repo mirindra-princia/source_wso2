@@ -375,6 +375,227 @@
       <with-param name="idFromOrinasa " query-param="idFromOrinasa " />
     </call-query>
   </resource>
+  <resource path="delete/address" method="DELETE">
+		<description />
+		<call-query href="deleteAddress">
+			<with-param name="idAdresse" query-param="id" />
+		</call-query>
+	</resource>
+	<query id="deleteAddress" useConfig="personneDS">
+		<sql>
+			DELETE FROM adresse WHERE "idAdresse" = :idAdresse
+		</sql>
+		<param type="IN" name="idAdresse" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+	</query>
+	<resource path="delete/company" method="DELETE">
+		<description />
+		<call-query href="deleteCompany">
+			<with-param name="idPersonneSociete" query-param="id" />
+		</call-query>
+	</resource>
+	<query id="deleteCompany" useConfig="personneDS">
+		<sql>
+			DELETE FROM "personneSociete" WHERE "idPersonneSociete" = :idPersonneSociete
+		</sql>
+		<param type="IN" name="idPersonneSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+	</query>
+	<resource path="company" method="GET">
+		<description />
+		<call-query href="personCompany">
+			<with-param name="id" query-param="id" />
+		</call-query>
+	</resource>
+	<query id="personCompany" useConfig="personneDS">
+		<sql>
+			SELECT * FROM public."personneSociete" societe LEFT JOIN public.adresse
+			adresse ON adresse."idAdresse" = societe."idAdresseSociete" WHERE
+			societe."idPersonneSociete"=:id
+		</sql>
+		<param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+		<result outputType="json">
+			{"data":{
+			"id": "$idPersonneSociete",
+			"name": "$nomSociete",
+			"addressId": "$idAdresseSociete",
+			"phone": "$telSociete",
+			"capital": $capital,
+			"deviseId": $idDevise,
+			"rcs": "$rcs",
+			"address": {
+			"idAdresse":"$idAdresse",
+			"idFokontany":"$idFokontany",
+			"idCommune":"$idCommune",
+			"idRegion":"$idRegion",
+			"idDistrict":"$idDistrict",
+			"idArrondissement":"$idArrondissement",
+			"adresse":"$adresse",
+			"idProvince":"$idProvince",
+			"codePays":"$codePays"
+			}
+			}}
+		</result>
+	</query>
+	
+	<resource path="getAddressByPersonId/{personId}" method="GET">
+		<description />
+		<call-query href="getAddressByPersonId">
+			<with-param name="idPersonne" query-param="personId" />
+		</call-query>
+	</resource>
+	<query id="getAddressByPersonId" useConfig="personneDS">
+		<sql>
+			SELECT adresse.*
+			FROM public.adresse
+			JOIN public.personne ON personne.idadresse = adresse."idAdresse"
+			WHERE personne."idPersonne"=:idPersonne
+		</sql>
+		<param type="IN" name="idPersonne" paramType="SCALAR"
+			sqlType="INTEGER" optional="false" />
+		<result outputType="json">{"data":{
+			"idAdresse":"$idAdresse",
+			"idFokontany":"$idFokontany",
+			"idCommune":"$idCommune",
+			"idRegion":"$idRegion",
+			"idDistrict":"$idDistrict",
+			"idArrondissement":"$idArrondissement",
+			"adresse":"$adresse",
+			"idProvince":"$idProvince",
+			"codePays":"$codePays",
+			"idVille":"$idVille",
+			"longitude": $longitude,
+			"latitude": $latitude
+			}}
+		</result>
+	</query>
+	
+	<resource path="getAddressById/{addressId}" method="GET">
+		<description />
+		<call-query href="getAddressById">
+			<with-param name="idAdresse" query-param="addressId" />
+		</call-query>
+	</resource>
+	<query id="getAddressById" useConfig="personneDS">
+		<sql>
+			SELECT * FROM public.adresse WHERE "idAdresse"=:idAdresse
+		</sql>
+		<param type="IN" name="idAdresse" paramType="SCALAR"
+			sqlType="INTEGER" optional="false" />
+		<result outputType="json">{"data":{
+			"idAdresse":"$idAdresse",
+			"idFokontany":"$idFokontany",
+			"idCommune":"$idCommune",
+			"idRegion":"$idRegion",
+			"idDistrict":"$idDistrict",
+			"idArrondissement":"$idArrondissement",
+			"adresse":"$adresse",
+			"idProvince":"$idProvince",
+			"codePays":"$codePays",
+			"idVille":"$idVille",
+			"longitude": $longitude,
+			"latitude": $latitude
+			}}
+		</result>
+	</query>
+	
+	<resource path="setPersonAddress" method="PUT">
+		<description />
+		<call-query href="setPersonAddress">
+			<with-param name="idPersonne" query-param="idPersonne" />
+			<with-param name="idadresse" query-param="idadresse" />
+		</call-query>
+	</resource>
+	<query id="setPersonAddress" useConfig="personneDS">
+		<sql>
+			UPDATE personne
+			SET idadresse = :idadresse
+			WHERE personne."idPersonne"=:idPersonne
+			RETURNING "idPersonne"
+		</sql>
+		<param type="IN" name="idPersonne" paramType="SCALAR"
+			sqlType="INTEGER" optional="false" />
+		<param type="IN" name="idadresse" paramType="SCALAR"
+			sqlType="INTEGER" optional="false" />
+		<result outputType="json">{"data":{
+			"idPersonne": $idPersonne
+			}}
+		</result>
+	</query>
+
+	<resource path="setPersonIdentity" method="PUT">
+		<description />
+		<call-query href="setPersonIdentity">
+			<with-param name="idPersonne" query-param="idPersonne" />
+			<with-param name="idPieceIdentite"
+				query-param="idPieceIdentite" />
+		</call-query>
+	</resource>
+	<query id="setPersonIdentity" useConfig="personneDS">
+		<sql>
+			UPDATE personne
+			SET "idPieceIdentite" = :idPieceIdentite
+			WHERE personne."idPersonne"=:idPersonne
+			RETURNING "idPersonne"
+		</sql>
+		<param type="IN" name="idPersonne" paramType="SCALAR"
+			sqlType="INTEGER" optional="false" />
+		<param type="IN" name="idPieceIdentite" paramType="SCALAR"
+			sqlType="INTEGER" optional="false" />
+		<result outputType="json">{"data":{
+			"idPersonne": $idPersonne
+			}}
+		</result>
+	</query>
+
+	<resource path="setPersonCompany" method="PUT">
+		<description />
+		<call-query href="setPersonCompany">
+			<with-param name="idPersonne" query-param="idPersonne" />
+			<with-param name="idPersonneSociete"
+				query-param="idPersonneSociete" />
+		</call-query>
+	</resource>
+	<query id="setPersonCompany" useConfig="personneDS">
+		<sql>
+			UPDATE personne
+			SET "idPersonneSociete" = :idPersonneSociete
+			WHERE personne."idPersonne"=:idPersonne
+			RETURNING "idPersonne"
+		</sql>
+		<param type="IN" name="idPersonne" paramType="SCALAR"
+			sqlType="INTEGER" optional="false" />
+		<param type="IN" name="idPersonneSociete" paramType="SCALAR"
+			sqlType="INTEGER" optional="false" />
+		<result outputType="json">{"data":{
+			"idPersonne": $idPersonne
+			}}
+		</result>
+	</query>
+
+	<resource path="setPersonPartner" method="PUT">
+		<description />
+		<call-query href="setPersonPartner">
+			<with-param name="idPersonne" query-param="idPersonne" />
+			<with-param name="idConjoint" query-param="idConjoint" />
+		</call-query>
+	</resource>
+	<query id="setPersonPartner" useConfig="personneDS">
+		<sql>
+			UPDATE personne
+			SET "idConjoint" = :idConjoint
+			WHERE personne."idPersonne"=:idPersonne
+			RETURNING "idPersonne"
+		</sql>
+		<param type="IN" name="idPersonne" paramType="SCALAR"
+			sqlType="INTEGER" optional="false" />
+		<param type="IN" name="idConjoint" paramType="SCALAR"
+			sqlType="INTEGER" optional="false" />
+		<result outputType="json">{"data":{
+			"idPersonne": $idPersonne
+			}}
+		</result>
+	</query>
+	<!-- #REFACTORING URIES -->
+	
   <query id="addPerson" useConfig="personneDS">
     <sql>INSERT INTO public.personne(nom,prenom,"nomPere", "nomMere", "dateNaissance", "lieuNaissance", "situationMatrimonial", 
 	    "idPieceIdentite", sexe, societe_mandataire, idadresse, idrole, tel,e_mail,"idUtilisateur", engagement, civilite, 
@@ -913,6 +1134,7 @@
       <with-param name="matricule" query-param="matricule" />
       <with-param name="lastName" query-param="lastName" />
       <with-param name="firstName" query-param="firstName" />
+      <with-param name="createdAt" query-param="createdAt" />
     </call-query>
   </resource>
   <query id="saveUser" useConfig="personneDS">
@@ -925,6 +1147,7 @@
     <param type="IN" name="matricule" optional="false" sqlType="STRING" paramType="SCALAR" />
     <param type="IN" name="lastName" optional="false" sqlType="STRING" paramType="SCALAR" />
     <param type="IN" name="firstName" optional="true" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="createdAt" optional="true" sqlType="STRING" paramType="SCALAR" />
     <result outputType="json">{"personnes":{"id": "$idUtilisateur"}}</result>
   </query>
   
@@ -936,6 +1159,7 @@
       <with-param name="matricule" query-param="matricule" />
       <with-param name="lastName" query-param="lastName" />
       <with-param name="firstName" query-param="firstName" />
+      <with-param name="createdAt" query-param="createdAt" />
     </call-query>
   </resource>
   <query id="updateUser" useConfig="personneDS">
@@ -947,6 +1171,7 @@
     <param type="IN" name="matricule" optional="false" sqlType="STRING" paramType="SCALAR" />
     <param type="IN" name="lastName" optional="false" sqlType="STRING" paramType="SCALAR" />
     <param type="IN" name="firstName" optional="true" sqlType="STRING" paramType="SCALAR" />
+    <param type="IN" name="createdAt" optional="true" sqlType="STRING" paramType="SCALAR" />
   </query>
   
   <resource method="GET" path="users/{limit}/{offset}">
@@ -970,7 +1195,8 @@
 		    		"email":"$e_mail", 
 		    		"matricule":"$matricule",
 		    		"firstName":"$prenom",
-		    		"lastName": "$nom"
+		    		"lastName": "$nom",
+		    		"createdAt": "$createdAt"
 		    	}
 	    	]
 	    }}
@@ -995,7 +1221,8 @@
 		    		"email":"$e_mail", 
 		    		"matricule":"$matricule",
 		    		"firstName":"$prenom",
-		    		"lastName": "$nom"
+		    		"lastName": "$nom",
+		    		"createdAt": "$createdAt"
 		    }
 	    }
     </result>
