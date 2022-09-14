@@ -435,6 +435,69 @@
 			}}
 		</result>
 	</query>
+	
+	<resource path="getAddressByPersonId/{personId}" method="GET">
+		<description />
+		<call-query href="getAddressByPersonId">
+			<with-param name="idPersonne" query-param="personId" />
+		</call-query>
+	</resource>
+	<query id="getAddressByPersonId" useConfig="personneDS">
+		<sql>
+			SELECT adresse.*
+			FROM public.adresse
+			JOIN public.personne ON personne.idadresse = adresse."idAdresse"
+			WHERE personne."idPersonne"=:idPersonne
+		</sql>
+		<param type="IN" name="idPersonne" paramType="SCALAR"
+			sqlType="INTEGER" optional="false" />
+		<result outputType="json">{"data":{
+			"idAdresse":"$idAdresse",
+			"idFokontany":"$idFokontany",
+			"idCommune":"$idCommune",
+			"idRegion":"$idRegion",
+			"idDistrict":"$idDistrict",
+			"idArrondissement":"$idArrondissement",
+			"adresse":"$adresse",
+			"idProvince":"$idProvince",
+			"codePays":"$codePays",
+			"idVille":"$idVille",
+			"longitude": $longitude,
+			"latitude": $latitude
+			}}
+		</result>
+	</query>
+	
+	<resource path="getAddressById/{addressId}" method="GET">
+		<description />
+		<call-query href="getAddressById">
+			<with-param name="idAdresse" query-param="addressId" />
+		</call-query>
+	</resource>
+	<query id="getAddressById" useConfig="personneDS">
+		<sql>
+			SELECT * FROM public.adresse WHERE "idAdresse"=:idAdresse
+		</sql>
+		<param type="IN" name="idAdresse" paramType="SCALAR"
+			sqlType="INTEGER" optional="false" />
+		<result outputType="json">{"data":{
+			"idAdresse":"$idAdresse",
+			"idFokontany":"$idFokontany",
+			"idCommune":"$idCommune",
+			"idRegion":"$idRegion",
+			"idDistrict":"$idDistrict",
+			"idArrondissement":"$idArrondissement",
+			"adresse":"$adresse",
+			"idProvince":"$idProvince",
+			"codePays":"$codePays",
+			"idVille":"$idVille",
+			"longitude": $longitude,
+			"latitude": $latitude
+			}}
+		</result>
+	</query>
+	<!-- #REFACTORING URIES -->
+	
   <query id="addPerson" useConfig="personneDS">
     <sql>INSERT INTO public.personne(nom,prenom,"nomPere", "nomMere", "dateNaissance", "lieuNaissance", "situationMatrimonial", 
 	    "idPieceIdentite", sexe, societe_mandataire, idadresse, idrole, tel,e_mail,"idUtilisateur", engagement, civilite, 
