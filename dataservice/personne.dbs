@@ -375,6 +375,66 @@
       <with-param name="idFromOrinasa " query-param="idFromOrinasa " />
     </call-query>
   </resource>
+  <resource path="delete/address" method="DELETE">
+		<description />
+		<call-query href="deleteAddress">
+			<with-param name="idAdresse" query-param="id" />
+		</call-query>
+	</resource>
+	<query id="deleteAddress" useConfig="personneDS">
+		<sql>
+			DELETE FROM adresse WHERE "idAdresse" = :idAdresse
+		</sql>
+		<param type="IN" name="idAdresse" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+	</query>
+	<resource path="delete/company" method="DELETE">
+		<description />
+		<call-query href="deleteCompany">
+			<with-param name="idPersonneSociete" query-param="id" />
+		</call-query>
+	</resource>
+	<query id="deleteCompany" useConfig="personneDS">
+		<sql>
+			DELETE FROM "personneSociete" WHERE "idPersonneSociete" = :idPersonneSociete
+		</sql>
+		<param type="IN" name="idPersonneSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+	</query>
+	<resource path="company" method="GET">
+		<description />
+		<call-query href="personCompany">
+			<with-param name="id" query-param="id" />
+		</call-query>
+	</resource>
+	<query id="personCompany" useConfig="personneDS">
+		<sql>
+			SELECT * FROM public."personneSociete" societe LEFT JOIN public.adresse
+			adresse ON adresse."idAdresse" = societe."idAdresseSociete" WHERE
+			societe."idPersonneSociete"=:id
+		</sql>
+		<param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+		<result outputType="json">
+			{"data":{
+			"id": "$idPersonneSociete",
+			"name": "$nomSociete",
+			"addressId": "$idAdresseSociete",
+			"phone": "$telSociete",
+			"capital": $capital,
+			"deviseId": $idDevise,
+			"rcs": "$rcs",
+			"address": {
+			"idAdresse":"$idAdresse",
+			"idFokontany":"$idFokontany",
+			"idCommune":"$idCommune",
+			"idRegion":"$idRegion",
+			"idDistrict":"$idDistrict",
+			"idArrondissement":"$idArrondissement",
+			"adresse":"$adresse",
+			"idProvince":"$idProvince",
+			"codePays":"$codePays"
+			}
+			}}
+		</result>
+	</query>
   <query id="addPerson" useConfig="personneDS">
     <sql>INSERT INTO public.personne(nom,prenom,"nomPere", "nomMere", "dateNaissance", "lieuNaissance", "situationMatrimonial", 
 	    "idPieceIdentite", sexe, societe_mandataire, idadresse, idrole, tel,e_mail,"idUtilisateur", engagement, civilite, 
