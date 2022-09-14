@@ -22,7 +22,7 @@
 <!--     <property name="password">postgres</property> -->
 <!--   </config> -->
   
-  <resource method="GET" path="listofAuthorization">
+  <resource method="GET" path="listOfAuthorization">
     <description />
     <call-query href="listofAuthorization" />
   </resource>
