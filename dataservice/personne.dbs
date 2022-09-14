@@ -1183,7 +1183,7 @@
   </resource>
   <query id="fetchUsers" useConfig="personneDS">
     <sql>
-    	SELECT * FROM personne WHERE matricule IS NOT NULL LIMIT :limit OFFSET :offset
+    	SELECT * FROM personne WHERE matricule IS NOT NULL ORDER BY nom ASC LIMIT :limit OFFSET :offset
     </sql>
     <param type="IN" name="limit" optional="false" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="offset" optional="true" sqlType="INTEGER" paramType="SCALAR" />
