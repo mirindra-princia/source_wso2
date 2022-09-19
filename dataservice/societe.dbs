@@ -16,12 +16,12 @@
   </config>
   <!-- CONFIGURATION DEV -->
 
-<!--  <config id="societeDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/societe</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config> -->
+<!--  <config id="societeDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/societe</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
 
   <resource path="addSocietyForm" method="POST">
     <description>add society from online form</description>
@@ -1650,4 +1650,65 @@
     	}
     </result>
   </query>
+  
+  <resource path="addresses/companies/{companyId}" method="GET">
+		<description />
+		<call-query href="getAddressByCompanyId">
+			<with-param name="idSociete" query-param="companyId" />
+		</call-query>
+	</resource>
+	<query id="getAddressByCompanyId" useConfig="societeDS">
+		<sql>
+			SELECT adresse.*
+			FROM public.adresse
+			JOIN public."siegeSocial" ss ON ss."adresseSiegeSocial" = adresse."idAdresse"
+			JOIN public.societe ON societe."idSiegeSocial" = ss."idSiege"
+			WHERE societe."idSociete"=:idSociete
+		</sql>
+		<param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+		<result outputType="json">{"data":{
+			"idAdresse":"$idAdresse",
+			"idFokontany":"$idFokontany",
+			"idCommune":"$idCommune",
+			"idRegion":"$idRegion",
+			"idDistrict":"$idDistrict",
+			"idArrondissement":"$idArrondissement",
+			"adresse":"$adresse",
+			"idProvince":"$idProvince",
+			"codePays":"$codePays",
+			"idVille":"$idVille",
+			"longitude": $longitude,
+			"latitude": $latitude
+			}}
+		</result>
+	</query>
+	
+	<resource path="addresses/{addressId}" method="GET">
+		<description />
+		<call-query href="getAddressById">
+			<with-param name="idAdresse" query-param="addressId" />
+		</call-query>
+	</resource>
+	<query id="getAddressById" useConfig="societeDS">
+		<sql>
+			SELECT * FROM public.adresse WHERE "idAdresse"=:idAdresse
+		</sql>
+		<param type="IN" name="idAdresse" paramType="SCALAR"
+			sqlType="INTEGER" optional="false" />
+		<result outputType="json">{"data":{
+			"idAdresse":"$idAdresse",
+			"idFokontany":"$idFokontany",
+			"idCommune":"$idCommune",
+			"idRegion":"$idRegion",
+			"idDistrict":"$idDistrict",
+			"idArrondissement":"$idArrondissement",
+			"adresse":"$adresse",
+			"idProvince":"$idProvince",
+			"codePays":"$codePays",
+			"idVille":"$idVille",
+			"longitude": $longitude,
+			"latitude": $latitude
+			}}
+		</result>
+	</query>
 </data>
