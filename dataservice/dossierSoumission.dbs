@@ -130,7 +130,7 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     <query id="listFolderDESC" useConfig="dossierSomissionDS">
         <sql>SELECT dossier."idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot",
             "numeroDossier",
-            updated_at, "idStatutDossier", "idProgression", dossier."createdAt",de."person_uuid", de."etat"
+            updated_at, "idStatutDossier", "idProgression", dossier."createdAt",de."person_uuid", de."etat", de."id" as idEtatDossier
             FROM public.dossier LEFT JOIN public.dossier_etat de on dossier."idDossier" = de."idDossier"
             order by "dateSoumission"
         </sql>
@@ -138,13 +138,13 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
             {"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission",
             "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",
             "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier",
-            "idProgression":$idProgression, "createdAt":"$createdAt", "person_uuid":"$person_uuid","etat":"$etat" }]}}
+            "idProgression":$idProgression, "createdAt":"$createdAt", "person_uuid":"$person_uuid","etat":"$etat","idEtatDossier":"$idEtatDossier" }]}}
         </result>
     </query>
     <query id="listFolderASC" useConfig="dossierSomissionDS">
         <sql>SELECT dossier."idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot",
             "numeroDossier",
-            updated_at, "idStatutDossier", "idProgression", dossier."createdAt", de."person_uuid", de."etat"
+            updated_at, "idStatutDossier", "idProgression", dossier."createdAt", de."person_uuid", de."etat", de."id" as idEtatDossier
             FROM public.dossier LEFT JOIN public.dossier_etat de on dossier."idDossier" = de."idDossier"
             order by "dateSoumission" asc
         </sql>
@@ -152,7 +152,7 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
             {"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission",
             "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",
             "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier",
-            "idProgression": $idProgression, "createdAt":"$createdAt", "person_uuid":"$person_uuid","etat":"$etat" }]}}
+            "idProgression": $idProgression, "createdAt":"$createdAt", "person_uuid":"$person_uuid","etat":"$etat","idEtatDossier":"$idEtatDossier" }]}}
         </result>
     </query>
   <query id="addComment" useConfig="dossierSomissionDS">
@@ -1503,5 +1503,21 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         <param type="IN" name="person_uuid" paramType="SCALAR" sqlType="STRING" />
         <param type="IN" name="etat" paramType="SCALAR" sqlType="STRING" />
         <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    </query>
+
+    <resource path="dossierEtatByDossierId" method="GET">
+        <description />
+        <call-query href="dossierEtatByDossierId">
+            <with-param name="idDossier" query-param="idDossier" />
+        </call-query>
+    </resource>
+    <query id="dossierEtatByDossierId" useConfig="dossierSomissionDS">
+        <sql>
+            SELECT * FROM public.dossier_etat de where de."idDossier" =:idDossier
+        </sql>
+        <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+        <result outputType="json">
+            {"data":{"person_uuid":"$person_uuid","etat":"$etat","idEtatDossier":"$id"}}
+        </result>
     </query>
 </data>
