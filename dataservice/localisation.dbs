@@ -507,6 +507,21 @@
   </query>
   <!-- #PROVINCE -->
   
+  <!-- BOROUGH -->
+  <resource path="fetchFokontanysByBorough/{boroughId}" method="GET">
+    <description>List of all fokontany by borough id</description>
+    <call-query href="fetchFokontanysByBorough">
+      <with-param name="borough_id" query-param="boroughId" />
+    </call-query>
+  </resource>
+  <query id="fetchFokontanysByBorough" useConfig="localisationDS">
+    <sql>SELECT id, name, borough_id
+	FROM public.fokontany WHERE borough_id= :borough_id</sql>
+    <param type="IN" name="borough_id" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{"data":{"fokontany":[{"id":"$id","name":"$name","borough_id":"$borough_id"}]}}</result>
+  </query>
+  <!-- #BOROUGH -->
+  
   <!-- ADDRESS DETAIL -->
   <resource path="fetchAddressDetail" method="GET">
     <description />
