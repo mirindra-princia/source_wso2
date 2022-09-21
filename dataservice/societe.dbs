@@ -1711,4 +1711,32 @@
 			}}
 		</result>
 	</query>
+	
+	<!-- RCS INTEGRATOR -->
+	<resource path="person-associates/companies/{companyId}" method="GET">
+		<description />
+		<call-query href="getPersonAssociateByCompanyId">
+			<with-param name="companyId" query-param="companyId" />
+		</call-query>
+	</resource>
+	<query id="getPersonAssociateByCompanyId" useConfig="societeDS">
+    <sql>
+    SELECT associe."idPersonne", associe."idPersonneMoral", associe."idStatutSociete"::varchar FROM  public."societeAssocie" sa  
+    JOIN associe ON associe."idAssocie" = sa."idAssocie" 
+    WHERE "idSociete" = :companyId
+    </sql>
+    <param type="IN" name="companyId " sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <result outputType="json">
+    	{
+    		"data":{
+    			"associates":[{
+					"personId":$idPersonne,
+					"moralId":$idPersonneMoral,
+					"roleIds":"$idStatutSociete"
+				}]
+			}
+		}
+	</result>
+  </query>
+	<!-- #RCS INTEGRATOR -->
 </data>
