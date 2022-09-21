@@ -568,58 +568,60 @@
     <param type="IN" name="idCommune" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{
     	"data":{
-		    "province":{
-		    	"id": $p_id,
-		    	"name": "$p_name",
-		    	"provinceMapping": {
-		    		"idProvinceOrinasa": $idProvinceOrinasa,
-		    		"idProvinceDgi": $idProvinceDgi
-		    	}
-		    },
-		    "region":{
-		    	"id": $r_id,
-		    	"name": "$r_name",
-		    	"province_id": $p_id,
-		    	"regionMapping": {
-		    		"idRegion": $idRegion,
-			    	"idRegionRncs": "$idRegionRncs",
-			    	"idRegionDgi": $idRegionDgi
+		    "addresses": [{
+		    	"province":{
+			    	"id": $p_id,
+			    	"name": "$p_name",
+			    	"provinceMapping": {
+			    		"idProvinceOrinasa": $idProvinceOrinasa,
+			    		"idProvinceDgi": $idProvinceDgi
+			    	}
+			    },
+			    "region":{
+			    	"id": $r_id,
+			    	"name": "$r_name",
+			    	"province_id": $p_id,
+			    	"regionMapping": {
+			    		"idRegion": $idRegion,
+				    	"idRegionRncs": "$idRegionRncs",
+				    	"idRegionDgi": $idRegionDgi
+				    }
+			    },
+			    "district":{
+			    	"id": $d_id,
+			    	"name": "$d_name",
+			    	"region_id": $r_id,
+			    	"districtMapping": {
+			    		"idDistrict": $idDistrict,
+			    		"idDistrictRncs": "$idDistrictRncs",
+			    		"idDistrictDgi": $idDistrictDgi
+			    	}
+			    },
+			    "commune":{
+			    	"id": $c_id,
+			    	"name": "$c_name",
+			    	"district_id": $d_id,
+			    	"commonMapping": {
+			    		"IdCommon": $IdCommon,
+			    		"idCommonRncs": "$idCommonRncs",
+			    		"idCommonDgi": $idCommonDgi
+			    	}
+			    },
+			    "arrondissement":{
+			    	"id": $b_id,
+			    	"name": "$b_name",
+			    	"common_id": $c_id
+			    },
+			    "fokontany":{
+			    	"id": $f_id,
+			    	"name": "$f_name",
+			    	"borough_id": $b_id,
+			    	"fokontanyMapping": {
+			    		"idFokontanyOrinasa": $idFokontanyOrinasa,
+			    		"idFokontanyDgi": "$idFokontanyDgi"
+			    	}
 			    }
-		    },
-		    "district":{
-		    	"id": $d_id,
-		    	"name": "$d_name",
-		    	"region_id": $r_id,
-		    	"districtMapping": {
-		    		"idDistrict": $idDistrict,
-		    		"idDistrictRncs": "$idDistrictRncs",
-		    		"idDistrictDgi": $idDistrictDgi
-		    	}
-		    },
-		    "commune":{
-		    	"id": $c_id,
-		    	"name": "$c_name",
-		    	"district_id": $d_id,
-		    	"commonMapping": {
-		    		"IdCommon": $IdCommon,
-		    		"idCommonRncs": "$idCommonRncs",
-		    		"idCommonDgi": $idCommonDgi
-		    	}
-		    },
-		    "arrondissement":{
-		    	"id": $b_id,
-		    	"name": "$b_name",
-		    	"common_id": $c_id
-		    },
-		    "fokontany":{
-		    	"id": $f_id,
-		    	"name": "$f_name",
-		    	"borough_id": $b_id,
-		    	"fokontanyMapping": {
-		    		"idFokontanyOrinasa": $idFokontanyOrinasa,
-		    		"idFokontanyDgi": "$idFokontanyDgi"
-		    	}
-		    }
+		    }]
 		}
 	}</result>
   </query>
