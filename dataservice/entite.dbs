@@ -48,7 +48,7 @@
     <result outputType="json">{"data":{"centers":[{"id":$id,"name":"$name"}]}}</result>
   </query>
   
-  <resource method="GET" path="centers/group/{groupId}/region/{regionId}">
+  <resource method="GET" path="centers/groups/{groupId}/regions/{regionId}">
     <description />
     <call-query href="centersByGroupRegion">
       <with-param name="groupId" query-param="groupId" />
@@ -64,6 +64,27 @@
     </sql>
     <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
     <param type="IN" name="regionId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"centers":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+  
+  <resource method="GET" path="centers/groups/{groupId}/provinces/{provinceId}">
+    <description />
+    <call-query href="centersByGroupProvince">
+      <with-param name="groupId" query-param="groupId" />
+      <with-param name="provinceId" query-param="provinceId" />
+    </call-query>
+  </resource>
+  <query id="centersByGroupProvince" useConfig="entiteDS">
+    <sql>
+    	SELECT centre.* FROM centre 
+    	JOIN public."centreGroupe" cg ON cg."centerId" = centre.id
+    	JOIN public."centreSecteur" cs ON cs."centerId" = centre.id
+    	JOIN public.secteur ON secteur.id = cs."sectorId"
+    	JOIN public."secteurProvince" sp ON sp."sectorId" = secteur.id
+    	WHERE sp."provinceId" = :provinceId AND cg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="provinceId" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">{"data":{"centers":[{"id":$id,"name":"$name"}]}}</result>
   </query>
   
