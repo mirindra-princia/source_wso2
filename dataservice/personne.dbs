@@ -1183,7 +1183,7 @@
   </resource>
   <query id="fetchUsers" useConfig="personneDS">
     <sql>
-    	SELECT * FROM personne WHERE matricule IS NOT NULL ORDER BY nom ASC LIMIT :limit OFFSET :offset
+    	SELECT * FROM personne WHERE matricule IS NOT NULL ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
     </sql>
     <param type="IN" name="limit" optional="false" sqlType="INTEGER" paramType="SCALAR" />
     <param type="IN" name="offset" optional="true" sqlType="INTEGER" paramType="SCALAR" />
@@ -1202,6 +1202,7 @@
 	    }}
     </result>
   </query>
+  
   <resource method="GET" path="users/count">
     <description />
     <call-query href="countUsers" />
@@ -1240,6 +1241,55 @@
 		    }
 	    }
     </result>
+  </query>
+  
+  <resource method="POST" path="users/filter/by/uids">
+    <description />
+    <call-query href="usersFilterByUids">
+      <with-param name="ids" query-param="ids" />
+      <with-param name="limit" query-param="limit" />
+      <with-param name="offset" query-param="offset" />
+    </call-query>
+  </resource>
+  <query id="usersFilterByUids" useConfig="personneDS">
+    <sql>
+    	SELECT * FROM personne WHERE "idUtilisateur" IN (:ids) AND matricule IS NOT NULL ORDER BY "createdAt" DESC LIMIT :limit OFFSET :offset
+    </sql>
+    <param type="IN" name="ids" optional="false" sqlType="STRING" paramType="ARRAY" />
+    <param type="IN" name="limit" optional="false" sqlType="INTEGER" paramType="SCALAR" />
+    <param type="IN" name="offset" optional="true" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">
+    	{"data":{
+    		"personals":[
+	    		{
+		    		"id":"$idUtilisateur",
+		    		"email":"$e_mail", 
+		    		"matricule":"$matricule",
+		    		"firstName":"$prenom",
+		    		"lastName": "$nom",
+		    		"createdAt": "$createdAt"
+		    	}
+	    	]
+	    }}
+    </result>
+  </query>
+  
+  <resource method="POST" path="users/filter/by/uids/count">
+    <description />
+    <call-query href="usersFilterByUidsCount">
+    	<with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="usersFilterByUidsCount" useConfig="personneDS">
+    <sql>
+    	SELECT count("idPersonne") AS count FROM personne WHERE "idUtilisateur" IN (:ids) AND matricule IS NOT NULL
+    </sql>
+    <param type="IN" name="ids" optional="false" sqlType="STRING" paramType="ARRAY" />
+    <result outputType="json">
+	    	{"counter": {
+	    		"count": $count
+	    	}}
+	    </result>
   </query>
   <!-- #USER MANAGEMENT -->
   
