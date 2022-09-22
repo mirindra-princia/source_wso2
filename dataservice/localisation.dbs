@@ -277,46 +277,53 @@
     <param type="IN" name="idRegion" paramType="SCALAR" sqlType="INTEGER" />
     <param type="IN" name="idDistrict" paramType="SCALAR" sqlType="INTEGER" />
     <param type="IN" name="idCommune" paramType="SCALAR" sqlType="INTEGER" />
-    <result outputType="json">{"adresse":{
-    "province":{
-    	"id": $p_id,
-    	"name": "$p_name",
-    	"provinceMapping": {
-    		"idProvinceDgi": $idProvinceDgi
+    <result outputType="json">
+    	{
+    		"data": {
+    			"adresses":[{
+				    "province":{
+				    	"id": $p_id,
+				    	"name": "$p_name",
+				    	"provinceMapping": {
+				    		"idProvinceDgi": $idProvinceDgi
+				    	}
+				    },
+				    "region":{
+				    	"id": $r_id,
+				    	"name": "$r_name",
+				    	"province_id": $p_id
+				    },
+				    "regionMapping": {
+				    	"idRegionRncs": "$idRegionRncs",
+				    	"idRegionDgi": "$idRegionDgi"
+				    },
+				    "district":{
+				    	"id": $d_id,
+				    	"name": "$d_name",
+				    	"region_id": $r_id
+				    },
+				    "commune":{
+				    	"id": $c_id,
+				    	"name": "$c_name",
+				    	"district_id": $d_id
+				    },
+				    "arrondissement":{
+				    	"id": $b_id,
+				    	"name": "$b_name",
+				    	"common_id": $c_id
+				    },
+				    "fokontany":{
+				    	"id": $f_id,
+				    	"name": "$f_name",
+				    	"borough_id": $b_id,
+				    	"fokontanyMapping": {
+				    		"idFokontanyDgi": $idFokontanyDgi
+				    	}
+				    }
+				}]
+			}
     	}
-    },
-    "region":{
-    	"id": $r_id,
-    	"name": "$r_name",
-    	"province_id": $p_id
-    },
-    "regionMapping": {
-    	"idRegionRncs": "$idRegionRncs",
-    	"idRegionDgi": "$idRegionDgi"
-    },
-    "district":{
-    	"id": $d_id,
-    	"name": "$d_name",
-    	"region_id": $r_id
-    },
-    "commune":{
-    	"id": $c_id,
-    	"name": "$c_name",
-    	"district_id": $d_id
-    },
-    "arrondissement":{
-    	"id": $b_id,
-    	"name": "$b_name",
-    	"common_id": $c_id
-    },
-    "fokontany":{
-    	"id": $f_id,
-    	"name": "$f_name",
-    	"borough_id": $b_id,
-    	"fokontanyMapping": {
-    		"idFokontanyDgi": $idFokontanyDgi
-    	}
-    }}}</result>
+    </result>
   </query>
   <query id="addCommonOther" useConfig="localisationDS">
     <sql>INSERT INTO public.common_other(
