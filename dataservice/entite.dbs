@@ -76,7 +76,7 @@
   </resource>
   <query id="centersByGroupProvince" useConfig="entiteDS">
     <sql>
-    	SELECT centre.* FROM centre 
+    	SELECT DISTINCT(centre.*) FROM centre 
     	JOIN public."centreGroupe" cg ON cg."centerId" = centre.id
     	JOIN public."centreSecteur" cs ON cs."centerId" = centre.id
     	JOIN public.secteur ON secteur.id = cs."sectorId"
