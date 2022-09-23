@@ -15,12 +15,12 @@
 	    <property name="password">devedbmdb</property>
    	</config>
    	<!-- CONFIGURATION DEV -->
-<!--   <config id="entiteDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://localhost:5432/entite</property> -->
-<!--     <property name="username">postgres</property> -->
-<!--     <property name="password">postgres</property> -->
-<!--   </config> -->
+  <config id="entiteDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/entite</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config>
   
   <resource method="GET" path="listOfAuthorization">
     <description />
@@ -189,7 +189,7 @@
   </resource>
   <query id="centerByDistrictId" useConfig="entiteDS">
     <sql>
-    	SELECT centre.* FROM centre
+    	SELECT DISTINCT(centre.*) FROM centre
     	JOIN "centreSecteur" cs ON cs."centerId" = centre.id
     	JOIN secteur ON secteur.id = cs."sectorId"
     	JOIN "secteurGroupe" sg ON sg."sectorId" = secteur.id
