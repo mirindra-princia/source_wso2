@@ -1761,14 +1761,14 @@
   <resource path="dgiDemandReferenceByCompany" method="GET">
     <description/>
     <call-query href="dgiDemandReferenceByCompany">
-      <with-param name="idSociete" query-param="idSociete"/>
+      <with-param name="dgiRefDem" query-param="dgiRefDem"/>
     </call-query>
   </resource>
   <query id="dgiDemandReferenceByCompany" useConfig="societeDS">
     <sql>
-      SELECT * FROM public."dgi_demande_interop_mapping"  where "idSociete" =:idSociete
+      SELECT * FROM public."dgi_demande_interop_mapping" where "dgiRefDem" =:dgiRefDem
     </sql>
-    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER"/>
+    <param type="IN" name="dgiRefDem" paramType="SCALAR" sqlType="STRING"/>
     <result outputType="json">
       {"data":{"id":"$id","idSociete":"$idSociete","dgiDemRef":"$dgiRefDem"}}
     </result>
