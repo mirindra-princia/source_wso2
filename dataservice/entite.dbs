@@ -813,14 +813,12 @@
     <call-query href="fetchUserCentersInList">
       <with-param name="uids" query-param="uids" />
       <with-param name="centerId" query-param="centerId" />
-      <with-param name="isRegion" query-param="isRegion" />
     </call-query>
   </resource>
   <query id="fetchUserCentersInList" useConfig="entiteDS">
     <sql>SELECT * FROM "utilisateurCentre" WHERE "centerId" = :centerId AND "userId" IN (:uids)</sql>
     <param type="IN" name="uids" paramType="ARRAY" sqlType="STRING" />
     <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
-    <param type="IN" name="isRegion" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">
 		{
 			"data": {
