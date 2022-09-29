@@ -1520,4 +1520,98 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
             {"data":{"person_uuid":"$person_uuid","etat":"$etat","idEtatDossier":"$id"}}
         </result>
     </query>
+    
+    <!-- USER MANAGEMENT -->
+    <resource path="folders/list" method="POST">
+        <description />
+        <call-query href="fetchFolderInListAsc">
+            <with-param name="ids" query-param="ids" />
+        </call-query>
+    </resource>
+    <query id="fetchFolderInListAsc" useConfig="dossierSomissionDS">
+        <sql>
+            SELECT dossier.*, de.person_uuid, de.etat, de.id FROM dossier 
+            LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier"
+            WHERE dossier."idDossier" IN (:ids)
+            ORDER BY "dateSoumission" ASC
+        </sql>
+        <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+        <result outputType="json">
+            {
+            	"data": {
+            		"folders": [{
+            			"idDossier":"$idDossier",
+            			"dateSoumission":"$dateSoumission",
+			            "idStatutDepot":"$idStatutDepot", 
+			            "idStatutValidation":"$idStatutValidation", 
+			            "rdvDepot":"$rdvDepot",
+			            "numeroDossier":"$numeroDossier", 
+			            "updated_at":"$updated_at", 
+			            "idStatutDossier":"$idStatutDossier",
+			            "idProgression": $idProgression, 
+			            "createdAt":"$createdAt", 
+			            "person_uuid":"$person_uuid",
+			            "etat":"$etat",
+			            "idEtatDossier":"$id" 	
+            		}]
+            	}
+            }
+        </result>
+    </query>
+    
+    <resource path="folders/list" method="POST">
+        <description />
+        <call-query href="fetchFolderInListDesc">
+            <with-param name="ids" query-param="ids" />
+        </call-query>
+    </resource>
+    <query id="fetchFolderInListDesc" useConfig="dossierSomissionDS">
+        <sql>
+            SELECT dossier.*, de.person_uuid, de.etat, de.id FROM dossier 
+            LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier"
+            WHERE dossier."idDossier" IN (:ids)
+            ORDER BY "dateSoumission" DESC
+        </sql>
+        <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+        <result outputType="json">
+            {
+            	"data": {
+            		"folders": [{
+            			"idDossier":"$idDossier",
+            			"dateSoumission":"$dateSoumission",
+			            "idStatutDepot":"$idStatutDepot", 
+			            "idStatutValidation":"$idStatutValidation", 
+			            "rdvDepot":"$rdvDepot",
+			            "numeroDossier":"$numeroDossier", 
+			            "updated_at":"$updated_at", 
+			            "idStatutDossier":"$idStatutDossier",
+			            "idProgression": $idProgression, 
+			            "createdAt":"$createdAt", 
+			            "person_uuid":"$person_uuid",
+			            "etat":"$etat",
+			            "idEtatDossier":"$id" 	
+            		}]
+            	}
+            }
+        </result>
+    </query>
+    
+    <resource path="folders/list/count" method="POST">
+        <description />
+        <call-query href="fetchFolderInListCounter">
+            <with-param name="ids" query-param="ids" />
+        </call-query>
+    </resource>
+    <query id="fetchFolderInListCounter" useConfig="dossierSomissionDS">
+        <sql>
+            SELECT COUNT(dossier.*) as count FROM dossier WHERE "idDossier" IN (:ids)
+        </sql>
+        <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+        <result outputType="json">
+            {"counter": {
+	    		"count": $count
+	    	}}
+        </result>
+    </query>
+    <!-- #USER MANAGEMENT -->
 </data>
