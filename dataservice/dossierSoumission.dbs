@@ -130,29 +130,29 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
     <query id="listFolderDESC" useConfig="dossierSomissionDS">
         <sql>SELECT dossier."idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot",
             "numeroDossier",
-            updated_at, "idStatutDossier", "idProgression", dossier."createdAt",de."person_uuid", de."etat", de."id" as idEtatDossier
-            FROM public.dossier LEFT JOIN public.dossier_etat de on dossier."idDossier" = de."idDossier"
+            updated_at, "idStatutDossier", "idProgression", dossier."createdAt",de."person_uuid", de."etat", de."id" as idEtatDossier, de."createdAt" as etatDossierCreatedAt
+            FROM public.dossier INNER JOIN public.dossier_etat de on dossier."idDossier" = de."idDossier"
             order by "dateSoumission"
         </sql>
         <result outputType="json">
-            {"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission",
+            {"data":{"folders":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission",
             "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",
             "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier",
-            "idProgression":$idProgression, "createdAt":"$createdAt", "person_uuid":"$person_uuid","etat":"$etat","idEtatDossier":"$idEtatDossier" }]}}
+            "idProgression":$idProgression, "createdAt":"$createdAt", "person_uuid":"$person_uuid","etat":"$etat","idEtatDossier":"$idEtatDossier", "etatDossierCreatedAt": "$etatDossierCreatedAt" }]}}
         </result>
     </query>
     <query id="listFolderASC" useConfig="dossierSomissionDS">
         <sql>SELECT dossier."idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot",
             "numeroDossier",
-            updated_at, "idStatutDossier", "idProgression", dossier."createdAt", de."person_uuid", de."etat", de."id" as idEtatDossier
-            FROM public.dossier LEFT JOIN public.dossier_etat de on dossier."idDossier" = de."idDossier"
+            updated_at, "idStatutDossier", "idProgression", dossier."createdAt", de."person_uuid", de."etat", de."id" as idEtatDossier, de."createdAt" as etatDossierCreatedAt
+            FROM public.dossier INNER JOIN public.dossier_etat de on dossier."idDossier" = de."idDossier"
             order by "dateSoumission" asc
         </sql>
         <result outputType="json">
-            {"folders":{"folder":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission",
+            {"data":{"folders":[{"idDossier":"$idDossier","dateSoumission":"$dateSoumission",
             "idStatutDepot":"$idStatutDepot", "idStatutValidation":"$idStatutValidation", "rdvDepot":"$rdvDepot",
             "numeroDossier":"$numeroDossier", "updated_at":"$updated_at", "idStatutDossier":"$idStatutDossier",
-            "idProgression": $idProgression, "createdAt":"$createdAt", "person_uuid":"$person_uuid","etat":"$etat","idEtatDossier":"$idEtatDossier" }]}}
+            "idProgression": $idProgression, "createdAt":"$createdAt", "person_uuid":"$person_uuid","etat":"$etat","idEtatDossier":"$idEtatDossier", "etatDossierCreatedAt": "$etatDossierCreatedAt" }]}}
         </result>
     </query>
   <query id="addComment" useConfig="dossierSomissionDS">
@@ -1517,7 +1517,7 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         </sql>
         <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
         <result outputType="json">
-            {"data":{"person_uuid":"$person_uuid","etat":"$etat","idEtatDossier":"$id"}}
+            {"data": {"etats": [{"person_uuid":"$person_uuid","etat":"$etat","idEtatDossier":"$id", "etatDossierCreatedAt": "$createdAt"}]}}
         </result>
     </query>
 </data>
