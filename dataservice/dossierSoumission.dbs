@@ -131,7 +131,7 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
         <sql>SELECT dossier."idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot",
             "numeroDossier",
             updated_at, "idStatutDossier", "idProgression", dossier."createdAt",de."person_uuid", de."etat", de."id" as idEtatDossier, de."createdAt" as etatDossierCreatedAt
-            FROM public.dossier INNER JOIN public.dossier_etat de on dossier."idDossier" = de."idDossier"
+            FROM public.dossier LEFT JOIN public.dossier_etat de on dossier."idDossier" = de."idDossier"
             order by "dateSoumission"
         </sql>
         <result outputType="json">
@@ -145,7 +145,7 @@ SELECT COUNT("idDossier") as nombre  FROM public.dossier WHERE "idStatutDossier"
         <sql>SELECT dossier."idDossier","dateSoumission", "idStatutDepot", "idStatutValidation", "rdvDepot",
             "numeroDossier",
             updated_at, "idStatutDossier", "idProgression", dossier."createdAt", de."person_uuid", de."etat", de."id" as idEtatDossier, de."createdAt" as etatDossierCreatedAt
-            FROM public.dossier INNER JOIN public.dossier_etat de on dossier."idDossier" = de."idDossier"
+            FROM public.dossier LEFT JOIN public.dossier_etat de on dossier."idDossier" = de."idDossier"
             order by "dateSoumission" asc
         </sql>
         <result outputType="json">
