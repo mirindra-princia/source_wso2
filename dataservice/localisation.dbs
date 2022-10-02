@@ -633,4 +633,54 @@
 	}</result>
   </query>
   <!-- #ADDRESS DETAIL -->
+  
+  <!-- COMMONS -->
+  <resource path="commons/filters/by/ids" method="POST">
+    <description/>
+    <call-query href="fetchCommonsByIds">
+      <with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="fetchCommonsByIds" useConfig="localisationDS">
+    <sql>
+    	SELECT * FROM common WHERE id IN (:ids)
+    </sql>
+    <param type="IN" name="ids" sqlType="INTEGER" paramType="ARRAY" />
+    <result outputType="json">
+    	{
+    		"data": {
+    			"commons": [{
+    				"id": $id,
+    				"name": "$name"
+    			}]
+    		}
+    	}
+    </result>
+  </query>
+  <!-- #COMMONS -->
+  
+  <!-- DISTRICT -->
+  <resource path="districts/filters/by/ids" method="POST">
+    <description/>
+    <call-query href="fetchDistrictsByIds">
+      <with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="fetchDistrictsByIds" useConfig="localisationDS">
+    <sql>
+    	SELECT * FROM district WHERE id IN (:ids)
+    </sql>
+    <param type="IN" name="ids" sqlType="INTEGER" paramType="ARRAY" />
+    <result outputType="json">
+    	{
+    		"data": {
+    			"districts": [{
+    				"id": $id,
+    				"name": "$name"
+    			}]
+    		}
+    	}
+    </result>
+  </query>
+  <!-- #DISTRICT -->
 </data>
