@@ -1773,4 +1773,226 @@
       {"data":{"id":"$id","idSociete":"$idSociete","dgiDemRef":"$dgiRefDem"}}
     </result>
   </query>
+  
+  <!-- USER MANAGEMENT -->
+  <resource path="filter/by/regions" method="POST">
+    <description/>
+    <call-query href="filterByRegions">
+      <with-param name="ids" query-param="ids"/>
+    </call-query>
+  </resource>
+  <query id="filterByRegions" useConfig="societeDS">
+    <sql>
+      SELECT societe.* FROM societe 
+      JOIN "siegeSocial" ss ON ss."idSiege" = societe."idSiegeSocial"
+      JOIN adresse ON adresse."idAdresse" = ss."adresseSiegeSocial"
+      WHERE ss."siegePrincipal" IS NULL AND adresse."idRegion" IN (:ids) 
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER"/>
+    <result outputType="json">
+      {"data": {
+    		"companies": [{
+    			"idSociete":$idSociete,
+		        "formeJuridique": "$formeJuridique",
+		        "idFormeJuridique": "$idFormeJuridique",
+		        "denominationSocial": "$denominationSocial",
+		        "nomCommercial": "$nomCommercial",
+		        "sigle": "$sigle",
+		        "objetSocial": "$objetSocial",
+		        "idSecteurActivite": "$idSecteurActivite",
+		        "activitePrincipal": "$activitePrincipal",
+		        "activiteImportExport": "$activiteImportExport",
+		        "activiteIndustrielCollecteur": "$activiteIndustrielCollecteur",
+		        "activiteGrossiste": "$activiteGrossiste",
+		        "capital":"$capital",
+		        "montantPartSocial": "$montantPartSocial",
+		        "dateStatut": "$dateStatut",
+		        "choixImposition": "$choixImposition",
+		        "tva":"$tva",
+		        "duree":"$duree",
+		        "finExerciceSocial": "$finExerciceSocial",
+		        "idPersonne": "$idPersonne",
+		        "idDossier": "$idDossier",
+		        "idSiegeSocial": "$idSiegeSocial",
+		        "idDevise": "$idDevise",
+		        "idDevisePartAssocie": "$idDevisePartAssocie",
+		        "NIF":"$NIF",
+		        "dateNIF":"$dateNIF",
+		        "STAT":"$STAT",
+		        "RCS":"$RCS",
+		        "dateSTAT":"$dateSTAT",
+		        "dateRCS":"$dateRCS",
+		        "ubi":"$ubi",
+		        "activiteSecondaire": "$activiteSecondaire"
+    		}]
+    	}
+      }
+    </result>
+  </query>
+  
+  <resource path="filter/by/districts" method="POST">
+    <description/>
+    <call-query href="filterByDistricts">
+      <with-param name="ids" query-param="ids"/>
+    </call-query>
+  </resource>
+  <query id="filterByDistricts" useConfig="societeDS">
+    <sql>
+      SELECT societe.* FROM societe 
+      JOIN "siegeSocial" ss ON ss."idSiege" = societe."idSiegeSocial"
+      JOIN adresse ON adresse."idAdresse" = ss."adresseSiegeSocial"
+      WHERE ss."siegePrincipal" IS NULL AND adresse."idDistrict" IN (:ids) 
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER"/>
+    <result outputType="json">
+      {"data": {
+    		"companies": [{
+    			"idSociete":$idSociete,
+		        "formeJuridique": "$formeJuridique",
+		        "idFormeJuridique": "$idFormeJuridique",
+		        "denominationSocial": "$denominationSocial",
+		        "nomCommercial": "$nomCommercial",
+		        "sigle": "$sigle",
+		        "objetSocial": "$objetSocial",
+		        "idSecteurActivite": "$idSecteurActivite",
+		        "activitePrincipal": "$activitePrincipal",
+		        "activiteImportExport": "$activiteImportExport",
+		        "activiteIndustrielCollecteur": "$activiteIndustrielCollecteur",
+		        "activiteGrossiste": "$activiteGrossiste",
+		        "capital":"$capital",
+		        "montantPartSocial": "$montantPartSocial",
+		        "dateStatut": "$dateStatut",
+		        "choixImposition": "$choixImposition",
+		        "tva":"$tva",
+		        "duree":"$duree",
+		        "finExerciceSocial": "$finExerciceSocial",
+		        "idPersonne": "$idPersonne",
+		        "idDossier": "$idDossier",
+		        "idSiegeSocial": "$idSiegeSocial",
+		        "idDevise": "$idDevise",
+		        "idDevisePartAssocie": "$idDevisePartAssocie",
+		        "NIF":"$NIF",
+		        "dateNIF":"$dateNIF",
+		        "STAT":"$STAT",
+		        "RCS":"$RCS",
+		        "dateSTAT":"$dateSTAT",
+		        "dateRCS":"$dateRCS",
+		        "ubi":"$ubi",
+		        "activiteSecondaire": "$activiteSecondaire"
+    		}]
+    	}
+      }
+    </result>
+  </query>
+  
+  <resource path="filter/by/commons" method="POST">
+    <description/>
+    <call-query href="filterByCommons">
+      <with-param name="ids" query-param="ids"/>
+    </call-query>
+  </resource>
+  <query id="filterByCommons" useConfig="societeDS">
+    <sql>
+      SELECT societe.* FROM societe 
+      JOIN "siegeSocial" ss ON ss."idSiege" = societe."idSiegeSocial"
+      JOIN adresse ON adresse."idAdresse" = ss."adresseSiegeSocial"
+      WHERE ss."siegePrincipal" IS NULL AND adresse."idCommune" IN (:ids) 
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER"/>
+    <result outputType="json">
+      {"data": {
+    		"companies": [{
+    			"idSociete":$idSociete,
+		        "formeJuridique": "$formeJuridique",
+		        "idFormeJuridique": "$idFormeJuridique",
+		        "denominationSocial": "$denominationSocial",
+		        "nomCommercial": "$nomCommercial",
+		        "sigle": "$sigle",
+		        "objetSocial": "$objetSocial",
+		        "idSecteurActivite": "$idSecteurActivite",
+		        "activitePrincipal": "$activitePrincipal",
+		        "activiteImportExport": "$activiteImportExport",
+		        "activiteIndustrielCollecteur": "$activiteIndustrielCollecteur",
+		        "activiteGrossiste": "$activiteGrossiste",
+		        "capital":"$capital",
+		        "montantPartSocial": "$montantPartSocial",
+		        "dateStatut": "$dateStatut",
+		        "choixImposition": "$choixImposition",
+		        "tva":"$tva",
+		        "duree":"$duree",
+		        "finExerciceSocial": "$finExerciceSocial",
+		        "idPersonne": "$idPersonne",
+		        "idDossier": "$idDossier",
+		        "idSiegeSocial": "$idSiegeSocial",
+		        "idDevise": "$idDevise",
+		        "idDevisePartAssocie": "$idDevisePartAssocie",
+		        "NIF":"$NIF",
+		        "dateNIF":"$dateNIF",
+		        "STAT":"$STAT",
+		        "RCS":"$RCS",
+		        "dateSTAT":"$dateSTAT",
+		        "dateRCS":"$dateRCS",
+		        "ubi":"$ubi",
+		        "activiteSecondaire": "$activiteSecondaire"
+    		}]
+    	}
+      }
+    </result>
+  </query>
+  
+  <resource path="filter/by/provinces" method="POST">
+    <description/>
+    <call-query href="filterByProvinces">
+      <with-param name="ids" query-param="ids"/>
+    </call-query>
+  </resource>
+  <query id="filterByProvinces" useConfig="societeDS">
+    <sql>
+      SELECT societe.* FROM societe 
+      JOIN "siegeSocial" ss ON ss."idSiege" = societe."idSiegeSocial"
+      JOIN adresse ON adresse."idAdresse" = ss."adresseSiegeSocial"
+      WHERE ss."siegePrincipal" IS NULL AND adresse."idProvince" IN (:ids) 
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER"/>
+    <result outputType="json">
+      {"data": {
+    		"companies": [{
+    			"idSociete":$idSociete,
+		        "formeJuridique": "$formeJuridique",
+		        "idFormeJuridique": "$idFormeJuridique",
+		        "denominationSocial": "$denominationSocial",
+		        "nomCommercial": "$nomCommercial",
+		        "sigle": "$sigle",
+		        "objetSocial": "$objetSocial",
+		        "idSecteurActivite": "$idSecteurActivite",
+		        "activitePrincipal": "$activitePrincipal",
+		        "activiteImportExport": "$activiteImportExport",
+		        "activiteIndustrielCollecteur": "$activiteIndustrielCollecteur",
+		        "activiteGrossiste": "$activiteGrossiste",
+		        "capital":"$capital",
+		        "montantPartSocial": "$montantPartSocial",
+		        "dateStatut": "$dateStatut",
+		        "choixImposition": "$choixImposition",
+		        "tva":"$tva",
+		        "duree":"$duree",
+		        "finExerciceSocial": "$finExerciceSocial",
+		        "idPersonne": "$idPersonne",
+		        "idDossier": "$idDossier",
+		        "idSiegeSocial": "$idSiegeSocial",
+		        "idDevise": "$idDevise",
+		        "idDevisePartAssocie": "$idDevisePartAssocie",
+		        "NIF":"$NIF",
+		        "dateNIF":"$dateNIF",
+		        "STAT":"$STAT",
+		        "RCS":"$RCS",
+		        "dateSTAT":"$dateSTAT",
+		        "dateRCS":"$dateRCS",
+		        "ubi":"$ubi",
+		        "activiteSecondaire": "$activiteSecondaire"
+    		}]
+    	}
+      }
+    </result>
+  </query>
+  <!-- #USER MANAGEMENT -->
 </data>
