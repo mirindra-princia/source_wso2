@@ -207,6 +207,29 @@
     }
     </result>
   </query>
+  
+  <resource method="GET" path="center_commons/centers/{centerId}">
+    <description />
+    <call-query href="fetchCenterCommonsByCenterId">
+      <with-param name="centerId" query-param="centerId" />
+    </call-query>
+  </resource>
+  <query id="fetchCenterCommonsByCenterId" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM "centreCommune" WHERE "centerId" = :centerId
+    </sql>
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    {
+   		"data": {
+   			"centerCommons": [{
+	   			"centerId": $centerId,
+	   			"commonId": $commonId
+	   		}]
+   		}
+    }
+    </result>
+  </query>
   <!-- #CENTER -->
   
   
@@ -375,6 +398,33 @@
     			"name": "$name"
     		}]
     	}
+    }
+    </result>
+  </query>
+  
+  <resource method="GET" path="sector_districts/centers/{centerId}">
+    <description />
+    <call-query href="fetchCenterDistrictsByCenterId">
+      <with-param name="centerId" query-param="centerId" />
+    </call-query>
+  </resource>
+  <query id="fetchCenterDistrictsByCenterId" useConfig="entiteDS">
+    <sql>
+    	SELECT DISTINCT(sd.*) FROM centre
+    	JOIN "centreSecteur" cs ON cs."centerId" = centre.id
+    	JOIN secteur ON secteur.id = cs."sectorId"
+    	JOIN "secteurDistrict" sd ON sd."sectorId" = secteur.id
+    	WHERE centre."centerId" = :centerId
+    </sql>
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    {
+   		"data": {
+   			"centerDistricts": [{
+	   			"sectorId": $sectorId,
+	   			"districtId": $districtId
+	   		}]
+   		}
     }
     </result>
   </query>
