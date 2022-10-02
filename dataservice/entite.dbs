@@ -428,6 +428,83 @@
     }
     </result>
   </query>
+  
+  <resource method="GET" path="sector_districts/sectors/{sectorId}">
+    <description />
+    <call-query href="fetchCenterDistrictsBySectorId">
+      <with-param name="sectorId" query-param="sectorId" />
+    </call-query>
+  </resource>
+  <query id="fetchCenterDistrictsBySectorId" useConfig="entiteDS">
+    <sql>
+    	SELECT DISTINCT(sd.*) FROM secteur
+    	JOIN "secteurDistrict" sd ON sd."sectorId" = secteur.id
+    	WHERE secteur.id = :sectorId
+    </sql>
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    {
+   		"data": {
+   			"sectorDistricts": [{
+	   			"sectorId": $sectorId,
+	   			"districtId": $districtId
+	   		}]
+   		}
+    }
+    </result>
+  </query>
+  
+  <resource method="GET" path="sector_regions/centers/{centerId}">
+    <description />
+    <call-query href="fetchCenterRegionsByCenterId">
+      <with-param name="centerId" query-param="centerId" />
+    </call-query>
+  </resource>
+  <query id="fetchCenterRegionsByCenterId" useConfig="entiteDS">
+    <sql>
+    	SELECT DISTINCT(sr.*) FROM centre
+    	JOIN "centreSecteur" cs ON cs."centerId" = centre.id
+    	JOIN secteur ON secteur.id = cs."sectorId"
+    	JOIN "secteurRegion" sr ON sr."sectorId" = secteur.id
+    	WHERE centre.id = :centerId
+    </sql>
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    {
+   		"data": {
+   			"centerRegions": [{
+	   			"sectorId": $sectorId,
+	   			"regionId": $regionId
+	   		}]
+   		}
+    }
+    </result>
+  </query>
+  
+  <resource method="GET" path="sector_regions/sectors/{sectorId}">
+    <description />
+    <call-query href="fetchCenterRegionsBySectorId">
+      <with-param name="sectorId" query-param="sectorId" />
+    </call-query>
+  </resource>
+  <query id="fetchCenterRegionsBySectorId" useConfig="entiteDS">
+    <sql>
+    	SELECT DISTINCT(sr.*) FROM secteur
+    	JOIN "secteurRegion" sr ON sr."sectorId" = secteur.id
+    	WHERE secteur.id = :sectorId
+    </sql>
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    {
+   		"data": {
+   			"centerRegions": [{
+	   			"sectorId": $sectorId,
+	   			"regionId": $regionId
+	   		}]
+   		}
+    }
+    </result>
+  </query>
   <!-- #SECTOR -->
 
 
