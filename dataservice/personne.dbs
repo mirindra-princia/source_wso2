@@ -1139,8 +1139,8 @@
   </resource>
   <query id="saveUser" useConfig="personneDS">
     <sql>
-    	INSERT INTO personne("idUtilisateur",e_mail, matricule, nom, prenom) 
-    	VALUES(:id, :email, :matricule, :lastName, :firstName) RETURNING "idUtilisateur"
+    	INSERT INTO personne("idUtilisateur",e_mail, matricule, nom, prenom, "createdAt") 
+    	VALUES(:id, :email, :matricule, :lastName, :firstName, NOW()) RETURNING "idUtilisateur"
     </sql>
     <param type="IN" name="id" optional="false" sqlType="STRING" paramType="SCALAR" />
     <param type="IN" name="email" optional="false" sqlType="STRING" paramType="SCALAR" />
@@ -1229,6 +1229,31 @@
     	SELECT * FROM personne WHERE "idUtilisateur" = :uid
     </sql>
     <param type="IN" name="uid" optional="false" sqlType="STRING" paramType="SCALAR" />
+    <result outputType="json">
+    	{
+    		"personals": {
+		    		"id":"$idUtilisateur",
+		    		"email":"$e_mail", 
+		    		"matricule":"$matricule",
+		    		"firstName":"$prenom",
+		    		"lastName": "$nom",
+		    		"createdAt": "$createdAt"
+		    }
+	    }
+    </result>
+  </query>
+  
+  <resource method="POST" path="users/filter/by/email">
+    <description />
+    <call-query href="filterPersonalByEmail">
+      <with-param name="email" query-param="email" />
+    </call-query>
+  </resource>
+  <query id="filterPersonalByEmail" useConfig="personneDS">
+    <sql>
+    	SELECT * FROM personne WHERE e_mail = :email
+    </sql>
+    <param type="IN" name="email" optional="false" sqlType="STRING" paramType="SCALAR" />
     <result outputType="json">
     	{
     		"personals": {

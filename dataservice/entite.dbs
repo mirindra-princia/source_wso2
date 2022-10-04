@@ -157,6 +157,27 @@
     <result outputType="json">{"centerRegions":{"centerId":$centerId,"regionId":$regionId}}</result>
   </query>
   
+  <resource method="GET" path="centers/{centerId}/provinces/groups/{groupId}">
+    <description />
+    <call-query href="provinceByGroupCenter">
+      <with-param name="centerId" query-param="centerId" />
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="provinceByGroupCenter" useConfig="entiteDS">
+    <sql>
+    	SELECT sp.* FROM "secteurProvince" sp 
+    	JOIN secteur ON secteur.id = sp."sectorId"
+    	JOIN "centreSecteur" cs ON cs."sectorId" = secteur.id
+    	JOIN centre ON centre.id = cs."centerId"
+    	JOIN "centreGroupe" cg ON cg."centerId" = centre.id 
+    	WHERE centre.id = :centerId AND cg."groupId" = :groupId LIMIT 1
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"secteurProvinces":{"sectorId":$sectorId,"provinceId":$provinceId}}</result>
+  </query>
+  
   <resource method="POST" path="centers/filter">
     <description />
     <call-query href="centersByIds">
@@ -1056,6 +1077,25 @@
 			}
 		}
 	</result>
+  </query>
+  
+  <resource method="GET" path="antennes/groups/{groupId}/regions/{regionId}">
+    <description />
+    <call-query href="antenneByGroupRegion">
+      <with-param name="regionId" query-param="regionId" />
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="antenneByGroupRegion" useConfig="entiteDS">
+    <sql>
+    	SELECT antenne.* FROM antenne 
+    	JOIN "antenneRegion" ar ON ar."antenneId" = antenne.id
+    	JOIN "antenneGroupe" ag ON ag."antenneId" = antenne.id 
+    	WHERE antenne."regionId" = :regionId AND ag."groupId" = :groupId LIMIT 1
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="regionId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"antenne":{"id":$id,"name":"$name"}}</result>
   </query>
   <!-- #ANTENNE -->
 </data>
