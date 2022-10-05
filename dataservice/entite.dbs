@@ -811,7 +811,7 @@
   </resource>
   <query id="updateUserCenter" useConfig="entiteDS">
     <sql>
-    	UPDATE "utilisateurCentre" SET "centerId" = :centerId WHERE "userId" = :userId RETURNING "userId","centerId","isRegion"
+    	UPDATE "utilisateurCentre" SET "centerId" = :centerId, "isRegion" = :isRegion WHERE "userId" = :userId RETURNING "userId","centerId","isRegion"
     </sql>
     <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
     <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
