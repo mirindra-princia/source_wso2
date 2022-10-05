@@ -21,6 +21,7 @@
 <!--     <property name="username">postgres</property> -->
 <!--     <property name="password">postgres</property> -->
 <!--   </config> -->
+
   <query id="addNumeroDossier" useConfig="dossierSomissionDS">
     <sql>INSERT INTO public.dossier(
 	 "numeroDossier","idIpAdress")
@@ -1648,4 +1649,73 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         </sql>
         <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
     </query>
+    
+    <!-- RCS EXTRAIT LOGS -->
+    <resource path="extraits/logs" method="POST">
+        <description />
+        <call-query href="saveLog">
+            <with-param name="typeId" query-param="typeId" />
+            <with-param name="folderId" query-param="folderId" />
+            <with-param name="personUuid" query-param="personUuid" />
+            <with-param name="createdAt" query-param="createdAt" />
+        </call-query>
+    </resource>
+    <query id="saveLog" useConfig="dossierSomissionDS">
+        <sql>
+            INSERT INTO "dossierExtrait"("typeId","folderId","personUuid","createdAt") VALUES (:typeId, :folderId, :personUuid, NOW())
+        </sql>
+        <param type="IN" name="typeId" paramType="SCALAR" sqlType="INTEGER" />
+        <param type="IN" name="folderId" paramType="SCALAR" sqlType="INTEGER" />
+        <param type="IN" name="personUuid" paramType="SCALAR" sqlType="STRING" />
+        <param type="IN" name="createdAt" paramType="SCALAR" optional="true" sqlType="TIMESTAMP" />
+    </query>
+    
+    <resource path="extraits/logs" method="DELETE">
+        <description />
+        <call-query href="removeLog">
+            <with-param name="typeId" query-param="typeId" />
+            <with-param name="folderId" query-param="folderId" />
+            <with-param name="personUuid" query-param="personUuid" />
+        </call-query>
+    </resource>
+    <query id="removeLog" useConfig="dossierSomissionDS">
+        <sql>
+            DELETE FROM "dossierExtrait" WHERE "typeId" = :typeId AND "folderId" = :folderId AND "personUuid" = :personUuid
+        </sql>
+        <param type="IN" name="typeId" paramType="SCALAR" sqlType="INTEGER" />
+        <param type="IN" name="folderId" paramType="SCALAR" sqlType="INTEGER" />
+        <param type="IN" name="personUuid" paramType="SCALAR" sqlType="STRING" />
+    </query>
+    
+    <resource path="extraits/logs/{folderId}" method="GET">
+        <description />
+        <call-query href="fetchLogs">
+            <with-param name="folderId" query-param="folderId" />
+        </call-query>
+    </resource>
+    <query id="fetchLogs" useConfig="dossierSomissionDS">
+        <sql>
+            SELECT * FROM "dossierExtrait" 
+            JOIN extrait ON id = "typeId"
+            WHERE "folderId" = :folderId
+        </sql>
+        <param type="IN" name="folderId" paramType="SCALAR" sqlType="INTEGER" />
+        <result outputType="json">
+        	{
+        		"data": {
+        			"logs": [{
+        				"typeId": $typeId,
+        				"folderId": $folderId,
+	    				"personUuid": "$personUuid",
+	    				"createdAt": "$createdAt",
+	    				"type": {
+	    					"id": $id,
+	    					"name": "$name"
+	    				}
+	    			}]
+	    		} 
+        	}
+        </result>
+    </query>
+    <!-- #RCS EXTRAIT LOGS -->
 </data>
