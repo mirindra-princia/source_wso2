@@ -1614,4 +1614,38 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         </result>
     </query>
     <!-- #USER MANAGEMENT -->
+
+    <resource method="POST" path="prendreDossier">
+        <description />
+        <call-query href="prendreDossier">
+            <with-param name="idDossier" query-param="idDossier" />
+            <with-param name="person_uuid" query-param="person_uuid" />
+            <with-param name="etat" query-param="etat" />
+        </call-query>
+    </resource>
+
+    <query id="prendreDossier" useConfig="dossierSomissionDS">
+        <sql>
+            INSERT INTO public."dossier_etat"(
+            "idDossier", "etat", "person_uuid")
+            VALUES (:idDossier, :etat, :person_uuid);
+        </sql>
+        <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
+        <param type="IN" name="etat" paramType="SCALAR" sqlType="STRING" />
+        <param type="IN" name="person_uuid" paramType="SCALAR" sqlType="STRING" />
+    </query>
+
+    <resource  path="libererDossier" method="DELETE">
+        <description />
+        <call-query href="libererDossier">
+            <with-param name="id" query-param="id" />
+        </call-query>
+    </resource>
+
+    <query id="libererDossier" useConfig="dossierSomissionDS">
+        <sql>
+            DELETE FROM public."dossier_etat" WHERE "id"=:id ;
+        </sql>
+        <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    </query>
 </data>
