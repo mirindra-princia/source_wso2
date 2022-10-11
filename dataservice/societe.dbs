@@ -15,7 +15,6 @@
     <property name="password">devedbmdb</property>
   </config>
   <!-- CONFIGURATION DEV -->
-
 <!--  <config id="societeDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/societe</property> -->
@@ -1222,9 +1221,24 @@
 	</result>
   </query>
   <query id="relativeCorporate" useConfig="societeDS">
-    <sql>SELECT "denominationSocial" FROM public.societe WHERE LOWER("denominationSocial") LIKE CONCAT(:corporate,'%')</sql>
+    <sql>
+    	WITH
+	    name AS (VALUES (:corporate))
+    	SELECT "denominationSocial", sigle, "nomCommercial" FROM public.societe 
+    	WHERE LOWER("denominationSocial") LIKE CONCAT((table name),'%') OR LOWER(sigle) LIKE CONCAT((table name),'%') OR LOWER("nomCommercial") LIKE CONCAT((table name),'%')
+    </sql>
     <param type="IN" name="corporate" sqlType="STRING" paramType="SCALAR" optional="false" />
-    <result outputType="json">{"data":{"corporates":[{"denomination":"$denominationSocial"}]}}</result>
+    <result outputType="json">
+    	{
+    		"data":{
+    			"corporates":[{
+    				"denominationSocial":"$denominationSocial",
+    				"sigle": "$sigle",
+    				"nomCommerical": "$nomCommercial"
+    			}]
+    		}
+    	}
+    </result>
   </query>
   <query id="companyByDenomination" useConfig="societeDS">
     <sql>SELECT societe.* FROM public.societe WHERE LOWER("denominationSocial") = LOWER(:denomination)</sql>
