@@ -1527,6 +1527,8 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         <description />
         <call-query href="fetchFolderInListAsc">
             <with-param name="ids" query-param="ids" />
+            <with-param name="limit" query-param="limit" />
+            <with-param name="offset" query-param="offset" />
         </call-query>
     </resource>
     <query id="fetchFolderInListAsc" useConfig="dossierSomissionDS">
@@ -1534,9 +1536,11 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
             SELECT dossier.*, de.person_uuid, de.etat, de.id FROM dossier 
             LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier"
             WHERE dossier."idDossier" IN (:ids)
-            ORDER BY "dateSoumission" ASC
+            ORDER BY "dateSoumission" ASC LIMIT :limit OFFSET :offset
         </sql>
         <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+        <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
+        <param type="IN" name="offset" paramType="SCALAR" sqlType="INTEGER" />
         <result outputType="json">
             {
             	"data": {
@@ -1564,6 +1568,8 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         <description />
         <call-query href="fetchFolderInListDesc">
             <with-param name="ids" query-param="ids" />
+            <with-param name="limit" query-param="limit" />
+            <with-param name="offset" query-param="offset" />
         </call-query>
     </resource>
     <query id="fetchFolderInListDesc" useConfig="dossierSomissionDS">
@@ -1571,9 +1577,11 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
             SELECT dossier.*, de.person_uuid, de.etat, de.id FROM dossier 
             LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier"
             WHERE dossier."idDossier" IN (:ids)
-            ORDER BY "dateSoumission" DESC
+            ORDER BY "dateSoumission" DESC LIMIT :limit OFFSET :offset
         </sql>
         <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+        <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
+        <param type="IN" name="offset" paramType="SCALAR" sqlType="INTEGER" />
         <result outputType="json">
             {
             	"data": {
