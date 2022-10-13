@@ -1415,7 +1415,7 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
     </call-query>
   </resource>
   
-  
+  <!-- FOLDER FILTER  -->
   <resource path="filter/by/number/{number}" method="GET">
     <description>filter folder by number</description>
     <call-query href="filterFolderByNumber">
@@ -1448,6 +1448,217 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
 	    }
     </result>
   </query>
+  
+  <resource path="folders/list" method="POST">
+        <description />
+        <call-query href="fetchFolderInListAsc">
+            <with-param name="ids" query-param="ids" />
+            <with-param name="status" query-param="status" />
+            <with-param name="limit" query-param="limit" />
+            <with-param name="offset" query-param="offset" />
+        </call-query>
+    </resource>
+    <query id="fetchFolderInListAsc" useConfig="dossierSomissionDS">
+        <sql>
+            SELECT dossier.*, de.person_uuid, de.etat, de.id FROM dossier 
+            LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier"
+            WHERE dossier."idDossier" IN (:ids) AND "idStatutDossier" IN (:status)
+            ORDER BY "dateSoumission" ASC LIMIT :limit OFFSET :offset
+        </sql>
+        <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+        <param type="IN" name="status" paramType="ARRAY" sqlType="INTEGER" />
+        <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
+        <param type="IN" name="offset" paramType="SCALAR" sqlType="INTEGER" />
+        <result outputType="json">
+            {
+            	"data": {
+            		"folders": [{
+            			"idDossier":"$idDossier",
+            			"dateSoumission":"$dateSoumission",
+			            "idStatutDepot":"$idStatutDepot", 
+			            "idStatutValidation":"$idStatutValidation", 
+			            "rdvDepot":"$rdvDepot",
+			            "numeroDossier":"$numeroDossier", 
+			            "updated_at":"$updated_at", 
+			            "idStatutDossier":"$idStatutDossier",
+			            "idProgression": $idProgression, 
+			            "createdAt":"$createdAt", 
+			            "person_uuid":"$person_uuid",
+			            "etat":"$etat",
+			            "idEtatDossier":"$id" 	
+            		}]
+            	}
+            }
+        </result>
+    </query>
+    
+    <resource path="folders/list" method="POST">
+        <description />
+        <call-query href="fetchFolderInListDesc">
+            <with-param name="ids" query-param="ids" />
+            <with-param name="status" query-param="status" />
+            <with-param name="limit" query-param="limit" />
+            <with-param name="offset" query-param="offset" />
+        </call-query>
+    </resource>
+    <query id="fetchFolderInListDesc" useConfig="dossierSomissionDS">
+        <sql>
+            SELECT dossier.*, de.person_uuid, de.etat, de.id FROM dossier 
+            LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier"
+            WHERE dossier."idDossier" IN (:ids) AND "idStatutDossier" IN (:status)
+            ORDER BY "dateSoumission" DESC LIMIT :limit OFFSET :offset
+        </sql>
+        <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+        <param type="IN" name="status" paramType="ARRAY" sqlType="INTEGER" />
+        <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
+        <param type="IN" name="offset" paramType="SCALAR" sqlType="INTEGER" />
+        <result outputType="json">
+            {
+            	"data": {
+            		"folders": [{
+            			"idDossier":"$idDossier",
+            			"dateSoumission":"$dateSoumission",
+			            "idStatutDepot":"$idStatutDepot", 
+			            "idStatutValidation":"$idStatutValidation", 
+			            "rdvDepot":"$rdvDepot",
+			            "numeroDossier":"$numeroDossier", 
+			            "updated_at":"$updated_at", 
+			            "idStatutDossier":"$idStatutDossier",
+			            "idProgression": $idProgression, 
+			            "createdAt":"$createdAt", 
+			            "person_uuid":"$person_uuid",
+			            "etat":"$etat",
+			            "idEtatDossier":"$id" 	
+            		}]
+            	}
+            }
+        </result>
+    </query>
+    
+    <resource path="folders/list/count" method="POST">
+        <description />
+        <call-query href="fetchFolderInListCounter">
+            <with-param name="ids" query-param="ids" />
+            <with-param name="status" query-param="status" />
+        </call-query>
+    </resource>
+    <query id="fetchFolderInListCounter" useConfig="dossierSomissionDS">
+        <sql>
+            SELECT COUNT(dossier.*) as count FROM dossier
+            WHERE "idDossier" IN (:ids) AND "idStatutDossier" IN (:status)
+        </sql>
+        <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+        <param type="IN" name="status" paramType="ARRAY" sqlType="INTEGER" />
+        <result outputType="json">
+            {"counter": {
+	    		"count": $count
+	    	}}
+        </result>
+    </query>
+    
+    <resource path="folders" method="POST">
+        <description />
+        <call-query href="fetchFolderAsc">
+        	<with-param name="status" query-param="status" />
+            <with-param name="limit" query-param="limit" />
+            <with-param name="offset" query-param="offset" />
+        </call-query>
+    </resource>
+    <query id="fetchFolderAsc" useConfig="dossierSomissionDS">
+        <sql>
+            SELECT dossier.*, de.person_uuid, de.etat, de.id, de."createdAt" as etatDossierCreatedAt FROM dossier 
+            LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier"
+            WHERE "idStatutDossier" IN (:status)
+            ORDER BY "dateSoumission" ASC LIMIT :limit OFFSET :offset
+        </sql>
+        <param type="IN" name="status" paramType="ARRAY" sqlType="INTEGER" />
+        <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
+        <param type="IN" name="offset" paramType="SCALAR" sqlType="INTEGER" />
+        <result outputType="json">
+            {
+            	"data": {
+            		"folders": [{
+            			"idDossier":"$idDossier",
+            			"dateSoumission":"$dateSoumission",
+			            "idStatutDepot":"$idStatutDepot", 
+			            "idStatutValidation":"$idStatutValidation", 
+			            "rdvDepot":"$rdvDepot",
+			            "numeroDossier":"$numeroDossier", 
+			            "updated_at":"$updated_at", 
+			            "idStatutDossier":"$idStatutDossier",
+			            "idProgression": $idProgression, 
+			            "createdAt":"$createdAt", 
+			            "person_uuid":"$person_uuid",
+			            "etat":"$etat",
+			            "idEtatDossier":"$id",
+			            "etatDossierCreatedAt": "$etatDossierCreatedAt"
+            		}]
+            	}
+            }
+        </result>
+    </query>
+    
+    <resource path="folders" method="POST">
+        <description />
+        <call-query href="fetchFolderDesc">
+            <with-param name="status" query-param="status" />
+            <with-param name="limit" query-param="limit" />
+            <with-param name="offset" query-param="offset" />
+        </call-query>
+    </resource>
+    <query id="fetchFolderDesc" useConfig="dossierSomissionDS">
+        <sql>
+            SELECT dossier.*, de.person_uuid, de.etat, de.id, de."createdAt" as etatDossierCreatedAt FROM dossier 
+            LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier"
+            WHERE "idStatutDossier" IN (:status)
+            ORDER BY "dateSoumission" DESC LIMIT :limit OFFSET :offset
+        </sql>
+        <param type="IN" name="status" paramType="ARRAY" sqlType="INTEGER" />
+        <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
+        <param type="IN" name="offset" paramType="SCALAR" sqlType="INTEGER" />
+        <result outputType="json">
+            {
+            	"data": {
+            		"folders": [{
+            			"idDossier":"$idDossier",
+            			"dateSoumission":"$dateSoumission",
+			            "idStatutDepot":"$idStatutDepot", 
+			            "idStatutValidation":"$idStatutValidation", 
+			            "rdvDepot":"$rdvDepot",
+			            "numeroDossier":"$numeroDossier", 
+			            "updated_at":"$updated_at", 
+			            "idStatutDossier":"$idStatutDossier",
+			            "idProgression": $idProgression, 
+			            "createdAt":"$createdAt", 
+			            "person_uuid":"$person_uuid",
+			            "etat":"$etat",
+			            "idEtatDossier":"$id",
+			            "etatDossierCreatedAt": "$etatDossierCreatedAt"
+            		}]
+            	}
+            }
+        </result>
+    </query>
+    
+    <resource path="folders/count" method="POST">
+        <description />
+        <call-query href="fetchFolderCounter">	
+        	<with-param name="status" query-param="status" />
+        </call-query>
+    </resource>
+    <query id="fetchFolderCounter" useConfig="dossierSomissionDS">
+        <sql>
+            SELECT COUNT(dossier.*) as count FROM dossier 
+            WHERE "idStatutDossier" IN (:status)
+        </sql>
+        <param type="IN" name="status" paramType="ARRAY" sqlType="INTEGER" />
+        <result outputType="json">
+            {"counter": {
+	    		"count": $count
+	    	}}
+        </result>
+    </query>
+  <!-- #FOLDER FILTER  -->
   
   <!-- RCS REQUESTS -->
   <resource method="GET" path="rcs/extraits">
@@ -1521,108 +1732,6 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
             {"data": {"etats": [{"person_uuid":"$person_uuid","etat":"$etat","idEtatDossier":"$id", "etatDossierCreatedAt": "$createdAt"}]}}
         </result>
     </query>
-    
-    <!-- USER MANAGEMENT -->
-    <resource path="folders/list" method="POST">
-        <description />
-        <call-query href="fetchFolderInListAsc">
-            <with-param name="ids" query-param="ids" />
-            <with-param name="limit" query-param="limit" />
-            <with-param name="offset" query-param="offset" />
-        </call-query>
-    </resource>
-    <query id="fetchFolderInListAsc" useConfig="dossierSomissionDS">
-        <sql>
-            SELECT dossier.*, de.person_uuid, de.etat, de.id FROM dossier 
-            LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier"
-            WHERE dossier."idDossier" IN (:ids)
-            ORDER BY "dateSoumission" ASC LIMIT :limit OFFSET :offset
-        </sql>
-        <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
-        <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
-        <param type="IN" name="offset" paramType="SCALAR" sqlType="INTEGER" />
-        <result outputType="json">
-            {
-            	"data": {
-            		"folders": [{
-            			"idDossier":"$idDossier",
-            			"dateSoumission":"$dateSoumission",
-			            "idStatutDepot":"$idStatutDepot", 
-			            "idStatutValidation":"$idStatutValidation", 
-			            "rdvDepot":"$rdvDepot",
-			            "numeroDossier":"$numeroDossier", 
-			            "updated_at":"$updated_at", 
-			            "idStatutDossier":"$idStatutDossier",
-			            "idProgression": $idProgression, 
-			            "createdAt":"$createdAt", 
-			            "person_uuid":"$person_uuid",
-			            "etat":"$etat",
-			            "idEtatDossier":"$id" 	
-            		}]
-            	}
-            }
-        </result>
-    </query>
-    
-    <resource path="folders/list" method="POST">
-        <description />
-        <call-query href="fetchFolderInListDesc">
-            <with-param name="ids" query-param="ids" />
-            <with-param name="limit" query-param="limit" />
-            <with-param name="offset" query-param="offset" />
-        </call-query>
-    </resource>
-    <query id="fetchFolderInListDesc" useConfig="dossierSomissionDS">
-        <sql>
-            SELECT dossier.*, de.person_uuid, de.etat, de.id FROM dossier 
-            LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier"
-            WHERE dossier."idDossier" IN (:ids)
-            ORDER BY "dateSoumission" DESC LIMIT :limit OFFSET :offset
-        </sql>
-        <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
-        <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
-        <param type="IN" name="offset" paramType="SCALAR" sqlType="INTEGER" />
-        <result outputType="json">
-            {
-            	"data": {
-            		"folders": [{
-            			"idDossier":"$idDossier",
-            			"dateSoumission":"$dateSoumission",
-			            "idStatutDepot":"$idStatutDepot", 
-			            "idStatutValidation":"$idStatutValidation", 
-			            "rdvDepot":"$rdvDepot",
-			            "numeroDossier":"$numeroDossier", 
-			            "updated_at":"$updated_at", 
-			            "idStatutDossier":"$idStatutDossier",
-			            "idProgression": $idProgression, 
-			            "createdAt":"$createdAt", 
-			            "person_uuid":"$person_uuid",
-			            "etat":"$etat",
-			            "idEtatDossier":"$id" 	
-            		}]
-            	}
-            }
-        </result>
-    </query>
-    
-    <resource path="folders/list/count" method="POST">
-        <description />
-        <call-query href="fetchFolderInListCounter">
-            <with-param name="ids" query-param="ids" />
-        </call-query>
-    </resource>
-    <query id="fetchFolderInListCounter" useConfig="dossierSomissionDS">
-        <sql>
-            SELECT COUNT(dossier.*) as count FROM dossier WHERE "idDossier" IN (:ids)
-        </sql>
-        <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
-        <result outputType="json">
-            {"counter": {
-	    		"count": $count
-	    	}}
-        </result>
-    </query>
-    <!-- #USER MANAGEMENT -->
 
     <resource method="POST" path="prendreDossier">
         <description />
