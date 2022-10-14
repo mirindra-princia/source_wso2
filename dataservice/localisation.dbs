@@ -1,17 +1,17 @@
 <data transports="http https" serviceGroup="mg.gov.edbm.societe.localisationDS" name="localisation">
   <description>Service adresse</description>
-   <config id="localisationDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://13.246.0.44:5432/localisation</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config>
 <!--    <config id="localisationDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://localhost:5432/localisation</property> -->
-<!--     <property name="username">postgres</property> -->
-<!--     <property name="password">postgres</property> -->
+<!--     <property name="url">jdbc:postgresql://13.246.0.44:5432/localisation</property> -->
+<!--     <property name="username">devedbmdb</property> -->
+<!--     <property name="password">devedbmdb</property> -->
 <!--   </config> -->
+   <config id="localisationDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/localisation</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config>
   <resource method="GET" path="province">
     <description>List of all province</description>
     <call-query href="selectAllProvinces" />
@@ -220,9 +220,11 @@
 	FROM public.borough, public.fokontany WHERE  borough.id=fokontany.borough_id;</sql>
   </query>
   <query id="selectArrondissementCommuneDistrict" useConfig="localisationDS">
-    <sql>SELECT borough.id as b_id, borough.name as b, borough.common_id,common.name as c,district.id as d_id,district.name as d,region.id as r_id,province.id as p_id
-	FROM public.borough,public.common,public.district,public.region,public.province 
-	WHERE   common.id=borough.common_id AND district.id=common.district_id AND region.id=district.region_id AND province.id=region.province_id AND province.id=ANY(:idProvince::int[])</sql>
+    <sql>
+    	SELECT borough.id as b_id, borough.name as b, borough.common_id,common.name as c,district.id as d_id,district.name as d,region.id as r_id,province.id as p_id
+		FROM public.borough,public.common,public.district,public.region,public.province 
+		WHERE   common.id=borough.common_id AND district.id=common.district_id AND region.id=district.region_id AND province.id=region.province_id AND province.id=ANY(:idProvince::int[])
+	</sql>
     <param type="IN" name="idProvince" paramType="ARRAY" sqlType="STRING" />
     <result outputType="json">{"arrs":{"arr":[{"bId":"$b_id","b":"$b","cId":"$common_id","dId":"$d_id","d":"$d","rId":"$r_id","pId":"$p_id"}]}}
 

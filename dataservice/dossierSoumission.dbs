@@ -1456,12 +1456,14 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
             <with-param name="status" query-param="status" />
             <with-param name="limit" query-param="limit" />
             <with-param name="offset" query-param="offset" />
+            <with-param name="group" query-param="group" />
         </call-query>
     </resource>
     <query id="fetchFolderInListAsc" useConfig="dossierSomissionDS">
         <sql>
-            SELECT dossier.*, de.person_uuid, de.etat, de.id FROM dossier 
-            LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier"
+            SELECT dossier.*, de.id AS stateId, de.person_uuid AS statePersonUid, de.group AS stateGroup, de."createdAt" AS stateCreatedAt
+            FROM dossier 
+            LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier" AND de.group = :group
             WHERE dossier."idDossier" IN (:ids) AND "idStatutDossier" IN (:status)
             ORDER BY "dateSoumission" ASC LIMIT :limit OFFSET :offset
         </sql>
@@ -1469,23 +1471,35 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         <param type="IN" name="status" paramType="ARRAY" sqlType="INTEGER" />
         <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
         <param type="IN" name="offset" paramType="SCALAR" sqlType="INTEGER" />
+        <param type="IN" name="group" paramType="SCALAR" sqlType="STRING" />
         <result outputType="json">
             {
             	"data": {
             		"folders": [{
-            			"idDossier":"$idDossier",
-            			"dateSoumission":"$dateSoumission",
-			            "idStatutDepot":"$idStatutDepot", 
-			            "idStatutValidation":"$idStatutValidation", 
-			            "rdvDepot":"$rdvDepot",
-			            "numeroDossier":"$numeroDossier", 
-			            "updated_at":"$updated_at", 
-			            "idStatutDossier":"$idStatutDossier",
-			            "idProgression": $idProgression, 
-			            "createdAt":"$createdAt", 
-			            "person_uuid":"$person_uuid",
-			            "etat":"$etat",
-			            "idEtatDossier":"$id" 	
+            			"folder": {
+            				"idDossier":$idDossier,
+					    	"lienDossier": "$lienDossier",
+					    	"dateSoumission": "$dateSoumission",
+					    	"idStatutDepot": $idStatutDepot,
+					    	"idStatutValidation": $idStatutValidation,
+					    	"rdvDepot": "$rdvDepot",
+					    	"numeroDossier": "$numeroDossier",
+					    	"idStatutDossier": $idStatutDossier,
+					    	"idStatutCommentaire": $idStatutCommentaire,
+					    	"idIpAdress": "$idIpAdress",
+					    	"updated_at": "$updated_at",
+					    	"step": $step,
+					    	"createdAt": "$createdAt",
+					    	"idHistoriquePaiement": $idHistoriquePaiement,
+					    	"idProgression": $idProgression
+            			},
+            			"state": {
+            				"id":"$stateId",
+            				"idDossier":"$idDossier",
+            				"person_uuid":"$statePersonUid",
+				            "group":"$stateGroup",
+				            "createdAt": "$stateCreatedAt"
+            			}
             		}]
             	}
             }
@@ -1499,12 +1513,14 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
             <with-param name="status" query-param="status" />
             <with-param name="limit" query-param="limit" />
             <with-param name="offset" query-param="offset" />
+            <with-param name="group" query-param="group" />
         </call-query>
     </resource>
     <query id="fetchFolderInListDesc" useConfig="dossierSomissionDS">
         <sql>
-            SELECT dossier.*, de.person_uuid, de.etat, de.id FROM dossier 
-            LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier"
+            SELECT dossier.*, de.id AS stateId, de.person_uuid AS statePersonUid, de.group AS stateGroup, de."createdAt" AS stateCreatedAt
+            FROM dossier 
+            LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier" AND de.group = :group
             WHERE dossier."idDossier" IN (:ids) AND "idStatutDossier" IN (:status)
             ORDER BY "dateSoumission" DESC LIMIT :limit OFFSET :offset
         </sql>
@@ -1512,23 +1528,35 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         <param type="IN" name="status" paramType="ARRAY" sqlType="INTEGER" />
         <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
         <param type="IN" name="offset" paramType="SCALAR" sqlType="INTEGER" />
+        <param type="IN" name="group" paramType="SCALAR" sqlType="STRING" />
         <result outputType="json">
             {
             	"data": {
             		"folders": [{
-            			"idDossier":"$idDossier",
-            			"dateSoumission":"$dateSoumission",
-			            "idStatutDepot":"$idStatutDepot", 
-			            "idStatutValidation":"$idStatutValidation", 
-			            "rdvDepot":"$rdvDepot",
-			            "numeroDossier":"$numeroDossier", 
-			            "updated_at":"$updated_at", 
-			            "idStatutDossier":"$idStatutDossier",
-			            "idProgression": $idProgression, 
-			            "createdAt":"$createdAt", 
-			            "person_uuid":"$person_uuid",
-			            "etat":"$etat",
-			            "idEtatDossier":"$id" 	
+            			"folder": {
+            				"idDossier":$idDossier,
+					    	"lienDossier": "$lienDossier",
+					    	"dateSoumission": "$dateSoumission",
+					    	"idStatutDepot": $idStatutDepot,
+					    	"idStatutValidation": $idStatutValidation,
+					    	"rdvDepot": "$rdvDepot",
+					    	"numeroDossier": "$numeroDossier",
+					    	"idStatutDossier": $idStatutDossier,
+					    	"idStatutCommentaire": $idStatutCommentaire,
+					    	"idIpAdress": "$idIpAdress",
+					    	"updated_at": "$updated_at",
+					    	"step": $step,
+					    	"createdAt": "$createdAt",
+					    	"idHistoriquePaiement": $idHistoriquePaiement,
+					    	"idProgression": $idProgression
+            			},
+            			"state": {
+            				"id":"$stateId",
+            				"idDossier":"$idDossier",
+            				"person_uuid":"$statePersonUid",
+				            "group":"$stateGroup",
+				            "createdAt": "$stateCreatedAt"
+            			}
             		}]
             	}
             }
@@ -1562,36 +1590,49 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         	<with-param name="status" query-param="status" />
             <with-param name="limit" query-param="limit" />
             <with-param name="offset" query-param="offset" />
+            <with-param name="group" query-param="group" />
         </call-query>
     </resource>
     <query id="fetchFolderAsc" useConfig="dossierSomissionDS">
         <sql>
-            SELECT dossier.*, de.person_uuid, de.etat, de.id, de."createdAt" as etatDossierCreatedAt FROM dossier 
-            LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier"
+            SELECT dossier.*, de.id AS stateId, de.person_uuid AS statePersonUid, de.group AS stateGroup, de."createdAt" AS stateCreatedAt
+            FROM dossier 
+            LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier" AND de.group = :group
             WHERE "idStatutDossier" IN (:status)
             ORDER BY "dateSoumission" ASC LIMIT :limit OFFSET :offset
         </sql>
         <param type="IN" name="status" paramType="ARRAY" sqlType="INTEGER" />
         <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
         <param type="IN" name="offset" paramType="SCALAR" sqlType="INTEGER" />
+        <param type="IN" name="group" paramType="SCALAR" sqlType="STRING" />
         <result outputType="json">
             {
             	"data": {
             		"folders": [{
-            			"idDossier":"$idDossier",
-            			"dateSoumission":"$dateSoumission",
-			            "idStatutDepot":"$idStatutDepot", 
-			            "idStatutValidation":"$idStatutValidation", 
-			            "rdvDepot":"$rdvDepot",
-			            "numeroDossier":"$numeroDossier", 
-			            "updated_at":"$updated_at", 
-			            "idStatutDossier":"$idStatutDossier",
-			            "idProgression": $idProgression, 
-			            "createdAt":"$createdAt", 
-			            "person_uuid":"$person_uuid",
-			            "etat":"$etat",
-			            "idEtatDossier":"$id",
-			            "etatDossierCreatedAt": "$etatDossierCreatedAt"
+            			"folder": {
+            				"idDossier":$idDossier,
+					    	"lienDossier": "$lienDossier",
+					    	"dateSoumission": "$dateSoumission",
+					    	"idStatutDepot": $idStatutDepot,
+					    	"idStatutValidation": $idStatutValidation,
+					    	"rdvDepot": "$rdvDepot",
+					    	"numeroDossier": "$numeroDossier",
+					    	"idStatutDossier": $idStatutDossier,
+					    	"idStatutCommentaire": $idStatutCommentaire,
+					    	"idIpAdress": "$idIpAdress",
+					    	"updated_at": "$updated_at",
+					    	"step": $step,
+					    	"createdAt": "$createdAt",
+					    	"idHistoriquePaiement": $idHistoriquePaiement,
+					    	"idProgression": $idProgression
+            			},
+            			"state": {
+            				"id":"$stateId",
+            				"idDossier":"$idDossier",
+            				"person_uuid":"$statePersonUid",
+				            "group":"$stateGroup",
+				            "createdAt": "$stateCreatedAt"
+            			}
             		}]
             	}
             }
@@ -1604,36 +1645,49 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
             <with-param name="status" query-param="status" />
             <with-param name="limit" query-param="limit" />
             <with-param name="offset" query-param="offset" />
+            <with-param name="group" query-param="group" />
         </call-query>
     </resource>
     <query id="fetchFolderDesc" useConfig="dossierSomissionDS">
         <sql>
-            SELECT dossier.*, de.person_uuid, de.etat, de.id, de."createdAt" as etatDossierCreatedAt FROM dossier 
-            LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier"
+            SELECT dossier.*, de.id AS stateId, de.person_uuid AS statePersonUid, de.group AS stateGroup, de."createdAt" AS stateCreatedAt
+            FROM dossier 
+            LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier" AND de.group = :group
             WHERE "idStatutDossier" IN (:status)
             ORDER BY "dateSoumission" DESC LIMIT :limit OFFSET :offset
         </sql>
         <param type="IN" name="status" paramType="ARRAY" sqlType="INTEGER" />
         <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
         <param type="IN" name="offset" paramType="SCALAR" sqlType="INTEGER" />
+        <param type="IN" name="group" paramType="SCALAR" sqlType="STRING" />
         <result outputType="json">
             {
             	"data": {
             		"folders": [{
-            			"idDossier":"$idDossier",
-            			"dateSoumission":"$dateSoumission",
-			            "idStatutDepot":"$idStatutDepot", 
-			            "idStatutValidation":"$idStatutValidation", 
-			            "rdvDepot":"$rdvDepot",
-			            "numeroDossier":"$numeroDossier", 
-			            "updated_at":"$updated_at", 
-			            "idStatutDossier":"$idStatutDossier",
-			            "idProgression": $idProgression, 
-			            "createdAt":"$createdAt", 
-			            "person_uuid":"$person_uuid",
-			            "etat":"$etat",
-			            "idEtatDossier":"$id",
-			            "etatDossierCreatedAt": "$etatDossierCreatedAt"
+            			"folder": {
+            				"idDossier":$idDossier,
+					    	"lienDossier": "$lienDossier",
+					    	"dateSoumission": "$dateSoumission",
+					    	"idStatutDepot": $idStatutDepot,
+					    	"idStatutValidation": $idStatutValidation,
+					    	"rdvDepot": "$rdvDepot",
+					    	"numeroDossier": "$numeroDossier",
+					    	"idStatutDossier": $idStatutDossier,
+					    	"idStatutCommentaire": $idStatutCommentaire,
+					    	"idIpAdress": "$idIpAdress",
+					    	"updated_at": "$updated_at",
+					    	"step": $step,
+					    	"createdAt": "$createdAt",
+					    	"idHistoriquePaiement": $idHistoriquePaiement,
+					    	"idProgression": $idProgression
+            			},
+            			"state": {
+            				"id":"$stateId",
+            				"idDossier":"$idDossier",
+            				"person_uuid":"$statePersonUid",
+				            "group":"$stateGroup",
+				            "createdAt": "$stateCreatedAt"
+            			}
             		}]
             	}
             }
@@ -1737,20 +1791,21 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         <description />
         <call-query href="prendreDossier">
             <with-param name="idDossier" query-param="idDossier" />
+            <with-param name="createdAt" query-param="createdAt" />
             <with-param name="person_uuid" query-param="person_uuid" />
-            <with-param name="etat" query-param="etat" />
+            <with-param name="group" query-param="group" />
         </call-query>
     </resource>
 
     <query id="prendreDossier" useConfig="dossierSomissionDS">
         <sql>
-            INSERT INTO public."dossier_etat"(
-            "idDossier", "etat", "person_uuid")
-            VALUES (:idDossier, :etat, :person_uuid);
+            INSERT INTO public."dossier_etat"("idDossier", "person_uuid", "group")
+            VALUES (:idDossier, :person_uuid, :group);
         </sql>
         <param type="IN" name="idDossier" paramType="SCALAR" sqlType="INTEGER" />
-        <param type="IN" name="etat" paramType="SCALAR" sqlType="STRING" />
+        <param type="IN" name="createdAt" paramType="SCALAR" sqlType="STRING" optional="true" />
         <param type="IN" name="person_uuid" paramType="SCALAR" sqlType="STRING" />
+        <param type="IN" name="group" paramType="SCALAR" sqlType="STRING" optional="true" />
     </query>
 
     <resource  path="libererDossier" method="DELETE">
