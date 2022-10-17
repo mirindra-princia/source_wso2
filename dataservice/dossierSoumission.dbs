@@ -1895,4 +1895,34 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         </result>
     </query>
     <!-- #RCS EXTRAIT LOGS -->
+    
+    <!-- FOLDER STATES -->
+    <resource path="states/folders/{folderId}/groups/{groupId}" method="GET">
+        <description />
+        <call-query href="GetFolderState">
+            <with-param name="folderId" query-param="folderId" />
+            <with-param name="group" query-param="groupId" />
+        </call-query>
+    </resource>
+    <query id="GetFolderState" useConfig="dossierSomissionDS">
+        <sql>
+            SELECT id AS stateId, person_uuid AS statePersonUid, "group" AS stateGroup, "createdAt" AS stateCreatedAt, "idDossier" AS "idDossier"
+            FROM public.dossier_etat
+            WHERE "idDossier" = :folderId AND "group" = :group LIMIT 1
+        </sql>
+        <param type="IN" name="folderId" paramType="SCALAR" sqlType="INTEGER" />
+        <param type="IN" name="group" paramType="SCALAR" sqlType="STRING" />
+        <result outputType="json">
+            {
+            	"state": {
+	  				"id":"$stateId",
+	  				"idDossier":"$idDossier",
+	  				"person_uuid":"$statePersonUid",
+		            "group":"$stateGroup",
+		            "createdAt": "$stateCreatedAt"
+       			}
+            }
+        </result>
+    </query>
+    <!-- #FODLER STATES -->
 </data>
