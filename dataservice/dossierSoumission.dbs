@@ -616,11 +616,14 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
   </query>
   <query id="updateFactureState" useConfig="dossierSomissionDS">
     <sql>UPDATE public.facture 
-	 SET "statutPaiement" =:statutPaiement, "statutUpdatedAt" = CURRENT_TIMESTAMP, "receivedby" =:receivedby
+	 SET "statutPaiement" =:statutPaiement, "statutUpdatedAt" = CURRENT_TIMESTAMP, "receivedby" =:receivedby,
+        "idModePaiement" =:idModePaiement, "numTransaction" =:numTransaction
 	WHERE "id"= :id</sql>
     <param type="IN" name="statutPaiement" paramType="SCALAR" sqlType="STRING" optional="false" />
     <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" optional="false" />
     <param type="IN" name="receivedby" paramType="SCALAR" sqlType="STRING" optional="false" />
+    <param type="IN" name="idModePaiement" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="numTransaction" paramType="SCALAR" sqlType="STRING" optional="true" />
   </query>
   <query id="factureByFolder" useConfig="dossierSomissionDS">
     <sql>SELECT "id", "idDossier", "numTransaction", "statutPaiement", 
@@ -1338,6 +1341,8 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
       <with-param name="statutPaiement" query-param="statutPaiement" />
       <with-param name="id" query-param="id" />
       <with-param name="receivedby" query-param="receivedby" />
+      <with-param name="idModePaiement" query-param="idModePaiement" />
+      <with-param name="numTransaction" query-param="numTransaction" />
     </call-query>
   </resource>
   <resource path="bills/byFolder/{idDossier}" method="GET">
