@@ -2008,5 +2008,18 @@
       }
     </result>
   </query>
+  <resource path="checkDenominationSocliale" method="PUT">
+    <description />
+    <call-query href="checkDenominationSocliale">
+      <with-param name="idSociete" query-param="idSociete" />
+      <with-param name="isDenominationChecked" query-param="isDenominationChecked" />
+    </call-query>
+  </resource>
+  <query id="checkDenominationSocliale" useConfig="societeDS">
+    <sql>UPDATE societe set "isDenominationChecked" =:isDenominationChecked where "idSociete" =:idSociete</sql>
+    <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER"/>
+    <param type="IN" name="isDenominationChecked" paramType="SCALAR" sqlType="BOOLEAN"/>
+  </query>
+
   <!-- #USER MANAGEMENT -->
 </data>
