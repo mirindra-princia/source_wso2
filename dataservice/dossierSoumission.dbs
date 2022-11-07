@@ -1924,5 +1924,18 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
             }
         </result>
     </query>
+    
+    <resource path="states/folders" method="DELETE">
+        <description />
+        <call-query href="RemoveFolderState">
+            <with-param name="id" query-param="id" />
+        </call-query>
+    </resource>
+    <query id="RemoveFolderState" useConfig="dossierSomissionDS">
+        <sql>
+            DELETE FROM public.dossier_etat WHERE id = :id
+        </sql>
+        <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    </query>
     <!-- #FODLER STATES -->
 </data>
