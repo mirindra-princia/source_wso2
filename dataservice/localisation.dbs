@@ -472,7 +472,49 @@
 	    }]}
     }
     </result>
-    
+  </query>
+  
+  <resource method="GET" path="regions">
+    <description />
+    <call-query href="fetchRegion"/>
+  </resource>
+  <query id="fetchRegion" useConfig="localisationDS">
+    <sql>
+    	SELECT * FROM region
+    </sql>
+    <result outputType="json">
+    {"data":
+    	{"regions":[{
+	    	"id": $id,
+	    	"name": "$name",
+	    	"province_id": $province_id
+	    }]}
+    }
+    </result>
+  </query>
+  
+  <resource method="POST" path="regions/filters/by/districts">
+    <description />
+    <call-query href="regionFilterByDistricts">
+      <with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="regionFilterByDistricts" useConfig="localisationDS">
+    <sql>
+    	SELECT region.* FROM region 
+    	JOIN district ON district.region_id = region.id
+    	WHERE district.id IN (:ids)
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+    <result outputType="json">
+    {"data":
+    	{"regions":[{
+	    	"id": $id,
+	    	"name": "$name",
+	    	"province_id": $province_id
+	    }]}
+    }
+    </result>
   </query>
   <!-- #REGION -->
   
@@ -528,6 +570,31 @@
 	FROM public.fokontany WHERE borough_id= :borough_id</sql>
     <param type="IN" name="borough_id" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"data":{"fokontany":[{"id":"$id","name":"$name","borough_id":"$borough_id"}]}}</result>
+  </query>
+  
+  <resource path="boroughs/districts/{id}" method="GET">
+    <description />
+    <call-query href="fetchBoroughsByDistrict">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="fetchBoroughsByDistrict" useConfig="localisationDS">
+    <sql>
+    	SELECT borough.*
+		FROM public.borough 
+		JOIN common ON common.id = borough.common_id
+		WHERE common.district_id = :id
+	</sql>
+    <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">
+    	{"data":
+    		{"boroughs":[{
+    			"id":"$id",
+    			"name":"$name",
+    			"common_id":"$common_id"
+    		}]}
+    	}
+    </result>
   </query>
   <!-- #BOROUGH -->
   
@@ -673,6 +740,31 @@
     	SELECT * FROM district WHERE id IN (:ids)
     </sql>
     <param type="IN" name="ids" sqlType="INTEGER" paramType="ARRAY" />
+    <result outputType="json">
+    	{
+    		"data": {
+    			"districts": [{
+    				"id": $id,
+    				"name": "$name"
+    			}]
+    		}
+    	}
+    </result>
+  </query>
+  
+  <resource path="districts/regions/{id}" method="GET">
+    <description/>
+    <call-query href="fetchDistrictsByRegion">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="fetchDistrictsByRegion" useConfig="localisationDS">
+    <sql>
+    	SELECT district.* FROM district 
+    	JOIN region ON region.id = district.region_id
+    	WHERE region.id = :id
+    </sql>
+    <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">
     	{
     		"data": {
