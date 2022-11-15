@@ -571,6 +571,31 @@
     <param type="IN" name="borough_id" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"data":{"fokontany":[{"id":"$id","name":"$name","borough_id":"$borough_id"}]}}</result>
   </query>
+  
+  <resource path="boroughs/districts/{id}" method="GET">
+    <description />
+    <call-query href="fetchBoroughsByDistrict">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="fetchBoroughsByDistrict" useConfig="localisationDS">
+    <sql>
+    	SELECT borough.*
+		FROM public.borough 
+		JOIN common ON common.id = borough.common_id
+		WHERE common.district_id = :id
+	</sql>
+    <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">
+    	{"data":
+    		{"boroughs":[{
+    			"id":"$id",
+    			"name":"$name",
+    			"common_id":"$common_id"
+    		}]}
+    	}
+    </result>
+  </query>
   <!-- #BOROUGH -->
   
   <!-- ADDRESS DETAIL -->
