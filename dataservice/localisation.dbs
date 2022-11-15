@@ -472,7 +472,49 @@
 	    }]}
     }
     </result>
-    
+  </query>
+  
+  <resource method="GET" path="regions">
+    <description />
+    <call-query href="fetchRegion"/>
+  </resource>
+  <query id="fetchRegion" useConfig="localisationDS">
+    <sql>
+    	SELECT * FROM region
+    </sql>
+    <result outputType="json">
+    {"data":
+    	{"regions":[{
+	    	"id": $id,
+	    	"name": "$name",
+	    	"province_id": $province_id
+	    }]}
+    }
+    </result>
+  </query>
+  
+  <resource method="POST" path="regions/filters/by/districts">
+    <description />
+    <call-query href="regionFilterByDistricts">
+      <with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="regionFilterByDistricts" useConfig="localisationDS">
+    <sql>
+    	SELECT region.* FROM region 
+    	JOIN district ON district.region_id = region.id
+    	WHERE district.id IN (:ids)
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+    <result outputType="json">
+    {"data":
+    	{"regions":[{
+	    	"id": $id,
+	    	"name": "$name",
+	    	"province_id": $province_id
+	    }]}
+    }
+    </result>
   </query>
   <!-- #REGION -->
   
