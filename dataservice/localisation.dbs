@@ -726,5 +726,30 @@
     	}
     </result>
   </query>
+  
+  <resource path="districts/regions/{id}" method="GET">
+    <description/>
+    <call-query href="fetchDistrictsByRegion">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="fetchDistrictsByRegion" useConfig="localisationDS">
+    <sql>
+    	SELECT district.* FROM district 
+    	JOIN region ON region.id = district.region_id
+    	WHERE region.id = :id
+    </sql>
+    <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">
+    	{
+    		"data": {
+    			"districts": [{
+    				"id": $id,
+    				"name": "$name"
+    			}]
+    		}
+    	}
+    </result>
+  </query>
   <!-- #DISTRICT -->
 </data>
