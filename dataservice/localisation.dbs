@@ -1,17 +1,17 @@
 <data transports="http https" serviceGroup="mg.gov.edbm.societe.localisationDS" name="localisation">
   <description>Service adresse</description>
-   <config id="localisationDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://13.246.0.44:5432/localisation</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config>
 <!--    <config id="localisationDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://localhost:5432/localisation</property> -->
-<!--     <property name="username">postgres</property> -->
-<!--     <property name="password">postgres</property> -->
+<!--     <property name="url">jdbc:postgresql://13.246.0.44:5432/localisation</property> -->
+<!--     <property name="username">devedbmdb</property> -->
+<!--     <property name="password">devedbmdb</property> -->
 <!--   </config> -->
+   <config id="localisationDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/localisation</property>
+    <property name="username">postgres</property>
+    <property name="password">postgres</property>
+  </config>
   <resource method="GET" path="province">
     <description>List of all province</description>
     <call-query href="selectAllProvinces" />
@@ -501,9 +501,10 @@
   </resource>
   <query id="regionFilterByDistricts" useConfig="localisationDS">
     <sql>
-    	SELECT region.* FROM region 
+    	SELECT DISTINCT(region.*) FROM region 
     	JOIN district ON district.region_id = region.id
     	WHERE district.id IN (:ids)
+    	ORDER BY region.name ASC
     </sql>
     <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
     <result outputType="json">
@@ -580,10 +581,11 @@
   </resource>
   <query id="fetchBoroughsByDistrict" useConfig="localisationDS">
     <sql>
-    	SELECT borough.*
+    	SELECT DISTINCT(borough.*)
 		FROM public.borough 
 		JOIN common ON common.id = borough.common_id
 		WHERE common.district_id = :id
+		ORDER BY borough.name ASC
 	</sql>
     <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">
@@ -760,9 +762,10 @@
   </resource>
   <query id="fetchDistrictsByRegion" useConfig="localisationDS">
     <sql>
-    	SELECT district.* FROM district 
+    	SELECT DISTINCT(district.*) FROM district 
     	JOIN region ON region.id = district.region_id
     	WHERE region.id = :id
+    	ORDER BY district.name ASC
     </sql>
     <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">
