@@ -9,21 +9,19 @@
     <property name="password">devedbmdb</property>
   </config> 
   <!-- CONFIGURATION TEST  -->
-
-<!--   <config id="documentDS">
-    	<property name="driverClassName">org.postgresql.Driver</property>
-	    <property name="url">jdbc:postgresql://13.246.0.44:5432/document</property>
-	    <property name="username">devedbmdb</property>
-	    <property name="password">devedbmdb</property>
-   	</config> -->
+<!--   <config id="documentDS"> -->
+<!--     	<property name="driverClassName">org.postgresql.Driver</property> -->
+<!-- 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/document</property> -->
+<!-- 	    <property name="username">devedbmdb</property> -->
+<!-- 	    <property name="password">devedbmdb</property> -->
+<!--    	</config> -->
   <!-- CONFIGURATION DEV -->
-  	<!--  <config id="documentDS"> -->
+<!--   	<config id="documentDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/document</property> -->
 <!--     <property name="username">postgres</property> -->
 <!--     <property name="password">postgres</property> -->
 <!--   </config> -->
- 
   <resource method="GET" path="listdocumentToUploadByLegalStatus">
     <description />
     <call-query href="documentToUploadByLegalStatus">
@@ -183,4 +181,28 @@
       <with-param name="idTypeContrat" query-param="idTypeContrat" />
     </call-query>
   </resource>
+  
+  <resource method="POST" path="filter/ids">
+    <description />
+    <call-query href="fetchDocumentInList">
+      <with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="fetchDocumentInList" useConfig="documentDS">
+    <sql>
+    	SELECT * FROM public.document WHERE "idDocument" IN (:ids)
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER"/>
+    <result outputType="json">
+    	{
+    		"data": {
+    			"documents":[{
+    				"id": $idDocument,
+    				"name":"$nomDocument"
+    			}]
+    		}
+    	}
+    </result>
+  </query>
+  
 </data>

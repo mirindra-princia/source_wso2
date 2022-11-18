@@ -1,26 +1,28 @@
 <data name="siteInformation" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.siteInformationDS" transports="https http">
   <description>site web d'information</description>
   <!-- CONFIGURATION PROD -->
-<!--   <config id="siteInformationDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/siteWebInformation</property> -->
-<!--     <property name="username">devedbmdb</property> -->
-<!--     <property name="password">devedbmdb</property> -->
-<!--   </config> -->
-  <!-- CONFIGURATION TEST -->
   <config id="siteInformationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://13.246.0.44:5432/siteWebInformation</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/siteWebInformation</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config>
-  <!-- CONFIGURATION DEV -->
-<!--   <config id="siteInformationDS"> -->
+  <!-- CONFIGURATION TEST -->
+<!--     <config id="siteInformationDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://localhost:5432/siteWebInformation</property> -->
-<!--     <property name="username">postgres</property> -->
-<!--     <property name="password">postgres</property> -->
+<!--     <property name="url">jdbc:postgresql://13.246.0.44:5432/siteWebInformation</property> -->
+<!--     <property name="username">devedbmdb</property> -->
+<!--     <property name="password">devedbmdb</property> -->
 <!--   </config> -->
+  <!-- CONFIGURATION DEV -->
+
+<!-- <config id="siteInformationDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://localhost:5432/siteWebInformation</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
+  </config>-->
+
   <operation name="getCategoryName">
     <call-query href="categoryName">
       <with-param name="id" query-param="id" />
@@ -47,7 +49,7 @@
   <query id="getLegalStatusMapping" useConfig="siteInformationDS">
     <sql>SELECT * FROM public.legal_status_lists_mapping status WHERE status."idFormeJuridiqueSi"=:idFormeJuridiqueSi</sql>
     <param type="IN" name="idFormeJuridiqueSi" sqlType="INTEGER" paramType="SCALAR" />
-    <result outputType="json">{"legalStatusMapping":{"idFormeJuridiqueSi":"$idFormeJuridiqueSi", "idFormeJuridiqueRncs":"$idFormeJuridiqueRncs"}}</result>
+    <result outputType="json">{"legalStatusMapping":{"idFormeJuridiqueSi":"$idFormeJuridiqueSi", "idFormeJuridiqueRncs":"$idFormeJuridiqueRncs","idFormeJuridiqueDgi":"$idFormeJuridiqueDgi"}}</result>
   </query>
   <resource path="getLegalStatus" method="GET">
     <description />
@@ -78,7 +80,7 @@
     </call-query>
   </resource>
   <query id="category" useConfig="siteInformationDS">
-    <sql>SELECT * FROM public."categorieActivite" activite WHERE id =:id</sql>
+    <sql>SELECT * FROM public."categorieActivite" activite WHERE id =:id LIMIT 1</sql>
     <param type="IN" name="id" sqlType="STRING" paramType="SCALAR" />
     <result outputType="json">{"categorie":{"id":"$id", "descriptivesCategorie_fr":"$descriptivesCategorie_fr", "secteur":"$secteur"}}</result>
   </query>
@@ -103,4 +105,15 @@
     	INNER JOIN public.components_card_status_card_statuses desc_status ON TRIM(desc_status.accronym_legal_status_fr) = TRIM(status."STATUS") OR TRIM(desc_status.acronym_legal_status_fr) = TRIM(status."STATUS")</sql>
     <result outputType="json">{"data":{"legalStatus":[{"id":$id, "status":"$acronym", "label":"$label", "note_fr": "$note_fr"}]}}</result>
   </query>
+  <query id="companyActivity" useConfig="siteInformationDS">
+    <sql>SELECT id, "descriptivesCategorie_fr" FROM public."categorieActivite" where "id"=:idActivity LIMIT 1</sql>
+    <param type="IN" name="idActivity" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data":{"descriptivesCategorie_fr":"$descriptivesCategorie_fr", "id":"$id"}}</result>
+  </query>
+  <resource path="companyInterOp/activity/{idActivity}" method="GET">
+    <description />
+    <call-query href="companyActivity">
+      <with-param name="idActivity" query-param="idActivity" />
+    </call-query>
+  </resource>
 </data>

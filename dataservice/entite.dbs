@@ -1,0 +1,1101 @@
+<data transports="http https" serviceGroup="mg.gov.edbm.societe.entite"  name="entite">
+  <description />
+  <!-- CONFIGURATION PROD -->
+  <config id="entiteDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/document</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
+  </config> 
+  <!-- CONFIGURATION TEST  -->
+<!--    <config id="entiteDS"> -->
+<!--     	<property name="driverClassName">org.postgresql.Driver</property> -->
+<!-- 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/entite</property> -->
+<!-- 	    <property name="username">devedbmdb</property> -->
+<!-- 	    <property name="password">devedbmdb</property> -->
+<!--    	</config> -->
+   	<!-- CONFIGURATION DEV -->
+<!--   <config id="entiteDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/entite</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
+  
+  <resource method="GET" path="listOfAuthorization">
+    <description />
+    <call-query href="listofAuthorization" />
+  </resource>
+  <query id="listofAuthorization" useConfig="entiteDS">
+    <sql>Select * from droit</sql>
+    <result outputType="json">{"data":{"droits":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+  
+  <!-- CENTER -->
+  <resource method="GET" path="centers/group/{groupId}">
+    <description />
+    <call-query href="centersByGroup">
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="centersByGroup" useConfig="entiteDS">
+    <sql>
+    	SELECT centre.* FROM centre 
+    	JOIN public."centreGroupe" cg ON cg."centerId" = centre.id
+    	WHERE cg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"data":{"centers":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+  
+  <resource method="GET" path="centers/groups/{groupId}/regions/{regionId}">
+    <description />
+    <call-query href="centersByGroupRegion">
+      <with-param name="groupId" query-param="groupId" />
+      <with-param name="regionId" query-param="regionId" />
+    </call-query>
+  </resource>
+  <query id="centersByGroupRegion" useConfig="entiteDS">
+    <sql>
+    	SELECT centre.* FROM centre 
+    	JOIN public."centreGroupe" cg ON cg."centerId" = centre.id
+    	JOIN public."centreRegion" cr ON cr."centerId" = centre.id
+    	WHERE cr."regionId" = :regionId AND cg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="regionId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"centers":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+  
+  <resource method="GET" path="centers/groups/{groupId}/provinces/{provinceId}">
+    <description />
+    <call-query href="centersByGroupProvince">
+      <with-param name="groupId" query-param="groupId" />
+      <with-param name="provinceId" query-param="provinceId" />
+    </call-query>
+  </resource>
+  <query id="centersByGroupProvince" useConfig="entiteDS">
+    <sql>
+    	SELECT DISTINCT(centre.*) FROM centre 
+    	JOIN public."centreGroupe" cg ON cg."centerId" = centre.id
+    	JOIN public."centreSecteur" cs ON cs."centerId" = centre.id
+    	JOIN public.secteur ON secteur.id = cs."sectorId"
+    	JOIN public."secteurProvince" sp ON sp."sectorId" = secteur.id
+    	WHERE sp."provinceId" = :provinceId AND cg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="provinceId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"centers":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+  
+  <resource method="GET" path="centers/group/{groupId}/sectors/{sectorId}">
+    <description />
+    <call-query href="centersByGroupSector">
+      <with-param name="groupId" query-param="groupId" />
+      <with-param name="sectorId" query-param="sectorId" />
+    </call-query>
+  </resource>
+  <query id="centersByGroupSector" useConfig="entiteDS">
+    <sql>
+    	SELECT centre.* FROM centre 
+    	JOIN public."centreGroupe" cg ON cg."centerId" = centre.id
+    	JOIN public."centreSecteur" cs ON cs."centerId" = centre.id
+    	WHERE cs."sectorId" = :sectorId AND cg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"centers":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+  
+  <resource method="GET" path="centers/{id}">
+    <description />
+    <call-query href="center">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="center" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM centre WHERE centre.id = :id
+    </sql>
+    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"center":{"id":$id,"name":"$name"}}</result>
+  </query>
+  
+  <resource method="GET" path="centers/regions/groups/{groupId}">
+    <description />
+    <call-query href="regionsByGroupCenter">
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="regionsByGroupCenter" useConfig="entiteDS">
+    <sql>
+    	SELECT cr.* FROM "centreRegion" cr 
+    	JOIN centre ON centre.id = cr."centerId"
+    	JOIN "centreGroupe" cg ON cg."centerId" = centre.id 
+    	WHERE cg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"data":{"centerRegions":[{"centerId":$centerId,"regionId":$regionId}]}}</result>
+  </query>
+  
+  <resource method="GET" path="centers/{centerId}/regions/groups/{groupId}">
+    <description />
+    <call-query href="regionByGroupCenter">
+      <with-param name="centerId" query-param="centerId" />
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="regionByGroupCenter" useConfig="entiteDS">
+    <sql>
+    	SELECT cr.* FROM "centreRegion" cr 
+    	JOIN centre ON centre.id = cr."centerId"
+    	JOIN "centreGroupe" cg ON cg."centerId" = centre.id 
+    	WHERE cr."centerId" = :centerId AND cg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"centerRegions":{"centerId":$centerId,"regionId":$regionId}}</result>
+  </query>
+  
+  <resource method="GET" path="centers/{centerId}/provinces/groups/{groupId}">
+    <description />
+    <call-query href="provinceByGroupCenter">
+      <with-param name="centerId" query-param="centerId" />
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="provinceByGroupCenter" useConfig="entiteDS">
+    <sql>
+    	SELECT sp.* FROM "secteurProvince" sp 
+    	JOIN secteur ON secteur.id = sp."sectorId"
+    	JOIN "centreSecteur" cs ON cs."sectorId" = secteur.id
+    	JOIN centre ON centre.id = cs."centerId"
+    	JOIN "centreGroupe" cg ON cg."centerId" = centre.id 
+    	WHERE centre.id = :centerId AND cg."groupId" = :groupId LIMIT 1
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"secteurProvinces":{"sectorId":$sectorId,"provinceId":$provinceId}}</result>
+  </query>
+  
+  <resource method="POST" path="centers/filter">
+    <description />
+    <call-query href="centersByIds">
+      <with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="centersByIds" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM centre WHERE id IN (:ids)
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+    <result outputType="json">
+    {
+    	"data": {
+    		"centers": [{
+    			"id": $id,
+    			"name": "$name"
+    		}]
+    	}
+    }
+    </result>
+  </query>
+  
+  <resource method="GET" path="centers/groups/{groupId}/districts/{districtId}">
+    <description />
+    <call-query href="centerByDistrictId">
+      <with-param name="groupId" query-param="groupId" />
+      <with-param name="districtId" query-param="districtId" />
+    </call-query>
+  </resource>
+  <query id="centerByDistrictId" useConfig="entiteDS">
+    <sql>
+    	SELECT DISTINCT(centre.*) FROM centre
+    	JOIN "centreSecteur" cs ON cs."centerId" = centre.id
+    	JOIN secteur ON secteur.id = cs."sectorId"
+    	JOIN "secteurGroupe" sg ON sg."sectorId" = secteur.id
+    	JOIN "secteurDistrict" sd ON sd."sectorId" = secteur.id
+    	WHERE sg."groupId" = :groupId AND sd."districtId" = :districtId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="districtId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    {
+   		"center": {
+   			"id": $id,
+   			"name": "$name"
+   		}
+    }
+    </result>
+  </query>
+  
+  <resource method="GET" path="center_commons/centers/{centerId}">
+    <description />
+    <call-query href="fetchCenterCommonsByCenterId">
+      <with-param name="centerId" query-param="centerId" />
+    </call-query>
+  </resource>
+  <query id="fetchCenterCommonsByCenterId" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM "centreCommune" WHERE "centerId" = :centerId
+    </sql>
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    {
+   		"data": {
+   			"centerCommons": [{
+	   			"centerId": $centerId,
+	   			"commonId": $commonId
+	   		}]
+   		}
+    }
+    </result>
+  </query>
+  <!-- #CENTER -->
+  
+  
+  <!-- SECTOR -->
+  <resource method="GET" path="sectors/group/{groupId}">
+    <description />
+    <call-query href="sectorsByGroup">
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="sectorsByGroup" useConfig="entiteDS">
+    <sql>
+    	SELECT secteur.* FROM secteur 
+    	JOIN public."secteurGroupe" sg ON sg."sectorId" = secteur.id
+    	WHERE sg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"data":{"sectors":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+  
+  <resource method="GET" path="sectors/{sectorId}/regions/groups/{groupId}">
+    <description />
+    <call-query href="regionByGroupSector">
+      <with-param name="sectorId" query-param="sectorId" />
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="regionByGroupSector" useConfig="entiteDS">
+    <sql>
+    	SELECT sr.* FROM "secteurRegion" sr 
+    	JOIN secteur ON secteur.id = sr."sectorId"
+    	JOIN "secteurGroupe" sg ON sg."sectorId" = secteur.id 
+    	WHERE sr."sectorId" = :sectorId AND sg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"sectorRegions":{"sectorId":$sectorId,"regionId":$regionId}}</result>
+  </query>
+  
+  <resource method="GET" path="sectors/regions/groups/{groupId}">
+    <description />
+    <call-query href="regionsByGroupSector">
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="regionsByGroupSector" useConfig="entiteDS">
+    <sql>
+    	SELECT sr.* FROM "secteurRegion" sr 
+    	JOIN secteur ON secteur.id = sr."sectorId"
+    	JOIN "secteurGroupe" sg ON sg."sectorId" = secteur.id 
+    	WHERE sg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"data":{"sectorRegions":[{"sectorId":$sectorId,"regionId":$regionId}]}}</result>
+  </query>
+  
+  <resource method="GET" path="sectors/{sectorId}/provinces/groups/{groupId}">
+    <description />
+    <call-query href="provinceByGroupSector">
+      <with-param name="sectorId" query-param="sectorId" />
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="provinceByGroupSector" useConfig="entiteDS">
+    <sql>
+    	SELECT sp.* FROM "secteurProvince" sp 
+    	JOIN secteur ON secteur.id = sp."sectorId"
+    	JOIN "secteurGroupe" sg ON sg."sectorId" = secteur.id 
+    	WHERE sp."sectorId" = :sectorId AND sg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"sectorProvinces":{"sectorId":$sectorId,"provinceId":$provinceId}}</result>
+  </query>
+  
+  <resource method="GET" path="sectors/provinces/groups/{groupId}">
+    <description />
+    <call-query href="provincesByGroupSector">
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="provincesByGroupSector" useConfig="entiteDS">
+    <sql>
+    	SELECT sp.* FROM "secteurProvince" sp 
+    	JOIN secteur ON secteur.id = sp."sectorId"
+    	JOIN "secteurGroupe" sg ON sg."sectorId" = secteur.id 
+    	WHERE sg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"data":{"sectorProvinces":[{"sectorId":$sectorId,"provinceId":$provinceId}]}}</result>
+  </query>
+  
+  <resource method="GET" path="sectors/groups/{groupId}/regions/{regionId}">
+    <description />
+    <call-query href="sectorsByGroupRegion">
+      <with-param name="groupId" query-param="groupId" />
+      <with-param name="regionId" query-param="regionId" />
+    </call-query>
+  </resource>
+  <query id="sectorsByGroupRegion" useConfig="entiteDS">
+    <sql>
+    	SELECT secteur.* FROM secteur 
+    	JOIN public."secteurGroupe" sg ON sg."sectorId" = secteur.id
+    	JOIN public."secteurRegion" sr ON sr."sectorId" = secteur.id
+    	WHERE sr."regionId" = :regionId AND sg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="regionId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"sectors":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+  
+  <resource method="GET" path="sectors/groups/{groupId}/provinces/{provinceId}">
+    <description />
+    <call-query href="sectorsByGroupProvince">
+      <with-param name="groupId" query-param="groupId" />
+      <with-param name="provinceId" query-param="provinceId" />
+    </call-query>
+  </resource>
+  <query id="sectorsByGroupProvince" useConfig="entiteDS">
+    <sql>
+    	SELECT secteur.* FROM secteur 
+    	JOIN public."secteurGroupe" sg ON sg."sectorId" = secteur.id
+    	JOIN public."secteurProvince" sp ON sp."sectorId" = secteur.id
+    	WHERE sp."provinceId" = :provinceId AND sg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="provinceId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"sectors":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+  
+  <resource method="GET" path="sectors/groups/{groupId}/centers/{centerId}">
+    <description />
+    <call-query href="sectorsByGroupCenter">
+      <with-param name="groupId" query-param="groupId" />
+      <with-param name="centerId" query-param="centerId" />
+    </call-query>
+  </resource>
+  <query id="sectorsByGroupCenter" useConfig="entiteDS">
+    <sql>
+    	SELECT secteur.* FROM secteur 
+    	JOIN public."secteurGroupe" sg ON sg."sectorId" = secteur.id
+    	JOIN public."centreSecteur" cs ON cs."sectorId" = secteur.id
+    	WHERE cs."centerId" = :centerId AND sg."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"sectors":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+  
+  <resource method="POST" path="sectors/filter">
+    <description />
+    <call-query href="sectorsByIds">
+      <with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="sectorsByIds" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM secteur WHERE id IN (:ids)
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+    <result outputType="json">
+    {
+    	"data": {
+    		"sectors": [{
+    			"id": $id,
+    			"name": "$name"
+    		}]
+    	}
+    }
+    </result>
+  </query>
+  
+  <resource method="GET" path="sector_districts/centers/{centerId}">
+    <description />
+    <call-query href="fetchCenterDistrictsByCenterId">
+      <with-param name="centerId" query-param="centerId" />
+    </call-query>
+  </resource>
+  <query id="fetchCenterDistrictsByCenterId" useConfig="entiteDS">
+    <sql>
+    	SELECT DISTINCT(sd.*) FROM centre
+    	JOIN "centreSecteur" cs ON cs."centerId" = centre.id
+    	JOIN secteur ON secteur.id = cs."sectorId"
+    	JOIN "secteurDistrict" sd ON sd."sectorId" = secteur.id
+    	WHERE centre."centerId" = :centerId
+    </sql>
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    {
+   		"data": {
+   			"centerDistricts": [{
+	   			"sectorId": $sectorId,
+	   			"districtId": $districtId
+	   		}]
+   		}
+    }
+    </result>
+  </query>
+  
+  <resource method="GET" path="sector_districts/sectors/{sectorId}">
+    <description />
+    <call-query href="fetchCenterDistrictsBySectorId">
+      <with-param name="sectorId" query-param="sectorId" />
+    </call-query>
+  </resource>
+  <query id="fetchCenterDistrictsBySectorId" useConfig="entiteDS">
+    <sql>
+    	SELECT DISTINCT(sd.*) FROM secteur
+    	JOIN "secteurDistrict" sd ON sd."sectorId" = secteur.id
+    	WHERE secteur.id = :sectorId
+    </sql>
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    {
+   		"data": {
+   			"sectorDistricts": [{
+	   			"sectorId": $sectorId,
+	   			"districtId": $districtId
+	   		}]
+   		}
+    }
+    </result>
+  </query>
+  
+  <resource method="GET" path="sector_regions/centers/{centerId}">
+    <description />
+    <call-query href="fetchCenterRegionsByCenterId">
+      <with-param name="centerId" query-param="centerId" />
+    </call-query>
+  </resource>
+  <query id="fetchCenterRegionsByCenterId" useConfig="entiteDS">
+    <sql>
+    	SELECT DISTINCT(sr.*) FROM centre
+    	JOIN "centreSecteur" cs ON cs."centerId" = centre.id
+    	JOIN secteur ON secteur.id = cs."sectorId"
+    	JOIN "secteurRegion" sr ON sr."sectorId" = secteur.id
+    	WHERE centre.id = :centerId
+    </sql>
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    {
+   		"data": {
+   			"centerRegions": [{
+	   			"sectorId": $sectorId,
+	   			"regionId": $regionId
+	   		}]
+   		}
+    }
+    </result>
+  </query>
+  
+  <resource method="GET" path="sector_regions/sectors/{sectorId}">
+    <description />
+    <call-query href="fetchCenterRegionsBySectorId">
+      <with-param name="sectorId" query-param="sectorId" />
+    </call-query>
+  </resource>
+  <query id="fetchCenterRegionsBySectorId" useConfig="entiteDS">
+    <sql>
+    	SELECT DISTINCT(sr.*) FROM secteur
+    	JOIN "secteurRegion" sr ON sr."sectorId" = secteur.id
+    	WHERE secteur.id = :sectorId
+    </sql>
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    {
+   		"data": {
+   			"centerRegions": [{
+	   			"sectorId": $sectorId,
+	   			"regionId": $regionId
+	   		}]
+   		}
+    }
+    </result>
+  </query>
+  <!-- #SECTOR -->
+
+
+  <!-- #USER RIGHT AND SERVICE -->
+  <resource method="GET" path="listSecteurs">
+    <description />
+    <call-query href="allSecteurs" />
+  </resource>
+  <query id="allSecteurs" useConfig="entiteDS">
+    <sql>Select * from secteur</sql>
+    <result outputType="json">{"data":{"secteurs":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+  <resource method="GET" path="listSecteursRegion/{idRegion}">
+    <description />
+    <call-query href="listSecteursRegion">
+      <with-param name="idRegion" query-param="idRegion" />
+    </call-query>
+  </resource>
+  <query id="listSecteursRegion" useConfig="entiteDS">
+    <sql>Select * from public."secteurRegion" where "idRegion" =:idRegion::int</sql>
+    <param type="IN" name="idRegion" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data":{"secteursRegions":[{"idSecteur":"$idSecteur","idRegion":"$idRegion"}]}}</result>
+  </query>
+  <resource method="GET" path="listCentres">
+    <description />
+    <call-query href="allCentres" />
+  </resource>
+  <query id="allCentres" useConfig="entiteDS">
+    <sql>Select * from centre</sql>
+    <result outputType="json">{"data":{"centres":[{"id":$id,"name":"$name", "idRegion": "$idRegion"}]}}</result>
+  </query>
+  <resource method="POST" path="saveSecteurRegion">
+    <description />
+    <call-query href="saveSecteurRegion">
+      <with-param name="idSecteur" query-param="idSecteur" />
+      <with-param name="idRegion" query-param="idRegion" />
+    </call-query>
+  </resource>
+  <query id="saveSecteurRegion" useConfig="entiteDS">
+    <sql>INSERT INTO public.secteurRegion(
+      "idSecteur", "idRegion")
+      VALUES (:idSecteur, :idRegion);
+    </sql>
+    <param type="IN" name="idSecteur" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idRegion" paramType="SCALAR" sqlType="INTEGER" />
+  </query>
+
+  <resource method="GET" path="listServices">
+    <description />
+    <call-query href="allServices" />
+  </resource>
+  <query id="allServices" useConfig="entiteDS">
+    <sql>Select * from service</sql>
+    <result outputType="json">{"data":{"services":[{"id":$id,"name":"$name"}]}}</result>
+  </query>
+
+  <resource method="GET" path="listServicesById/{idService}">
+    <description />
+    <call-query href="listServicesById">
+      <with-param name="idService" query-param="idService" />
+    </call-query>
+  </resource>
+  <query id="listServicesById" useConfig="entiteDS">
+    <sql>
+      SELECT * FROM public."service" where "id" =:idService::int
+    </sql>
+    <param type="IN" name="idService" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data":{"id":"$id","name":"$name"}}</result>
+  </query>
+
+  <resource method="GET" path="listRightById/{idRight}">
+    <description />
+    <call-query href="listRightById">
+      <with-param name="idRight" query-param="idRight" />
+    </call-query>
+  </resource>
+  <query id="listRightById" useConfig="entiteDS">
+    <sql>
+      SELECT * FROM public."droit" where "id" =:idRight::int
+    </sql>
+    <param type="IN" name="idRight" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data":{"id":"$id","name":"$name"}}</result>
+  </query>
+
+  <resource method="POST" path="saveUserRight">
+    <description />
+    <call-query href="saveUserRight">
+      <with-param name="idUtilisateur" query-param="idUtilisateur" />
+      <with-param name="idService" query-param="idService" />
+      <with-param name="idDroit" query-param="idDroit" />
+    </call-query>
+  </resource>
+  <query id="saveUserRight" useConfig="entiteDS">
+    <sql>
+      INSERT INTO public."utilisateurDroit"(
+      "idUtilisateur", "idService", "idDroit")
+      VALUES (:idUtilisateur, :idService, :idDroit);
+    </sql>
+    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="idService" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idDroit" paramType="SCALAR" sqlType="INTEGER" />
+  </query>
+
+  <resource method="GET" path="listUserRightById/{idPerson}">
+    <description />
+    <call-query href="listUserRightById">
+      <with-param name="idPerson" query-param="idPerson" />
+    </call-query>
+  </resource>
+  <query id="listUserRightById" useConfig="entiteDS">
+    <sql>
+      SELECT * FROM public."utilisateurDroit" where "idUtilisateur" =:idPerson
+    </sql>
+    <param type="IN" name="idPerson" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"data":{"userRights":[{"idUtilisateur":$idUtilisateur,"idService":"$idService", "idRight": "$idDroit"}]}}</result>
+  </query>
+
+  <resource method="DELETE" path="deleteUserRightById">
+    <description />
+    <call-query href="deleteUserRightById">
+      <with-param name="idUtilisateur" query-param="idUtilisateur" />
+    </call-query>
+  </resource>
+  <query id="deleteUserRightById" useConfig="entiteDS">
+    <sql>
+      DELETE FROM public."utilisateurDroit" where "idUtilisateur" =:idUtilisateur
+    </sql>
+    <param type="IN" name="idUtilisateur" sqlType="STRING" paramType="SCALAR" optional="false" />
+  </query>
+
+  <resource method="DELETE" path="deleteUserRightService">
+    <description />
+    <call-query href="deleteUserRightService">
+      <with-param name="idUtilisateur" query-param="idUtilisateur" />
+      <with-param name="idService" query-param="idService" />
+      <with-param name="idDroit" query-param="idDroit" />
+    </call-query>
+  </resource>
+  <query id="deleteUserRightService" useConfig="entiteDS">
+    <sql>Delete from public."utilisateurDroit" where "idUtilisateur" =:idUtilisateur AND "idService" =:idService and "idDroit" =:idDroit
+    </sql>
+    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="idService" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idDroit" paramType="SCALAR" sqlType="INTEGER" />
+  </query>
+
+  
+  <!-- ROLE -->
+  <resource method="GET" path="groupe-role/filter/by/groupe/{id}">
+    <description />
+    <call-query href="groupeRoleFilterByGroup">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="groupeRoleFilterByGroup" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM "groupeRole" 
+    	WHERE "groupId" = :id
+    </sql>
+    <param type="IN" name="id" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">{"data":{"groupRoles":[{"groupId":"$groupId","roleId":"$roleId"}]}}</result>
+  </query>
+  <!-- #ROLE -->
+  
+  <!-- USERS -->
+  <!-- USER REGION -->
+  <resource method="POST" path="users/regions">
+    <description />
+    <call-query href="saveUserRegion">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="targetId" query-param="targetId" />
+      <with-param name="isProvince" query-param="isProvince" />
+      <with-param name="isAntenne" query-param="isAntenne" />
+    </call-query>
+  </resource>
+  <query id="saveUserRegion" useConfig="entiteDS">
+    <sql>
+    	INSERT INTO "utilisateurRegion"("userId","targetId","isProvince","isAntenne") VALUES(:userId,:targetId,:isProvince,:isAntenne) RETURNING "userId","targetId","isProvince","isAntenne"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="targetId" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="isProvince" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="isAntenne" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"userRegions":{"userId":"$userId","targetId":"$targetId","isProvince":$isProvince, "isAntenne": $isAntenne}}</result>
+  </query>
+  
+  <resource method="PUT" path="users/regions">
+    <description />
+    <call-query href="updateUserRegion">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="targetId" query-param="targetId" />
+      <with-param name="isProvince" query-param="isProvince" />
+      <with-param name="isAntenne" query-param="isAntenne" />
+    </call-query>
+  </resource>
+  <query id="updateUserRegion" useConfig="entiteDS">
+    <sql>
+    	UPDATE "utilisateurRegion" SET "targetId" = :targetId WHERE "userId" = :userId RETURNING "userId","targetId","isProvince","isAntenne"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="targetId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+    <param type="IN" name="isProvince" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+    <param type="IN" name="isAntenne" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+    <result outputType="json">{"userRegions":{"userId":"$userId","targetId":"$targetId","isProvince":$isProvince,"isAntenne":$isAntenne}}</result>
+  </query>
+  
+  <resource method="DELETE" path="users/regions">
+    <description />
+    <call-query href="deleteUserRegion">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="targetId" query-param="targetId" />
+      <with-param name="isProvince" query-param="isProvince" />
+      <with-param name="isAntenne" query-param="isAntenne" />
+    </call-query>
+  </resource>
+  <query id="deleteUserRegion" useConfig="entiteDS">
+    <sql>
+    	DELETE FROM "utilisateurRegion" WHERE "userId" = :userId
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="targetId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+    <param type="IN" name="isProvince" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+    <param type="IN" name="isAntenne" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+  </query>
+  
+  <resource method="POST" path="users/regions/filter">
+    <description />
+    <call-query href="userRegions">
+      <with-param name="userIds" query-param="userIds" />
+    </call-query>
+  </resource>
+  <query id="userRegions" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM "utilisateurRegion" WHERE "userId" IN (:userIds)
+    </sql>
+    <param type="IN" name="userIds" paramType="ARRAY" sqlType="STRING" />
+    <result outputType="json">
+    	{
+    		"data": {"userRegions":[{
+    			"userId":"$userId",
+    			"targetId":"$targetId",
+    			"isProvince": $isProvince,
+    			"isAntenne": $isAntenne
+    		}]}
+    	}
+    </result>
+  </query>
+  <!-- #USER REGION -->
+  
+  <resource method="POST" path="users/centers">
+    <description />
+    <call-query href="saveUserCenter">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="centerId" query-param="centerId" />
+      <with-param name="isRegion" query-param="isRegion" />
+    </call-query>
+  </resource>
+  <query id="saveUserCenter" useConfig="entiteDS">
+    <sql>
+    	INSERT INTO "utilisateurCentre"("userId","centerId","isRegion") VALUES(:userId,:centerId,:isRegion) RETURNING "userId","centerId","isRegion"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="isRegion" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+    	{
+    		"userCenters":{
+    			"userId":"$userId",
+    			"centerId":"$centerId",
+    			"isRegion":"$isRegion"
+    		}
+    	}
+ 	</result>
+  </query>
+  
+  <resource method="PUT" path="users/centers">
+    <description />
+    <call-query href="updateUserCenter">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="centerId" query-param="centerId" />
+      <with-param name="isRegion" query-param="isRegion" />
+    </call-query>
+  </resource>
+  <query id="updateUserCenter" useConfig="entiteDS">
+    <sql>
+    	UPDATE "utilisateurCentre" SET "centerId" = :centerId, "isRegion" = :isRegion WHERE "userId" = :userId RETURNING "userId","centerId","isRegion"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+    <param type="IN" name="isRegion" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+    <result outputType="json">
+    	{
+    		"userCenters":{
+    			"userId":"$userId",
+    			"centerId":"$centerId", 
+    			"isRegion": $isRegion
+    		}
+    	}
+    </result>
+  </query>
+  
+  <resource method="DELETE" path="users/centers">
+    <description />
+    <call-query href="deleteUserCenter">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="centerId" query-param="centerId" />
+      <with-param name="isRegion" query-param="isRegion" />
+    </call-query>
+  </resource>
+  <query id="deleteUserCenter" useConfig="entiteDS">
+    <sql>
+    	DELETE FROM "utilisateurCentre" WHERE "userId" = :userId
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+    <param type="IN" name="isRegion" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+  </query>
+  
+  <resource method="POST" path="users/sectors">
+    <description />
+    <call-query href="saveUserSector">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="sectorId" query-param="sectorId" />
+    </call-query>
+  </resource>
+  <query id="saveUserSector" useConfig="entiteDS">
+    <sql>
+    	INSERT INTO "utilisateurSecteur"("userId","sectorId") VALUES(:userId,:sectorId) RETURNING "userId","sectorId"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" optional="true" />
+    <result outputType="json">{"userSectors":{"userId":"$userId","sectorId":"$sectorId"}}</result>
+  </query>
+  
+  <resource method="PUT" path="users/sectors">
+    <description />
+    <call-query href="updateUserSector">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="sectorId" query-param="sectorId"/>
+    </call-query>
+  </resource>
+  <query id="updateUserSector" useConfig="entiteDS">
+    <sql>
+    	UPDATE "utilisateurSecteur" SET "sectorId" = :sectorId WHERE "userId" = :userId RETURNING "userId","sectorId"
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+    <result outputType="json">{"userSectors":{"userId":"$userId","sectorId":"$sectorId"}}</result>
+  </query>
+  
+  <resource method="DELETE" path="users/sectors">
+    <description />
+    <call-query href="deleteUserSector">
+      <with-param name="userId" query-param="userId" />
+      <with-param name="sectorId" query-param="sectorId"/>
+    </call-query>
+  </resource>
+  <query id="deleteUserSector" useConfig="entiteDS">
+    <sql>
+    	DELETE FROM "utilisateurSecteur" WHERE "userId" = :userId
+    </sql>
+    <param type="IN" name="userId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="sectorId" paramType="SCALAR" sqlType="INTEGER" optional="true"/>
+  </query>
+  
+  <resource method="POST" path="users/centers/filter">
+    <description />
+    <call-query href="userCentersByUserIds">
+      <with-param name="userIds" query-param="userIds" />
+    </call-query>
+  </resource>
+  <query id="userCentersByUserIds" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM "utilisateurCentre" WHERE "userId" IN (:userIds)
+    </sql>
+    <param type="IN" name="userIds" paramType="ARRAY" sqlType="STRING" />
+    <result outputType="json">
+    	{
+    		"data":{
+    			"userCenters":[{
+    				"userId":"$userId",
+    				"centerId":"$centerId",
+    				"isRegion": $isRegion
+    			}]
+    		}
+    	}
+    </result>
+  </query>
+  
+  <resource method="POST" path="users/sectors/filter">
+    <description />
+    <call-query href="userSectorsByUserIds">
+      <with-param name="userIds" query-param="userIds" />
+    </call-query>
+  </resource>
+  <query id="userSectorsByUserIds" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM "utilisateurSecteur" WHERE "userId" IN (:userIds)
+    </sql>
+    <param type="IN" name="userIds" paramType="ARRAY" sqlType="STRING" />
+    <result outputType="json">
+    	{
+    		"data":{
+    			"userSectors":[{
+    				"userId":"$userId",
+    				"sectorId":"$sectorId"
+    			}]
+    		}
+    	}
+    </result>
+  </query>
+  <!-- #USERS -->
+
+  <resource method="GET" path="checkUserRightService">
+    <description />
+    <call-query href="checkUserRightService">
+      <with-param name="idUtilisateur" query-param="idUtilisateur" />
+      <with-param name="idService" query-param="idService" />
+      <with-param name="idDroit" query-param="idDroit" />
+    </call-query>
+  </resource>
+  <query id="checkUserRightService" useConfig="entiteDS">
+    <sql>select * from public."utilisateurDroit" where "idUtilisateur" =:idUtilisateur AND "idService" =:idService and "idDroit" =:idDroit</sql>
+    <param type="IN" name="idUtilisateur" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="idService" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idDroit" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"data":{"idUtilisateur":"$idUtilisateur","idService":"$idService", "idDroit": "$idDroit"}}</result>
+  </query>
+  
+  <!-- USER-CENTER -->
+  <resource method="POST" path="usersCenters/list">
+    <description />
+    <call-query href="fetchUserCentersInList">
+      <with-param name="uids" query-param="uids" />
+      <with-param name="centerId" query-param="centerId" />
+    </call-query>
+  </resource>
+  <query id="fetchUserCentersInList" useConfig="entiteDS">
+    <sql>SELECT * FROM "utilisateurCentre" WHERE "centerId" = :centerId AND "userId" IN (:uids)</sql>
+    <param type="IN" name="uids" paramType="ARRAY" sqlType="STRING" />
+    <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+		{
+			"data": {
+				"userCenters": [{
+					"centerId": $centerId,
+					"userId": "$userId",
+					"isRegion": "$isRegion",
+				}]
+			}
+		}
+	</result>
+  </query>
+  <!-- #USER-CENTER -->
+  
+  <!-- ANTENNE -->
+  <resource method="GET" path="antennes/groups/{groupId}">
+    <description />
+    <call-query href="fetchAntennes">
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="fetchAntennes" useConfig="entiteDS">
+    <sql>
+    	SELECT antenne.* FROM antenne 
+    	JOIN "antenneGroupe" ag ON ag."antenneId" = antenne.id
+    	WHERE ag."groupId" = :groupId
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">
+		{
+			"data": {
+				"antennes": [{
+					"id": $id,
+					"name": "$name"
+				}]
+			}
+		}
+	</result>
+  </query>
+  
+  <resource method="POST" path="antennes/filter/by/ids">
+    <description />
+    <call-query href="fetchAntennesInList">
+      <with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="fetchAntennesInList" useConfig="entiteDS">
+    <sql>
+    	SELECT antenne.* FROM antenne WHERE id IN (:ids)
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER" />
+    <result outputType="json">
+		{
+			"data": {
+				"antennes": [{
+					"id": $id,
+					"name": "$name"
+				}]
+			}
+		}
+	</result>
+  </query>
+  
+  <resource method="GET" path="antennes/{id}">
+    <description />
+    <call-query href="getAntenne">
+      <with-param name="id" query-param="id" />
+    </call-query>
+  </resource>
+  <query id="getAntenne" useConfig="entiteDS">
+    <sql>
+    	SELECT * FROM antenne WHERE id = :id
+    </sql>
+    <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">
+		{
+			"antennes": {
+				"id": $id,
+				"name": "$name"
+			}
+		}
+	</result>
+  </query>
+  
+  <resource method="GET" path="antennes/{antenneId}/groups/{groupId}/regionIds">
+    <description />
+    <call-query href="fetchRegionIdsByGroupAntenne">
+      <with-param name="antenneId" query-param="antenneId" />
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="fetchRegionIdsByGroupAntenne" useConfig="entiteDS">
+    <sql>
+    	SELECT ar.* FROM "antenneRegion" ar
+    	JOIN antenne ON antenne.id = ar."antenneId"
+    	JOIN "antenneGroupe" ag ON ag."antenneId" = antenne.id
+    	WHERE antenne.id = :antenneId AND ag."groupId" = :groupId
+    </sql>
+    <param type="IN" name="antenneId" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <result outputType="json">
+		{
+			"data": {
+				"antenneRegions": [{
+					"antenneId": $antenneId,
+					"regionId": $regionId
+				}]
+			}
+		}
+	</result>
+  </query>
+  
+  <resource method="GET" path="antennes/groups/{groupId}/regions/{regionId}">
+    <description />
+    <call-query href="antenneByGroupRegion">
+      <with-param name="regionId" query-param="regionId" />
+      <with-param name="groupId" query-param="groupId" />
+    </call-query>
+  </resource>
+  <query id="antenneByGroupRegion" useConfig="entiteDS">
+    <sql>
+    	SELECT antenne.* FROM antenne 
+    	JOIN "antenneRegion" ar ON ar."antenneId" = antenne.id
+    	JOIN "antenneGroupe" ag ON ag."antenneId" = antenne.id 
+    	WHERE antenne."regionId" = :regionId AND ag."groupId" = :groupId LIMIT 1
+    </sql>
+    <param type="IN" name="groupId" paramType="SCALAR" sqlType="STRING" />
+    <param type="IN" name="regionId" paramType="SCALAR" sqlType="INTEGER" />
+    <result outputType="json">{"antenne":{"id":$id,"name":"$name"}}</result>
+  </query>
+  <!-- #ANTENNE -->
+</data>

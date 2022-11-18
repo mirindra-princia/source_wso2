@@ -1,6 +1,6 @@
 <data name="utilisateur" serviceNamespace="" serviceGroup="" transports="http https">
   <description />
-   <!-- CONFIGURATION PROD -->
+  <!-- CONFIGURATION PROD -->
   <config id="utilisateurDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/utilisateur</property>
@@ -8,12 +8,12 @@
     <property name="password">devedbmdb</property>
   </config>
    <!-- CONFIGURATION TEST -->
-<!--   <config id="utilisateurDS">
- 	 <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://13.246.0.44:5432/utilisateur</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config> -->
+<!--    <config id="utilisateurDS"> -->
+<!--  	<property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://13.246.0.44:5432/utilisateur</property> -->
+<!--     <property name="username">devedbmdb</property> -->
+<!--     <property name="password">devedbmdb</property> -->
+<!--   </config> -->
    <!-- CONFIGURATION DEV -->
 <!--   <config id="utilisateurDS"> -->
 <!--  	 <property name="driverClassName">org.postgresql.Driver</property> -->
@@ -117,4 +117,59 @@
 	    }}
 	 </result>
   </query>
+  
+  <resource method="GET" path="filter/by/name/{firstName}/{lastName}">
+    <description>user filter</description>
+    <call-query href="userFilterByName"> 
+    	<with-param name="firstName" query-param="firstName" />
+    	<with-param name="lastName" query-param="lastName" />
+    </call-query>
+  </resource>
+  <query id="userFilterByName" useConfig="utilisateurDS">
+    <sql>
+	    SELECT 
+	    	entity.id as userid, entity.first_name, entity.last_name, entity.email, entity.username, entity.enabled, entity.email_verified 
+	    FROM public.user_entity entity 
+    	WHERE LOWER(TRIM("first_name")) LIKE CONCAT(:firstName, '%') OR LOWER(TRIM("last_name")) LIKE CONCAT(:lastName, '%')
+    </sql>
+    <param type="IN" name="firstName" paramType="SCALAR" sqlType="STRING"/>
+    <param type="IN" name="lastName" paramType="SCALAR" sqlType="STRING"/>
+    <result outputType="json">{"data": {
+		    "users": [{
+	   			"id":$userid,
+	   			"firstName":$first_name,
+	   			"lastName": "$last_name",
+	   			"email": $email,
+	   			"username": "$username",
+	   			"enabled": "$enabled",
+	   			"emailVerified": "$email_verified"
+		   	}]
+	    }}
+	 </result>
+  </query>
+  
+  <!-- ROLES -->
+  <resource method="POST" path="roles">
+    <description>fetch roles in list</description>
+    <call-query href="fetchRoles"> 
+    	<with-param name="ids" query-param="ids" />
+    </call-query>
+  </resource>
+  <query id="fetchRoles" useConfig="utilisateurDS">
+    <sql>
+	    SELECT 
+	    	role.id as id, role.name as name 
+	    FROM keycloak_role role
+    	WHERE role.id IN (:ids)
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="STRING"/>
+    <result outputType="json">{"data": {
+		    "roles": [{
+	   			"id":$id,
+	   			"name":"$name"
+		   	}]
+	    }}
+	 </result>
+  </query>
+  <!-- #ROLES -->
 </data>
