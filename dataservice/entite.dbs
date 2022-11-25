@@ -1,9 +1,9 @@
 <data transports="http https" serviceGroup="mg.gov.edbm.societe.entite"  name="entite">
   <description />
-  <!-- CONFIGURATION PROD -->
+<!-- CONFIGURATION PROD -->
   <config id="entiteDS">
     <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/document</property>
+    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/entite</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config> 
@@ -14,7 +14,7 @@
 <!-- 	    <property name="username">devedbmdb</property> -->
 <!-- 	    <property name="password">devedbmdb</property> -->
 <!--    	</config> -->
-   	<!-- CONFIGURATION DEV -->
+<!-- CONFIGURATION DEV -->
 <!--   <config id="entiteDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/entite</property> -->
