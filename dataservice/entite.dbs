@@ -7,7 +7,7 @@
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
   </config> 
-<!-- CONFIGURATION TEST  -->
+  <!-- CONFIGURATION TEST  -->
 <!--    <config id="entiteDS"> -->
 <!--     	<property name="driverClassName">org.postgresql.Driver</property> -->
 <!-- 	    <property name="url">jdbc:postgresql://13.246.0.44:5432/entite</property> -->
