@@ -712,6 +712,46 @@
 		}
 	}</result>
   </query>
+  
+  <resource path="addresses/foreigns/cities/{id}" method="GET">
+    <description />
+    <call-query href="foreignAddressDetail">
+      <with-param name="id" query-param="id"/>
+    </call-query>
+  </resource>
+  <query id="foreignAddressDetail" useConfig="localisationDS">
+    <sql>
+    	SELECT 
+    	common."idCommonOther" as common_id,
+    	common.name as common_name,
+    	city."idCity" as city_id,
+    	city.name as city_name,
+    	country."codePays" as country_id,
+    	country."nomPays" as country_name
+    	FROM common_other common
+    	LEFT JOIN city_other city ON city."idCommonOther" = common."idCommonOther"
+    	LEFT JOIN country ON country."codePays" = common."idPays"
+    	WHERE city."idCity" = :id 
+    	LIMIT 1
+	</sql>
+    <param type="IN" name="id" sqlType="INTEGER" paramType="SCALAR" />
+    <result outputType="json">{
+    	"address":{
+		    "commune":{
+		    	"id": $common_id,
+		    	"name": "$common_name",
+		    },
+		    "city":{
+		    	"id": $city_id,
+		    	"name": "$city_name"
+		    },
+		    "country":{
+		    	"id": "$country_id",
+		    	"name": "$country_name"
+		    }
+		}
+	}</result>
+  </query>
   <!-- #ADDRESS DETAIL -->
   
   <!-- COMMONS -->
