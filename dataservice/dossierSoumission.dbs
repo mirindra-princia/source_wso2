@@ -15,7 +15,7 @@
 	    <property name="password">devedbmdb</property>
    	</config>
    	<!-- CONFIGURATION DEV -->
-<!--    	<config id="dossierSomissionDS"> -->
+<!--  <config id="dossierSomissionDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property> -->
 <!--     <property name="username">postgres</property> -->
@@ -1717,6 +1717,120 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
 	    	}}
         </result>
     </query>
+    
+  <resource path="filter/by/appointment" method="POST">
+  	<description>filter folder by appointment</description>
+    <call-query href="filterFolderByAppointment">
+      <with-param name="rdv" query-param="rdv" />
+    </call-query>
+  </resource>
+  <query id="filterFolderByAppointment" useConfig="dossierSomissionDS">
+    <sql>
+    	SELECT DISTINCT(dossier.*) FROM dossier 
+    	JOIN "rendezVous" rdv ON rdv."idDossier" = dossier."idDossier"
+    	WHERE DATE(rdv."dateRendezVous") = :rdv
+    </sql>
+    <param type="IN" name="rdv" paramType="SCALAR" sqlType="DATE"/>
+    <result outputType="json">
+	    {"data":
+		    {"folders":[{
+		    	"idDossier":$idDossier,
+		    	"lienDossier": "$lienDossier",
+		    	"dateSoumission": "$dateSoumission",
+		    	"idStatutDepot": $idStatutDepot,
+		    	"idStatutValidation": $idStatutValidation,
+		    	"rdvDepot": "$rdvDepot",
+		    	"numeroDossier": "$numeroDossier",
+		    	"idStatutDossier": $idStatutDossier,
+		    	"idStatutCommentaire": $idStatutCommentaire,
+		    	"idIpAdress": "$idIpAdress",
+		    	"updated_at": "$updated_at",
+		    	"step": $step,
+		    	"createdAt": "$createdAt",
+		    	"idHistoriquePaiement": $idHistoriquePaiement,
+		    	"idProgression": $idProgression
+		    	}]
+		    }
+	    }
+    </result>
+  </query>
+  
+  <resource path="filter/by/idsAppointment" method="POST">
+  	<description>filter folder by appointment</description>
+    <call-query href="filterFolderByIdsAndAppointment">
+      <with-param name="ids" query-param="ids" />
+      <with-param name="rdv" query-param="rdv" />
+    </call-query>
+  </resource>
+  <query id="filterFolderByIdsAndAppointment" useConfig="dossierSomissionDS">
+    <sql>
+    	SELECT DISTINCT(dossier.*) FROM dossier 
+    	JOIN "rendezVous" rdv ON rdv."idDossier" = dossier."idDossier"
+    	WHERE DATE(rdv."dateRendezVous") = :rdv AND dossier."idDossier" IN (:ids)
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER"/>
+    <param type="IN" name="rdv" paramType="SCALAR" sqlType="DATE"/>
+    <result outputType="json">
+	    {"data":
+		    {"folders":[{
+		    	"idDossier":$idDossier,
+		    	"lienDossier": "$lienDossier",
+		    	"dateSoumission": "$dateSoumission",
+		    	"idStatutDepot": $idStatutDepot,
+		    	"idStatutValidation": $idStatutValidation,
+		    	"rdvDepot": "$rdvDepot",
+		    	"numeroDossier": "$numeroDossier",
+		    	"idStatutDossier": $idStatutDossier,
+		    	"idStatutCommentaire": $idStatutCommentaire,
+		    	"idIpAdress": "$idIpAdress",
+		    	"updated_at": "$updated_at",
+		    	"step": $step,
+		    	"createdAt": "$createdAt",
+		    	"idHistoriquePaiement": $idHistoriquePaiement,
+		    	"idProgression": $idProgression
+		    	}]
+		    }
+	    }
+    </result>
+  </query>
+  
+  <resource path="filter/by/idsNumber" method="POST">
+    <description>filter folder by number</description>
+    <call-query href="filterFolderByIdsNumber">
+      <with-param name="ids" query-param="ids" />
+      <with-param name="number" query-param="number" />
+    </call-query>
+  </resource>
+  <query id="filterFolderByIdsNumber" useConfig="dossierSomissionDS">
+    <sql>
+    	SELECT * FROM dossier 
+    	WHERE "idDossier" IN (:ids) AND LOWER(TRIM("numeroDossier")) LIKE CONCAT(:number, '%')
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER"/>
+    <param type="IN" name="number" paramType="SCALAR" sqlType="STRING"/>
+    <result outputType="json">
+	    {"data":
+		    {"folders":[{
+		    	"idDossier":$idDossier,
+		    	"lienDossier": "$lienDossier",
+		    	"dateSoumission": "$dateSoumission",
+		    	"idStatutDepot": $idStatutDepot,
+		    	"idStatutValidation": $idStatutValidation,
+		    	"rdvDepot": "$rdvDepot",
+		    	"numeroDossier": "$numeroDossier",
+		    	"idStatutDossier": $idStatutDossier,
+		    	"idStatutCommentaire": $idStatutCommentaire,
+		    	"idIpAdress": "$idIpAdress",
+		    	"updated_at": "$updated_at",
+		    	"step": $step,
+		    	"createdAt": "$createdAt",
+		    	"idHistoriquePaiement": $idHistoriquePaiement,
+		    	"idProgression": $idProgression
+		    	}]
+		    }
+	    }
+    </result>
+  </query>
   <!-- #FOLDER FILTER  -->
   
   <!-- RCS REQUESTS -->
