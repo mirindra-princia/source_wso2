@@ -1831,6 +1831,78 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
 	    }
     </result>
   </query>
+  
+  <resource path="filter/by/depositStatuses/{status}" method="GET">
+    <description>filter folder by deposit status</description>
+    <call-query href="filterFolderByDepositStatus">
+      <with-param name="status" query-param="status" />
+    </call-query>
+  </resource>
+  <query id="filterFolderByDepositStatus" useConfig="dossierSomissionDS">
+    <sql>
+    	SELECT * FROM dossier WHERE "idStatutDepot" = :status
+    </sql>
+    <param type="IN" name="status" paramType="SCALAR" sqlType="INTEGER"/>
+    <result outputType="json">
+	    {"data":
+		    {"folders":[{
+		    	"idDossier":$idDossier,
+		    	"lienDossier": "$lienDossier",
+		    	"dateSoumission": "$dateSoumission",
+		    	"idStatutDepot": $idStatutDepot,
+		    	"idStatutValidation": $idStatutValidation,
+		    	"rdvDepot": "$rdvDepot",
+		    	"numeroDossier": "$numeroDossier",
+		    	"idStatutDossier": $idStatutDossier,
+		    	"idStatutCommentaire": $idStatutCommentaire,
+		    	"idIpAdress": "$idIpAdress",
+		    	"updated_at": "$updated_at",
+		    	"step": $step,
+		    	"createdAt": "$createdAt",
+		    	"idHistoriquePaiement": $idHistoriquePaiement,
+		    	"idProgression": $idProgression
+		    	}]
+		    }
+	    }
+    </result>
+  </query>
+  
+  <resource path="filter/by/depositStatuses" method="POST">
+    <description>filter folder by deposit status</description>
+    <call-query href="restrictFilterFolderByDepositStatus">
+      <with-param name="ids" query-param="ids" />
+      <with-param name="status" query-param="status" />
+    </call-query>
+  </resource>
+  <query id="restrictFilterFolderByDepositStatus" useConfig="dossierSomissionDS">
+    <sql>
+    	SELECT * FROM dossier WHERE "idStatutDepot" = :status AND "idDossier" IN (:ids)
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER"/>
+    <param type="IN" name="status" paramType="SCALAR" sqlType="INTEGER"/>
+    <result outputType="json">
+	    {"data":
+		    {"folders":[{
+		    	"idDossier":$idDossier,
+		    	"lienDossier": "$lienDossier",
+		    	"dateSoumission": "$dateSoumission",
+		    	"idStatutDepot": $idStatutDepot,
+		    	"idStatutValidation": $idStatutValidation,
+		    	"rdvDepot": "$rdvDepot",
+		    	"numeroDossier": "$numeroDossier",
+		    	"idStatutDossier": $idStatutDossier,
+		    	"idStatutCommentaire": $idStatutCommentaire,
+		    	"idIpAdress": "$idIpAdress",
+		    	"updated_at": "$updated_at",
+		    	"step": $step,
+		    	"createdAt": "$createdAt",
+		    	"idHistoriquePaiement": $idHistoriquePaiement,
+		    	"idProgression": $idProgression
+		    	}]
+		    }
+	    }
+    </result>
+  </query>
   <!-- #FOLDER FILTER  -->
   
   <!-- RCS REQUESTS -->
