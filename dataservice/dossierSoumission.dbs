@@ -796,136 +796,138 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
     </result>
   </query>
   <query id="fiscVersments" useConfig="dossierSomissionDS">
-      <sql>
-          select * ,
-          (sum("statut_de") over())::text as total_statut_de,
-          (sum("statut_pr") over())::text as total_statut_pr,
-          (sum("statut_and") over())::text as total_statut_and,
+        <sql>
+            select * ,
+            (sum("statut_de") over())::text as total_statut_de,
+            (sum("statut_pr") over())::text as total_statut_pr,
+            (sum("statut_and") over())::text as total_statut_and,
 
-          (sum("bails_de") over())::text as total_bails_de,
-          (sum("bails_pr") over() )::text as total_bails_pr,
-          (sum("bails_and") over())::text as total_bails_and,
-          (sum("bails_base") over())::text as total_bails_bases,
+            (sum("bails_de") over())::text as total_bails_de,
+            (sum("bails_pr") over() )::text as total_bails_pr,
+            (sum("bails_and") over())::text as total_bails_and,
+            (sum("bails_base") over())::text as total_bails_bases,
 
-          (sum("df_de") over() )::text as total_df_de,
-          (sum("df_pr") over() )::text as total_df_pr,
-          (sum("df_and") over())::text as total_df_and,
+            (sum("df_de") over() )::text as total_df_de,
+            (sum("df_pr") over() )::text as total_df_pr,
+            (sum("df_and") over())::text as total_df_and,
 
-          (sum("total_de") over())::text as total_general_de,
-          (sum("total_pr") over() )::text as total_general_pr,
-          (sum("total_and") over())::text as total_general_and,
+            (sum("total_de") over())::text as total_general_de,
+            (sum("total_pr") over() )::text as total_general_pr,
+            (sum("total_and") over())::text as total_general_and,
 
-          (sum("statut_de") over() )::text as total_df_de,
-          ( sum("is") over())::text as total_is,
-          (sum("ir") over())::text as total_ir
+            (sum("statut_de") over() )::text as total_df_de,
+            ( sum("is") over())::text as total_is,
+            (sum("ir") over())::text as total_ir
 
-          from
-          (select  * from
+            from
+            (select  * from
 
-          (select *, sum(sc."statut_de" + sc."bails_de" + sc."df_de" ) as total_de,
-          sum(sc."statut_pr" + sc."bails_pr" + sc."df_pr" ) as total_pr,
-          sum(sc."statut_and" + sc."bails_and" + sc."df_and" ) as total_and
+            (select *, sum(sc."statut_de" + sc."bails_de" + sc."df_de" ) as total_de,
+            sum(sc."statut_pr" + sc."bails_pr" + sc."df_pr" ) as total_pr,
+            sum(sc."statut_and" + sc."bails_and" + sc."df_and" ) as total_and
 
-          from
+            from
 
-          (select "idFacture",
-          sum((case when ("label" like 'Enregistrement des statuts ou contrat%')then value  else 0 end ) +
-          (case when ("label" like 'Enregistrement PV AGC (SA/SAU)%')then value  else 0 end ) +
-          (case when ("label" like 'DE STATUT%') then value  else 0 end ) +
-          (case when ("label" like 'DE PV%') then value  else 0 end ))as statut_de,
+            (select "idFacture",
+            sum((case when ("label" like 'Enregistrement des statuts ou contrat%')then value  else 0 end ) +
+            (case when ("label" like 'Enregistrement PV AGC (SA/SAU)%')then value  else 0 end ) +
+            (case when ("label" like 'DE STATUT%') then value  else 0 end ) +
+            (case when ("label" like 'DE PV%') then value  else 0 end ))as statut_de,
 
 
-          sum((case when ("label" like 'AND STATUT%') then value  else 0 end ) +
-          (case when ("label" like 'AND PV%') then value  else 0 end )) as statut_and,
+            sum((case when ("label" like 'AND STATUT%') then value  else 0 end ) +
+            (case when ("label" like 'AND PV%') then value  else 0 end )) as statut_and,
 
-          sum((case when ("label" like 'PR STATUT%') then value  else 0 end ) +
-          (case when ("label" like 'PR PV%') then value  else 0 end )) as statut_pr,
+            sum((case when ("label" like 'PR STATUT%') then value  else 0 end ) +
+            (case when ("label" like 'PR PV%') then value  else 0 end )) as statut_pr,
 
-          sum((case when ("label" like 'DE BAIL%') then (value * 100) /2  else 0 end )) as bails_base,
+            (sum((case when ("label" like 'Enregistrement contrat de bail siège social%') then value  else 0 end) +
+            (case when ("label" like 'Enregistrement contrat de bail Lieu(x) d%') then value  else 0 end) +
+            (case when ("label" like 'DE BAIL%') then value  else 0 end )) * 100) /2 as bails_base,
 
-          sum((case when ("label" like 'Enregistrement contrat de bail siège social%') then value  else 0 end) +
-          (case when ("label" like 'Enregistrement contrat de bail Lieu(x) d%') then value  else 0 end) +
-          (case when ("label" like 'DE BAIL%') then value  else 0 end )) as bails_de,
+            sum((case when ("label" like 'Enregistrement contrat de bail siège social%') then value  else 0 end) +
+            (case when ("label" like 'Enregistrement contrat de bail Lieu(x) d%') then value  else 0 end) +
+            (case when ("label" like 'DE BAIL%') then value  else 0 end )) as bails_de,
 
-          sum(case when ("label" like 'PR BAIL%') then value  else 0 end ) as bails_pr,
-          sum(case when ("label" like 'AND BAIL%') then value  else 0 end ) as bails_and,
+            sum(case when ("label" like 'PR BAIL%') then value  else 0 end ) as bails_pr,
+            sum(case when ("label" like 'AND BAIL%') then value  else 0 end ) as bails_and,
 
-          sum(
-          (case when trim("label") = 'Enregistrement procuration' then value  else 0 end) +
-          (case when trim("label") = 'Enregistrement PV nomination gérants' then value  else 0 end) +
-          (case when trim("label") = 'Enregistrement Statut (SA/SAU)' then value  else 0 end) +
-          (case when trim("label") = 'Enregistrement PV CA' then value  else 0 end) +
-          (case when trim("label") like 'Enregistrement Bulletin de souscription pour%' then value  else 0 end) +
-          (case when trim("label") = 'Enregistrement DSV' then value  else 0 end) +
-          (case when trim("label") = 'Enregistrement ESV' then value  else 0 end) +
-          (case when trim("label") = 'PV ouverture de succursale' then value  else 0 end)+
-          (case when trim("label") = 'Enregistrement PV AGC' then value  else 0 end)+
-          (case when trim("label") = 'Enregistrement Contrat GIE sans capital' then value  else 0 end) +
-          (case when trim("label") like 'DF%' then value  else 0 end)
-          )
-          as df_de,
-          sum(case when trim("label") = 'PR DF%' then value  else 0 end)
-          as df_pr,
+            sum(
+            (case when trim("label") = 'Enregistrement procuration' then value  else 0 end) +
+            (case when trim("label") = 'Enregistrement PV nomination gérants' then value  else 0 end) +
+            (case when trim("label") = 'Enregistrement Statut (SA/SAU)' then value  else 0 end) +
+            (case when trim("label") = 'Enregistrement PV CA' then value  else 0 end) +
+            (case when trim("label") like 'Enregistrement Bulletin de souscription pour%' then value  else 0 end) +
+            (case when trim("label") = 'Enregistrement DSV' then value  else 0 end) +
+            (case when trim("label") = 'Enregistrement ESV' then value  else 0 end) +
+            (case when trim("label") = 'PV ouverture de succursale' then value  else 0 end)+
+            (case when trim("label") = 'Enregistrement PV AGC' then value  else 0 end)+
+            (case when trim("label") = 'Enregistrement Contrat GIE sans capital' then value  else 0 end) +
+            (case when trim("label") like 'DF%' then value  else 0 end)
+            )
+            as df_de,
+            sum(case when trim("label") like 'PR DF%' then value  else 0 end)
+            as df_pr,
 
-          sum (case when trim("label") = 'AND DF%' then value  else 0 end)
-          as df_and,
+            sum (case when trim("label") like 'AND DF%' then value  else 0 end)
+            as df_and,
 
-          sum(case when ("label" like 'Acompte IS%') then value  else 0 end)  as is,
-          sum(case when ("label" like 'Acompte IR%') then value  else 0 end)  as ir
+            sum(case when ("label" like 'Acompte IS%') then value  else 0 end)  as is,
+            sum(case when ("label" like 'Acompte IR%') then value  else 0 end)  as ir
 
-          from "factureDataDossier" fd group by  fd."idFacture" ) as sc
-          group by "idFacture", "statut_de" , "bails_de" , "df_de", "statut_pr", "statut_and", "bails_pr", "bails_and",
-          "is", "ir", "df_and", "df_pr", "bails_base"
-          order by "idFacture" asc) as fiscData
-          inner join
-          ( select distinct "idFacture", "statutUpdatedAt" as date_paiement, "idDossier",
-          (select sum(value) from "factureDataDossier" where fd."idFacture" = "idFacture" and "idOwner" = 3) as fo_espece
-          from "factureDataDossier" as fd inner join "facture" as f on f."id" = fd."idFacture"
-          )
-          as fdata	on fdata."idFacture" = fiscData."idFacture"
+            from "factureDataDossier" fd group by  fd."idFacture" ) as sc
+            group by "idFacture", "statut_de" , "bails_de" , "df_de", "statut_pr", "statut_and", "bails_pr", "bails_and",
+            "is", "ir", "df_and", "df_pr", "bails_base"
+            order by "idFacture" asc) as fiscData
+            inner join
+            ( select distinct "idFacture", "statutUpdatedAt" as date_paiement, "idDossier",
+            (select sum(value) from "factureDataDossier" where fd."idFacture" = "idFacture" and "idOwner" = 3) as fo_espece
+            from "factureDataDossier" as fd inner join "facture" as f on f."id" = fd."idFacture"
+            )
+            as fdata	on fdata."idFacture" = fiscData."idFacture"
 
-          where fdata."date_paiement"::date between TO_DATE(:startdate, 'YYYY-MM-DD') AND TO_DATE(:enddate, 'YYYY-MM-DD')) as allData
-      </sql>
-    <param type="IN" name="startdate" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <param type="IN" name="enddate" paramType="SCALAR" sqlType="STRING" optional="false" />
-    <result outputType="json">{"data": { "factures": [{
-      "idFacture":$idFacture,
-      "statut_de": "$statut_de",
-      "statut_pr": $statut_pr,
-      "statut_and": "$statut_and" ,
-      "bails_de": "$bails_de" ,
-      "bails_pr": "$bails_pr",
-      "bails_and": "$bails_and",
-      "is": "$is",
-      "ir": "$ir",
-      "df_and": "$df_and",
-      "df_de": "$df_de",
-      "df_pr": "$df_pr",
-      "total_de": "$total_de",
-      "total_pr": "$total_pr",
-      "total_and": "$total_and",
-      "total_statut_de": "$total_statut_de",
-      "total_statut_pr": "$total_statut_pr",
-      "total_statut_and": "$total_statut_and",
-      "total_bails_de": "$total_bails_de",
-      "total_bails_pr": "$total_bails_pr",
-      "total_bails_and": "$total_bails_and",
-      "total_df_de": "$total_df_de",
-      "total_df_pr": "$total_df_pr",
-      "total_df_and": "$total_df_and",
-      "total_general_de": "$total_general_de",
-      "total_general_pr": "$total_general_pr",
-      "total_general_and": "$total_general_and",
-      "total_is": "$total_is",
-      "total_ir": "$total_ir",
-      "idDossier": "$idDossier",
-      "date_paiement": "$date_paiement",
-      "fo_espece": "$fo_espece",
-      "total_bails_bases": "$total_bails_bases"
-      }]}
-      }
-    </result>
-  </query>
+            where fdata."date_paiement"::date between TO_DATE(:startdate, 'YYYY-MM-DD') AND TO_DATE(:enddate, 'YYYY-MM-DD')) as allData
+        </sql>
+        <param type="IN" name="startdate" paramType="SCALAR" sqlType="STRING" optional="false" />
+        <param type="IN" name="enddate" paramType="SCALAR" sqlType="STRING" optional="false" />
+        <result outputType="json">{"data": { "factures": [{
+            "idFacture":$idFacture,
+            "statut_de": "$statut_de",
+            "statut_pr": $statut_pr,
+            "statut_and": "$statut_and" ,
+            "bails_de": "$bails_de" ,
+            "bails_pr": "$bails_pr",
+            "bails_and": "$bails_and",
+            "is": "$is",
+            "ir": "$ir",
+            "df_and": "$df_and",
+            "df_de": "$df_de",
+            "df_pr": "$df_pr",
+            "total_de": "$total_de",
+            "total_pr": "$total_pr",
+            "total_and": "$total_and",
+            "total_statut_de": "$total_statut_de",
+            "total_statut_pr": "$total_statut_pr",
+            "total_statut_and": "$total_statut_and",
+            "total_bails_de": "$total_bails_de",
+            "total_bails_pr": "$total_bails_pr",
+            "total_bails_and": "$total_bails_and",
+            "total_df_de": "$total_df_de",
+            "total_df_pr": "$total_df_pr",
+            "total_df_and": "$total_df_and",
+            "total_general_de": "$total_general_de",
+            "total_general_pr": "$total_general_pr",
+            "total_general_and": "$total_general_and",
+            "total_is": "$total_is",
+            "total_ir": "$total_ir",
+            "idDossier": "$idDossier",
+            "date_paiement": "$date_paiement",
+            "fo_espece": "$fo_espece",
+            "total_bails_bases": "$bails_base"
+            }]}
+            }
+        </result>
+    </query>
   <query id="updateFacturePaiementState" useConfig="dossierSomissionDS">
     <sql>UPDATE public.facture SET 
     	 "statutUpdatedAt" = CURRENT_TIMESTAMP,    	
