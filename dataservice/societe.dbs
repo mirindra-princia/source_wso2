@@ -1093,9 +1093,11 @@
     <param type="IN" name="EDBM" sqlType="INTEGER" paramType="SCALAR" optional="true" />
   </query>
   <query id="getCreatedCompanyId" useConfig="societeDS">
-    <sql>SELECT status.id, status."idSociete" FROM public."statutInteroperabilite" status
+    <sql>
+    	SELECT status.id, status."idSociete" FROM public."statutInteroperabilite" status
     	JOIN public.societe ON societe."idSociete" = status."idSociete"
-    	WHERE status."RCS" > 1 AND status."INSTAT" > 1 AND status."DGI" > 0 AND "EDBM"=0 AND societe."STAT" IS NOT NULL</sql>
+    	WHERE status."RCS" > 1 AND status."INSTAT" > 1 AND status."DGI" > 1 AND ("EDBM"=0 OR "EDBM" IS NULL) AND societe."STAT" IS NOT NULL
+    </sql>
     <result outputType="json">{"status":{"company":[{"idSociete":"$idSociete"}]}}</result>
   </query>
   <query id="setEdbmInterStatus" useConfig="societeDS">
@@ -1622,7 +1624,7 @@
     </call-query>
   </resource>
   <query id="filterCompanyByName" useConfig="societeDS">
-    <sql>SELECT * FROM societe WHERE LOWER(TRIM("denominationSocial")) LIKE CONCAT(:name, '%') </sql>
+    <sql>SELECT * FROM societe WHERE LOWER(TRIM("denominationSocial")) LIKE CONCAT('%',:name, '%') </sql>
     <param type="IN" name="name" paramType="SCALAR" sqlType="STRING"/>
     <result outputType="json">
     	{
@@ -2021,6 +2023,60 @@
     <param type="IN" name="idSociete" paramType="SCALAR" sqlType="INTEGER"/>
     <param type="IN" name="isDenominationChecked" paramType="SCALAR" sqlType="BOOLEAN"/>
   </query>
-
   <!-- #USER MANAGEMENT -->
+  
+  <!-- FILTER -->
+  <resource path="filter/by/owners" method="POST">
+    <description/>
+    <call-query href="filterByOwners">
+      <with-param name="ids" query-param="ids"/>
+    </call-query>
+  </resource>
+  <query id="filterByOwners" useConfig="societeDS">
+    <sql>
+      SELECT * FROM societe 
+      WHERE "idPersonne" IN (:ids)
+    </sql>
+    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER"/>
+    <result outputType="json">
+      {"data": {
+    		"companies": [{
+    			"idSociete":$idSociete,
+		        "formeJuridique": "$formeJuridique",
+		        "idFormeJuridique": "$idFormeJuridique",
+		        "denominationSocial": "$denominationSocial",
+		        "nomCommercial": "$nomCommercial",
+		        "sigle": "$sigle",
+		        "objetSocial": "$objetSocial",
+		        "idSecteurActivite": "$idSecteurActivite",
+		        "activitePrincipal": "$activitePrincipal",
+		        "activiteImportExport": "$activiteImportExport",
+		        "activiteIndustrielCollecteur": "$activiteIndustrielCollecteur",
+		        "activiteGrossiste": "$activiteGrossiste",
+		        "capital":"$capital",
+		        "montantPartSocial": "$montantPartSocial",
+		        "dateStatut": "$dateStatut",
+		        "choixImposition": "$choixImposition",
+		        "tva":"$tva",
+		        "duree":"$duree",
+		        "finExerciceSocial": "$finExerciceSocial",
+		        "idPersonne": "$idPersonne",
+		        "idDossier": "$idDossier",
+		        "idSiegeSocial": "$idSiegeSocial",
+		        "idDevise": "$idDevise",
+		        "idDevisePartAssocie": "$idDevisePartAssocie",
+		        "NIF":"$NIF",
+		        "dateNIF":"$dateNIF",
+		        "STAT":"$STAT",
+		        "RCS":"$RCS",
+		        "dateSTAT":"$dateSTAT",
+		        "dateRCS":"$dateRCS",
+		        "ubi":"$ubi",
+		        "activiteSecondaire": "$activiteSecondaire"
+    		}]
+    	}
+      }
+    </result>
+  </query>
+  <!-- #FILTER -->
 </data>
