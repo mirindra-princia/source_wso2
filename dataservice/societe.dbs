@@ -1093,9 +1093,11 @@
     <param type="IN" name="EDBM" sqlType="INTEGER" paramType="SCALAR" optional="true" />
   </query>
   <query id="getCreatedCompanyId" useConfig="societeDS">
-    <sql>SELECT status.id, status."idSociete" FROM public."statutInteroperabilite" status
+    <sql>
+    	SELECT status.id, status."idSociete" FROM public."statutInteroperabilite" status
     	JOIN public.societe ON societe."idSociete" = status."idSociete"
-    	WHERE status."RCS" > 1 AND status."INSTAT" > 1 AND status."DGI" > 0 AND "EDBM"=0 AND societe."STAT" IS NOT NULL</sql>
+    	WHERE status."RCS" > 1 AND status."INSTAT" > 1 AND status."DGI" > 1 AND ("EDBM"=0 OR "EDBM" IS NULL) AND societe."STAT" IS NOT NULL
+    </sql>
     <result outputType="json">{"status":{"company":[{"idSociete":"$idSociete"}]}}</result>
   </query>
   <query id="setEdbmInterStatus" useConfig="societeDS">
