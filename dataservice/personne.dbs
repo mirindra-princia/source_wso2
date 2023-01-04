@@ -1,5 +1,4 @@
-<data transports="http https" serviceGroup="mg.gov.edbm.societe.personneDS" serviceNamespace=""
-	name="personne">
+<data transports="http https" serviceGroup="mg.gov.edbm.societe.personneDS" serviceNamespace="" name="personne">
 	<description />
 	<!-- CONFIGURATION PROD -->
 	<config id="personneDS">
