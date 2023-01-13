@@ -1,19 +1,19 @@
 <data name="siteInformation" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.siteInformationDS" transports="https http">
   <description>site web d'information</description>
   <!-- CONFIGURATION PROD -->
-  <config id="siteInformationDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/siteWebInformation</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config>
-  <!-- CONFIGURATION TEST -->
 <!--   <config id="siteInformationDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://13.246.0.44:5432/siteWebInformation</property> -->
+<!--     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/siteWebInformation</property> -->
 <!--     <property name="username">devedbmdb</property> -->
 <!--     <property name="password">devedbmdb</property> -->
 <!--   </config> -->
+  <!-- CONFIGURATION TEST -->
+  <config id="siteInformationDS">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://13.246.0.44:5432/siteWebInformation</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
+  </config>
   <!-- CONFIGURATION DEV -->
 <!-- <config id="siteInformationDS">
     <property name="driverClassName">org.postgresql.Driver</property>
