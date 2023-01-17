@@ -1646,7 +1646,7 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         </result>
     </query>
     
-    <resource path="folders" method="POST">
+    <!--<resource path="folders" method="POST">
         <description />
         <call-query href="fetchFolderDesc">
             <with-param name="status" query-param="status" />
@@ -1699,7 +1699,7 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
             	}
             }
         </result>
-    </query>
+    </query>-->
     
     <resource path="folders/count" method="POST">
         <description />
