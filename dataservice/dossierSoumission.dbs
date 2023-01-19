@@ -1606,7 +1606,7 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
             FROM dossier 
             LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier" AND de.group = :group
             WHERE "idStatutDossier" IN (:status)
-            ORDER BY "numeroDossier", "dateSoumission" LIMIT :limit OFFSET :offset
+            ORDER BY "dateSoumission" NULL LAST LIMIT :limit OFFSET :offset
         </sql>
         <param type="IN" name="status" paramType="ARRAY" sqlType="INTEGER" />
         <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
