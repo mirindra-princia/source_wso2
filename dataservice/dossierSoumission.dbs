@@ -1606,7 +1606,7 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
             FROM dossier 
             LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier" AND de.group = :group
             WHERE "idStatutDossier" IN (:status)
-            ORDER BY "numeroDossier", "dateSoumission" LIMIT :limit OFFSET :offset
+            ORDER BY "dateSoumission" NULLS LAST LIMIT :limit OFFSET :offset
         </sql>
         <param type="IN" name="status" paramType="ARRAY" sqlType="INTEGER" />
         <param type="IN" name="limit" paramType="SCALAR" sqlType="INTEGER" />
@@ -1646,7 +1646,7 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         </result>
     </query>
     
-    <resource path="folders" method="POST">
+    <!--<resource path="folders" method="POST">
         <description />
         <call-query href="fetchFolderDesc">
             <with-param name="status" query-param="status" />
@@ -1699,7 +1699,7 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
             	}
             }
         </result>
-    </query>
+    </query>-->
     
     <resource path="folders/count" method="POST">
         <description />

@@ -15,12 +15,12 @@
 <!--     <property name="password">devedbmdb</property> -->
 <!--   </config> -->
   <!-- CONFIGURATION DEV -->
-<!-- <config id="siteInformationDS">
-    <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/siteWebInformation</property>
-    <property name="username">devedbmdb</property>
-    <property name="password">devedbmdb</property>
-  </config>-->
+<!-- <config id="siteInformationDS"> -->
+<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
+<!--     <property name="url">jdbc:postgresql://localhost:5432/siteWebInformation</property> -->
+<!--     <property name="username">postgres</property> -->
+<!--     <property name="password">postgres</property> -->
+<!--   </config> -->
 
   <operation name="getCategoryName">
     <call-query href="categoryName">
