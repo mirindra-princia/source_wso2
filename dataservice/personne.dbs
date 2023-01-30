@@ -1809,4 +1809,29 @@
 		</result>
 	</query>
 	<!-- #FILTER -->
+	
+	<!-- ROLE -->
+	<resource method="POST" path="roles/fetchByIds">
+		<description />
+		<call-query href="fetchRolesByIds">
+			<with-param name="ids" query-param="ids" />
+		</call-query>
+	</resource>
+	<query id="fetchRolesByIds" useConfig="personneDS">
+		<sql>
+			SELECT * FROM role WHERE id_role IN (:ids)
+		</sql>
+		<param type="IN" name="ids" optional="false" sqlType="INTEGER" paramType="ARRAY" />
+		<result outputType="json">
+			{
+				"data": {
+					"roles": [{
+						"id": $id_role,
+						"name": "$libelle_role"
+					}]
+				}
+			}
+		</result>
+	</query>
+	<!-- #ROLE -->
 </data>
