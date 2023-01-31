@@ -2126,4 +2126,19 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         <param type="IN" name="id" paramType="SCALAR" sqlType="INTEGER" />
     </query>
     <!-- #FODLER STATES -->
+    
+    <!-- BILL -->
+    <resource path="bills/remove" method="DELETE">
+        <description />
+        <call-query href="billRemove">
+            <with-param name="folderId" query-param="folderId" />
+        </call-query>
+    </resource>
+    <query id="billRemove" useConfig="dossierSomissionDS">
+        <sql>
+            DELETE FROM public.facture WHERE "idDossier" = :folderId
+        </sql>
+        <param type="IN" name="folderId" paramType="SCALAR" sqlType="INTEGER" />
+    </query>
+    <!-- #BILL -->
 </data>
