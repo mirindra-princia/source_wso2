@@ -1737,24 +1737,24 @@
 		</call-query>
 	</resource>
 	<query id="getPersonAssociateByCompanyId" useConfig="societeDS">
-    <sql>
-    SELECT associe."idPersonne", associe."idPersonneMoral", associe."idStatutSociete"::varchar FROM  public."societeAssocie" sa  
-    JOIN associe ON associe."idAssocie" = sa."idAssocie" 
-    WHERE "idSociete" = :companyId
-    </sql>
-    <param type="IN" name="companyId " sqlType="INTEGER" paramType="SCALAR" optional="false" />
-    <result outputType="json">
-    	{
-    		"data":{
-    			"associates":[{
-					"personId":$idPersonne,
-					"moralId":$idPersonneMoral,
-					"roleIds":"$idStatutSociete"
-				}]
+	    <sql>
+	    SELECT associe."idPersonne", associe."idPersonneMoral", associe."idStatutSociete"::varchar FROM  public."societeAssocie" sa  
+	    JOIN associe ON associe."idAssocie" = sa."idAssocie" 
+	    WHERE "idSociete" = :companyId
+	    </sql>
+	    <param type="IN" name="companyId " sqlType="INTEGER" paramType="SCALAR" optional="false" />
+	    <result outputType="json">
+	    	{
+	    		"data":{
+	    			"associates":[{
+						"personId":$idPersonne,
+						"moralId":$idPersonneMoral,
+						"roleIds":"$idStatutSociete"
+					}]
+				}
 			}
-		}
-	</result>
-  </query>
+		</result>
+  	</query>
 	<!-- #RCS INTEGRATOR -->
 
   <resource method="POST" path="companyDgiAddDemandReference">
@@ -2079,4 +2079,30 @@
     </result>
   </query>
   <!-- #FILTER -->
+  
+  <!-- ASSOCIATE -->
+  <resource path="person-associates/{associateId}" method="GET">
+		<description />
+		<call-query href="getPersonAssociateById">
+			<with-param name="associateId" query-param="associateId" />
+		</call-query>
+	</resource>
+	<query id="getPersonAssociateById" useConfig="societeDS">
+	    <sql>
+	    SELECT associe."idPersonne", associe."idPersonneMoral", associe."idStatutSociete"::varchar 
+	    FROM  associe
+	    WHERE "idAssocie" = :associateId
+	    </sql>
+	    <param type="IN" name="associateId " sqlType="INTEGER" paramType="SCALAR" optional="false" />
+	    <result outputType="json">
+	    	{
+    			"associate":{
+					"personId":$idPersonne,
+					"moralId":$idPersonneMoral,
+					"roleIds":"$idStatutSociete"
+				}
+			}
+		</result>
+  	</query>
+  <!-- #ASSOCIATE -->
 </data>
