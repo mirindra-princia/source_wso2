@@ -1687,101 +1687,6 @@
 	</query>
 	<!-- #USER MANAGEMENT -->
 
-
-	<!-- RCS INTEGRATOR -->
-	<resource method="POST" path="physical-associates">
-		<description />
-		<call-query href="fetchPhysicalAssociatesInList">
-			<with-param name="ids" query-param="ids" />
-		</call-query>
-	</resource>
-	<query id="fetchPhysicalAssociatesInList" useConfig="personneDS">
-		<sql>
-			SELECT personne.*, pi.*, tpi.*, nationalite.*, sm.*
-			FROM personne
-			LEFT JOIN "pieceIdentite" pi ON pi.id = personne."idPieceIdentite"
-			LEFT JOIN "typePieceIdentite" tpi ON tpi."idTypePiece" = pi."idTypePiece"
-			LEFT JOIN nationalite ON nationalite.code = personne.nationalite
-			LEFT JOIN "situationMatrimoniale" sm ON sm."idSituationMatrimonial" =
-			personne."situationMatrimonial"
-			WHERE personne."idPersonne" IN (:ids)
-		</sql>
-		<param type="IN" name="ids" optional="false" sqlType="INTEGER"
-			paramType="ARRAY" />
-		<result outputType="json">
-			{
-			"data": {
-			"associates": [{
-			"id":$idPersonne,
-			"nom": "$nom",
-			"prenom": "$prenom",
-			"nomPere": "$nomPere",
-			"nomMere": "$nomMere",
-			"dateNaissance": "$dateNaissance",
-			"lieuNaissance": "$lieuNaissance",
-			"sexe": $sexe,
-			"tel": "$tel",
-			"tel2": "$tel2",
-			"email":"$e_mail",
-			"idAdresse": $idAdresse,
-			"identite": {
-			"id": $id,
-			"number": "$numeroPiece",
-			"deliveryPlace": "$lieuDelivrancePiece",
-			"type": {
-			"id": $idTypePiece,
-			"name": "$nomTypePiece"
-			}
-			},
-			"nationalite":{
-			"code": "$code",
-			"libelle": "$libelle"
-			},
-			"situationMatrimonial": {
-			"id": $idSituationMatrimonial,
-			"name": "$libelleSituationMatrimonial"
-			}
-			}]
-			}
-			}
-		</result>
-	</query>
-
-	<resource method="POST" path="moral-associates">
-		<description />
-		<call-query href="fetchMoralAssociatesInList">
-			<with-param name="ids" query-param="ids" />
-		</call-query>
-	</resource>
-	<query id="fetchMoralAssociatesInList" useConfig="personneDS">
-		<sql>
-			SELECT *
-			FROM "personneMorale" moral
-			WHERE "idPersonneMorale" IN (:ids)
-		</sql>
-		<param type="IN" name="ids" optional="false" sqlType="INTEGER"
-			paramType="ARRAY" />
-		<result outputType="json">
-			{
-			"data": {
-			"associates": [{
-			"id":$idPersonneMorale,
-			"rcs": "$RCS",
-			"kbis": "$KBIS",
-			"nif": "$NIF",
-			"stat": "$STAT",
-			"qualite": "$qualite",
-			"capital": "$capitalSocial",
-			"name": "$denominationSocial",
-			"addressId": $idAdresse,
-			"legalStatusId": $idFormeJuridique
-			}]
-			}
-			}
-		</result>
-	</query>
-	<!-- #RCS INTEGRATOR -->
-
 	<!-- FILTER -->
 	<resource method="POST" path="users/filter/ids/by/name">
 		<description />
@@ -1834,4 +1739,185 @@
 		</result>
 	</query>
 	<!-- #ROLE -->
+	
+	<!-- PERSON -->
+	<resource method="POST" path="physical-associates">
+		<description />
+		<call-query href="fetchPhysicalAssociatesInList">
+			<with-param name="ids" query-param="ids" />
+		</call-query>
+	</resource>
+	<query id="fetchPhysicalAssociatesInList" useConfig="personneDS">
+		<sql>
+			SELECT personne.*, pi.*, tpi.*, nationalite.*, sm.*
+			FROM personne
+			LEFT JOIN "pieceIdentite" pi ON pi.id = personne."idPieceIdentite"
+			LEFT JOIN "typePieceIdentite" tpi ON tpi."idTypePiece" = pi."idTypePiece"
+			LEFT JOIN nationalite ON nationalite.code = personne.nationalite
+			LEFT JOIN "situationMatrimoniale" sm ON sm."idSituationMatrimonial" =
+			personne."situationMatrimonial"
+			WHERE personne."idPersonne" IN (:ids)
+		</sql>
+		<param type="IN" name="ids" optional="false" sqlType="INTEGER"
+			paramType="ARRAY" />
+		<result outputType="json">
+			{
+				"data": {
+					"associates": [{
+						"id":$idPersonne,
+						"nom": "$nom",
+						"prenom": "$prenom",
+						"nomPere": "$nomPere",
+						"nomMere": "$nomMere",
+						"dateNaissance": "$dateNaissance",
+						"lieuNaissance": "$lieuNaissance",
+						"sexe": $sexe,
+						"tel": "$tel",
+						"tel2": "$tel2",
+						"email":"$e_mail",
+						"idAdresse": $idAdresse,
+						"identite": {
+							"id": $id,
+							"number": "$numeroPiece",
+							"deliveryPlace": "$lieuDelivrancePiece",
+							"type": {
+								"id": $idTypePiece,
+								"name": "$nomTypePiece"
+							}
+						},
+						"nationalite":{
+							"code": "$code",
+							"libelle": "$libelle"
+						},
+						"situationMatrimonial": {
+							"id": $idSituationMatrimonial,
+							"name": "$libelleSituationMatrimonial"
+						}
+					}]
+				}
+			}
+		</result>
+	</query>
+	<resource method="GET" path="physical-associates/persons/{id}">
+		<description />
+		<call-query href="fetchPersonDetail">
+			<with-param name="id" query-param="id" />
+		</call-query>
+	</resource>
+	<query id="fetchPersonDetail" useConfig="personneDS">
+		<sql>
+			SELECT personne.*, pi.*, tpi.*, nationalite.*, sm.*
+			FROM personne
+			LEFT JOIN "pieceIdentite" pi ON pi.id = personne."idPieceIdentite"
+			LEFT JOIN "typePieceIdentite" tpi ON tpi."idTypePiece" = pi."idTypePiece"
+			LEFT JOIN nationalite ON nationalite.code = personne.nationalite
+			LEFT JOIN "situationMatrimoniale" sm ON sm."idSituationMatrimonial" =
+			personne."situationMatrimonial"
+			WHERE personne."idPersonne" = :id
+		</sql>
+		<param type="IN" name="id" optional="false" sqlType="INTEGER" paramType="SCALAR" />
+		<result outputType="json">
+			{
+				"personPhysical": {
+					"id":$idPersonne,
+					"nom": "$nom",
+					"prenom": "$prenom",
+					"nomPere": "$nomPere",
+					"nomMere": "$nomMere",
+					"dateNaissance": "$dateNaissance",
+					"lieuNaissance": "$lieuNaissance",
+					"sexe": $sexe,
+					"tel": "$tel",
+					"tel2": "$tel2",
+					"email":"$e_mail",
+					"idAdresse": $idAdresse,
+					"identite": {
+						"id": $id,
+						"number": "$numeroPiece",
+						"deliveryPlace": "$lieuDelivrancePiece",
+						"type": {
+							"id": $idTypePiece,
+							"name": "$nomTypePiece"
+						}
+					},
+					"nationalite":{
+						"code": "$code",
+						"libelle": "$libelle"
+					},
+					"situationMatrimonial": {
+						"id": $idSituationMatrimonial,
+						"name": "$libelleSituationMatrimonial"
+					}
+				}
+			}
+		</result>
+	</query>
+	<!-- #PERSON -->
+	
+	<!-- MORAL -->
+	<resource method="POST" path="moral-associates">
+		<description />
+		<call-query href="fetchMoralAssociatesInList">
+			<with-param name="ids" query-param="ids" />
+		</call-query>
+	</resource>
+	<query id="fetchMoralAssociatesInList" useConfig="personneDS">
+		<sql>
+			SELECT *
+			FROM "personneMorale" moral
+			WHERE "idPersonneMorale" IN (:ids)
+		</sql>
+		<param type="IN" name="ids" optional="false" sqlType="INTEGER"
+			paramType="ARRAY" />
+		<result outputType="json">
+			{
+			"data": {
+			"associates": [{
+			"id":$idPersonneMorale,
+			"rcs": "$RCS",
+			"kbis": "$KBIS",
+			"nif": "$NIF",
+			"stat": "$STAT",
+			"qualite": "$qualite",
+			"capital": "$capitalSocial",
+			"name": "$denominationSocial",
+			"addressId": $idAdresse,
+			"legalStatusId": $idFormeJuridique
+			}]
+			}
+			}
+		</result>
+	</query>
+	<resource method="GET" path="moral-associates/morales/{id}">
+		<description />
+		<call-query href="fetchMoralDetail">
+			<with-param name="id" query-param="id" />
+		</call-query>
+	</resource>
+	<query id="fetchMoralDetail" useConfig="personneDS">
+		<sql>
+			SELECT *
+			FROM "personneMorale" moral
+			WHERE "idPersonneMorale" = :id
+		</sql>
+		<param type="IN" name="id" optional="false" sqlType="INTEGER"
+			paramType="SCALAR" />
+		<result outputType="json">
+			{
+				"moral": {
+					"id":$idPersonneMorale,
+					"rcs": "$RCS",
+					"kbis": "$KBIS",
+					"nif": "$NIF",
+					"stat": "$STAT",
+					"qualite": "$qualite",
+					"capital": "$capitalSocial",
+					"name": "$denominationSocial",
+					"addressId": $idAdresse,
+					"legalStatusId": $idFormeJuridique
+				}
+			}
+		</result>
+	</query>
+	<!-- #MORAL -->
 </data>
