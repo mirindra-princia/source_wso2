@@ -2141,4 +2141,30 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         <param type="IN" name="folderId" paramType="SCALAR" sqlType="INTEGER" />
     </query>
     <!-- #BILL -->
+    
+    <!-- STATISTIC -->
+	<resource path="statistics/steps/intervalTime/lastSteps/{lastStep}/currentSteps/{currentStep}/midState/{midState}" method="GET">
+		<description />
+		<call-query href="statisticsStepIntervalTime">
+			<with-param name="lastStep" query-param="lastStep" />
+			<with-param name="currentStep" query-param="currentStep" />
+			<with-param name="midState" query-param="midState" />
+		</call-query>
+	</resource>
+	<query id="statisticsStepIntervalTime" useConfig="dossierSomissionDS">
+		<sql>
+			SELECT public.getavgminutesbetweenstates(:lastStep, :currentStep, true) as time
+		</sql>
+		<param type="IN" name="lastStep" paramType="SCALAR" sqlType="INTEGER" />
+		<param type="IN" name="currentStep" paramType="SCALAR" sqlType="INTEGER" />
+		<param type="IN" name="midState" paramType="SCALAR" sqlType="INTEGER" />
+		<result outputType="json">
+			{
+				"timer": {
+					"time": $time
+				}
+			}
+		</result>
+	</query>
+	<!-- #STATISTIC -->
 </data>
