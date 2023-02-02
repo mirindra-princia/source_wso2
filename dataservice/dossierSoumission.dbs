@@ -15,7 +15,7 @@
 	    <property name="password">devedbmdb</property>
    	</config>
    	<!-- CONFIGURATION DEV -->
-<!--  <config id="dossierSomissionDS"> -->
+<!--   <config id="dossierSomissionDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property> -->
 <!--     <property name="username">postgres</property> -->
@@ -2162,6 +2162,25 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
 			{
 				"timer": {
 					"time": $time
+				}
+			}
+		</result>
+	</query>
+	<resource path="statistics/steps/folders/count" method="POST">
+		<description />
+		<call-query href="countFoldersInStep">
+			<with-param name="status" query-param="status" />
+		</call-query>
+	</resource>
+	<query id="countFoldersInStep" useConfig="dossierSomissionDS">
+		<sql>
+			SELECT COUNT(DISTINCT "idDossier") as total FROM public."historiqueStatutDossier" WHERE "idStatut" IN (:status)
+		</sql>
+		<param type="IN" name="status" paramType="ARRAY" sqlType="INTEGER" />
+		<result outputType="json">
+			{
+				"counter": {
+					"total": $total
 				}
 			}
 		</result>
