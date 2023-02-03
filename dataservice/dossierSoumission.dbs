@@ -15,7 +15,7 @@
 	    <property name="password">devedbmdb</property>
    	</config>
    	<!-- CONFIGURATION DEV -->
-<!--  <config id="dossierSomissionDS"> -->
+<!--   <config id="dossierSomissionDS"> -->
 <!--     <property name="driverClassName">org.postgresql.Driver</property> -->
 <!--     <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property> -->
 <!--     <property name="username">postgres</property> -->
@@ -2141,4 +2141,152 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
         <param type="IN" name="folderId" paramType="SCALAR" sqlType="INTEGER" />
     </query>
     <!-- #BILL -->
+    
+    <!-- STATISTIC -->
+	<resource path="statistics/steps/intervalTime/lastSteps/{lastStep}/currentSteps/{currentStep}/midState/{midState}" method="GET">
+		<description />
+		<call-query href="statisticsStepIntervalTime">
+			<with-param name="lastStep" query-param="lastStep" />
+			<with-param name="currentStep" query-param="currentStep" />
+			<with-param name="midState" query-param="midState" />
+		</call-query>
+	</resource>
+	<query id="statisticsStepIntervalTime" useConfig="dossierSomissionDS">
+		<sql>
+			SELECT public.getavgminutesbetweenstates(:lastStep, :currentStep, true) as time
+		</sql>
+		<param type="IN" name="lastStep" paramType="SCALAR" sqlType="INTEGER" />
+		<param type="IN" name="currentStep" paramType="SCALAR" sqlType="INTEGER" />
+		<param type="IN" name="midState" paramType="SCALAR" sqlType="INTEGER" />
+		<result outputType="json">
+			{
+				"timer": {
+					"time": $time
+				}
+			}
+		</result>
+	</query>
+	
+	<resource path="statistics/steps/folders/count" method="POST">
+		<description />
+		<call-query href="countFoldersInStep">
+			<with-param name="status" query-param="status" />
+		</call-query>
+	</resource>
+	<query id="countFoldersInStep" useConfig="dossierSomissionDS">
+		<sql>
+			SELECT COUNT(DISTINCT "idDossier") as total FROM public."historiqueStatutDossier" WHERE "idStatut" IN (:status)
+		</sql>
+		<param type="IN" name="status" paramType="ARRAY" sqlType="INTEGER" />
+		<result outputType="json">
+			{
+				"counter": {
+					"total": $total
+				}
+			}
+		</result>
+	</query>
+	
+	<resource path="statistics/treatments/admissibles/delay/min" method="GET">
+		<description />
+		<call-query href="treatmentAdmissibleMinDelay"/>
+	</resource>
+	<query id="treatmentAdmissibleMinDelay" useConfig="dossierSomissionDS">
+		<sql>
+			SELECT public.getminminutesrecevabilitedossier() as delay
+		</sql>
+		<result outputType="json">
+			{
+				"treatment": {
+					"delay": $delay
+				}
+			}
+		</result>
+	</query>
+	
+	<resource path="statistics/treatments/admissibles/delay/avg" method="GET">
+		<description />
+		<call-query href="treatmentAdmissibleAvgDelay"/>
+	</resource>
+	<query id="treatmentAdmissibleAvgDelay" useConfig="dossierSomissionDS">
+		<sql>
+			SELECT public.getavgminutesrecevabilitedossier() as delay
+		</sql>
+		<result outputType="json">
+			{
+				"treatment": {
+					"delay": $delay
+				}
+			}
+		</result>
+	</query>
+	
+	<resource path="statistics/treatments/admissibles/delay/max" method="GET">
+		<description />
+		<call-query href="treatmentAdmissibleMaxDelay"/>
+	</resource>
+	<query id="treatmentAdmissibleMaxDelay" useConfig="dossierSomissionDS">
+		<sql>
+			SELECT public.getmaxminutesrecevabilitedossier() as delay
+		</sql>
+		<result outputType="json">
+			{
+				"treatment": {
+					"delay": $delay
+				}
+			}
+		</result>
+	</query>
+	
+	<resource path="statistics/treatments/immatriculations/delay/min" method="GET">
+		<description />
+		<call-query href="treatmentImmatriculationMinDelay"/>
+	</resource>
+	<query id="treatmentImmatriculationMinDelay" useConfig="dossierSomissionDS">
+		<sql>
+			SELECT public.getminminutesimmatriculation() as delay
+		</sql>
+		<result outputType="json">
+			{
+				"treatment": {
+					"delay": $delay
+				}
+			}
+		</result>
+	</query>
+	
+	<resource path="statistics/treatments/immatriculations/delay/avg" method="GET">
+		<description />
+		<call-query href="treatmentImmatriculationAvgDelay"/>
+	</resource>
+	<query id="treatmentImmatriculationAvgDelay" useConfig="dossierSomissionDS">
+		<sql>
+			SELECT public.getavgminutesimmatriculation() as delay
+		</sql>
+		<result outputType="json">
+			{
+				"treatment": {
+					"delay": $delay
+				}
+			}
+		</result>
+	</query>
+	
+	<resource path="statistics/treatments/immatriculations/delay/max" method="GET">
+		<description />
+		<call-query href="treatmentImmatriculationMaxDelay"/>
+	</resource>
+	<query id="treatmentImmatriculationMaxDelay" useConfig="dossierSomissionDS">
+		<sql>
+			SELECT public.getmaxminutesimmatriculation() as delay
+		</sql>
+		<result outputType="json">
+			{
+				"treatment": {
+					"delay": $delay
+				}
+			}
+		</result>
+	</query>
+	<!-- #STATISTIC -->
 </data>
