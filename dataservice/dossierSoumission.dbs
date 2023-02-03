@@ -535,7 +535,7 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
 		on date("dateModification")=T.dateJour and "idStatut"=:idStatutDossier  group by (date) order by(date) asc
 	</sql>
     <param type="IN" name="idStatutDossier" paramType="SCALAR" sqlType="INTEGER" optional="false" />
-    <result outputType="json">{"data":{"statistic": [{"date":"$date", "count":"$count"}]}}</result>
+    <result outputType="json">{"data":{"statistic": [{"date":"$date", "total":"$count"}]}}</result>
   </query>
   <query id="moyenneImmatriculation" useConfig="dossierSomissionDS">
     <sql>
