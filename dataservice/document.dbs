@@ -1,88 +1,90 @@
-<data transports="http https" serviceGroup="mg.gov.edbm.societe.documentDS" serviceNamespace="" name="document">
+<data name="document" serviceNamespace="" serviceGroup="mg.gov.edbm.societe.documentDS" transports="http https">
   <description />
-
-  <!-- CONFIGURATION PROD -->
-<!--    <config id="documentDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/document</property> -->
-<!--     <property name="username">devedbmdb</property> -->
-<!--     <property name="password">devedbmdb</property> -->
-<!--   </config>  -->
-  <!-- CONFIGURATION TEST  -->
   <config id="documentDS">
-    	<property name="driverClassName">org.postgresql.Driver</property>
-	    <property name="url">jdbc:postgresql://13.246.0.44:5432/document</property>
-	    <property name="username">devedbmdb</property>
-	    <property name="password">devedbmdb</property>
-   	</config>
-  <!-- CONFIGURATION DEV -->
-<!--   	<config id="documentDS"> -->
-<!--     <property name="driverClassName">org.postgresql.Driver</property> -->
-<!--     <property name="url">jdbc:postgresql://localhost:5432/document</property> -->
-<!--     <property name="username">postgres</property> -->
-<!--     <property name="password">postgres</property> -->
-<!--   </config> -->
-  <resource method="GET" path="listdocumentToUploadByLegalStatus">
+    <property name="driverClassName">org.postgresql.Driver</property>
+    <property name="url">jdbc:postgresql://13.246.0.44:5432/document</property>
+    <property name="username">devedbmdb</property>
+    <property name="password">devedbmdb</property>
+  </config>
+  <resource path="listdocumentToUploadByLegalStatus" method="GET">
     <description />
     <call-query href="documentToUploadByLegalStatus">
       <with-param name="idFormeJuridique" query-param="idFormeJuridique" />
     </call-query>
   </resource>
-  <resource method="GET" path="listdocumentToUploadByAssociate">
+  <resource path="listdocumentToUploadByAssociate" method="GET">
     <description />
     <call-query href="documentToUploadByAssociate" />
   </resource>
-  <resource method="GET" path="listdocumentToUploadByLeader">
+  <resource path="listdocumentToUploadByLeader" method="GET">
     <description />
     <call-query href="documentToUploadByLeader" />
   </resource>
-  <resource method="GET" path="listdocumentToUploadByActivity">
+  <resource path="listdocumentToUploadByActivity" method="GET">
     <description />
     <call-query href="documentToUploadByActivity" />
   </resource>
-  <resource method="GET" path="listdocumentToUploadByWholesalerActivity">
+  <resource path="listdocumentToUploadByWholesalerActivity" method="GET">
     <description />
     <call-query href="documentToUploadByWholesalerActivity" />
   </resource>
-  <resource method="GET" path="listdocumentToUploadByTheHeadOffice">
+  <resource path="listdocumentToUploadByTheHeadOffice" method="GET">
     <description>list of document o upload for the head office without user selection</description>
     <call-query href="documentToUploadByTheHeadOffice" />
   </resource>
-  <resource method="GET" path="listdocumentToUploadByTheHeadOfficeWithBailleurId">
+  <resource path="listdocumentToUploadByTheHeadOfficeWithBailleurId" method="GET">
     <description />
     <call-query href="documentToUploadByTheHeadOfficeWhithBailleurId">
       <with-param name="idTypeBailleur" query-param="idTypeBailleur" />
     </call-query>
   </resource>
-  <resource method="GET" path="listdocumentToUploadByTheHeadOfficeWithContratId">
+  <resource path="listdocumentToUploadByTheHeadOfficeWithContratId" method="GET">
     <description />
     <call-query href="documentToUploadByTheHeadOfficeWhithContratId">
       <with-param name="idTypeContrat" query-param="idTypeContrat" />
     </call-query>
   </resource>
-  <resource method="GET" path="listdocumentToUploadByMandataire">
+  <resource path="listdocumentToUploadByMandataire" method="GET">
     <description />
     <call-query href="documentToUploadByMandataire" />
   </resource>
-  <resource method="GET" path="listdocumentToUploadByRegularActiviy">
+  <resource path="listdocumentToUploadByRegularActiviy" method="GET">
     <description />
     <call-query href="documentToUploadByRegularActiviy" />
   </resource>
-  <resource method="GET" path="listdocumentToSave">
+  <resource path="listdocumentToSave" method="GET">
     <description />
     <call-query href="documentToSave" />
   </resource>
-  <resource method="GET" path="getDocumentLabel">
+  <resource path="getDocumentLabel" method="GET">
     <description />
     <call-query href="getDocumentLabel">
       <with-param name="idDocument" query-param="idDocument" />
+    </call-query>
+  </resource>
+  <resource path="listDocumentToUploadByTheExploitationWhithBailleurId" method="GET">
+    <description />
+    <call-query href="documentToUploadByTheExploitationWhithBailleurId">
+      <with-param name="idTypeBailleur" query-param="idTypeBailleur" />
+    </call-query>
+  </resource>
+  <resource path="listDocumentToUploadByTheExploitationWhithContratId" method="GET">
+    <description />
+    <call-query href="documentToUploadByTheExploitationWhithContratId">
+      <with-param name="idTypeContrat" query-param="idTypeContrat" />
+    </call-query>
+  </resource>
+  <resource path="filter/ids" method="POST">
+    <description />
+    <call-query href="fetchDocumentInList">
+      <with-param name="ids" query-param="ids" />
     </call-query>
   </resource>
   <query id="documentToUploadByLegalStatus" useConfig="documentDS">
     <sql>SELECT dfj."idFormeJuridique", document."idDocument", "nomDocument", "iProcedure", "nbUploader", "nbDeposer", "paramUpload", "paramDeposer"
 	FROM public."documentFormeJuridique" dfj
 	LEFT JOIN public.document ON document."idDocument" = dfj."idDocument" WHERE dfj."idFormeJuridique" = :idFormeJuridique AND "iProcedure"=1;</sql>
-    <param type="IN" name="idFormeJuridique" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idFormeJuridique" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"data":{"documents": 
     		[{"idFormeJuridique": $idFormeJuridique, "idDocument": $idDocument, "nomDocument": "$nomDocument", "iProcedure": $iProcedure, "nbUploader": $nbUploader, "nbDeposer": $nbDeposer, "paramUpload": "$paramUpload", "paramDeposer": "$paramDeposer"}]
     	}}
@@ -120,7 +122,7 @@
 	
 	
 </sql>
-    <param type="IN" name="idTypeBailleur" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idTypeBailleur" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer"}]}}</result>
   </query>
   <query id="documentToUploadByTheExploitationWhithBailleurId" useConfig="documentDS">
@@ -129,7 +131,7 @@
 	
 	
 </sql>
-    <param type="IN" name="idTypeBailleur" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idTypeBailleur" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer"}]}}</result>
   </query>
   <query id="documentToUploadByTheHeadOfficeWhithContratId" useConfig="documentDS">
@@ -138,14 +140,14 @@
 	
 	
 </sql>
-    <param type="IN" name="idTypeContrat" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idTypeContrat" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer"}]}}</result>
   </query>
   <query id="documentToUploadByTheExploitationWhithContratId" useConfig="documentDS">
     <sql>SELECT public.document."idDocument","nomDocument", "nbUploader", "nbDeposer"
 	FROM public."documentExploitation",public.document WHERE public."documentExploitation"."idDocument"=public.document."idDocument"  AND "idTypeContrat"=:idTypeContrat
 </sql>
-    <param type="IN" name="idTypeContrat" paramType="SCALAR" sqlType="INTEGER" />
+    <param type="IN" name="idTypeContrat" sqlType="INTEGER" paramType="SCALAR" />
     <result outputType="json">{"listeDocuments":{"listeDocument":[{"idDocument":"$idDocument","nomDocument":"$nomDocument","nbUploader":"$nbUploader","nbDeposer":"$nbDeposer"}]}}</result>
   </query>
   <query id="documentToUploadByMandataire" useConfig="documentDS">
@@ -166,33 +168,14 @@
   <query id="getDocumentLabel" useConfig="documentDS">
     <sql>SELECT "idDocument", "nomDocument"
 	FROM public.document WHERE "idDocument"=:idDocument</sql>
-    <param type="IN" name="idDocument" paramType="SCALAR" sqlType="INTEGER" optional="false" />
+    <param type="IN" name="idDocument" sqlType="INTEGER" paramType="SCALAR" optional="false" />
     <result outputType="json">{"document":{"nomDocument":"$nomDocument"}}</result>
   </query>
-  <resource method="GET" path="listDocumentToUploadByTheExploitationWhithBailleurId">
-    <description />
-    <call-query href="documentToUploadByTheExploitationWhithBailleurId">
-      <with-param name="idTypeBailleur" query-param="idTypeBailleur" />
-    </call-query>
-  </resource>
-  <resource method="GET" path="listDocumentToUploadByTheExploitationWhithContratId">
-    <description />
-    <call-query href="documentToUploadByTheExploitationWhithContratId">
-      <with-param name="idTypeContrat" query-param="idTypeContrat" />
-    </call-query>
-  </resource>
-  
-  <resource method="POST" path="filter/ids">
-    <description />
-    <call-query href="fetchDocumentInList">
-      <with-param name="ids" query-param="ids" />
-    </call-query>
-  </resource>
   <query id="fetchDocumentInList" useConfig="documentDS">
     <sql>
     	SELECT * FROM public.document WHERE "idDocument" IN (:ids)
     </sql>
-    <param type="IN" name="ids" paramType="ARRAY" sqlType="INTEGER"/>
+    <param type="IN" name="ids" sqlType="INTEGER" paramType="ARRAY" />
     <result outputType="json">
     	{
     		"data": {
@@ -204,5 +187,24 @@
     	}
     </result>
   </query>
-  
+  <query id="documentToUploadByImpositionIR" useConfig="documentDS">
+    <sql>SELECT public.document."idDocument", "nomDocument", "nbUploader", "nbDeposer" FROM public."documentImpositionIR", public.document
+WHERE public.document.idDocument = public."documentImpositionIR"."idDocument"</sql>
+    <result outputType="json">{
+    "listeDocuments":{
+        "listeDocument":[
+            {
+                "idDocument":"$idDocument",
+                "nomDocument": "$nomDocument",
+                "nbUploader":"$nbUploader",
+                "nbDeposer":"$nbDeposer"
+            }
+        ]
+    }
+}</result>
+  </query>
+  <resource path="listdocumentToUploadByImpositionIR" method="GET">
+    <description />
+    <call-query href="documentToUploadByImpositionIR" />
+  </resource>
 </data>
