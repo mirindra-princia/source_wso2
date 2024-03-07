@@ -14,12 +14,12 @@
 		<property name="username">devedbmdb</property>
 		<property name="password">devedbmdb</property>
 	</config>
- 	<!-- <config id="personneDS"> 
+  <!-- <config id="personneDS"> 
 		<property name="driverClassName">org.postgresql.Driver</property>
 		<property name="url">jdbc:postgresql://localhost:5432/personne</property>
 		<property name="username">postgres</property>
 		<property name="password">postgres</property>
-	</config> --> 
+	</config> -->
 	<resource method="POST" path="addPersonCompany">
 		<description />
 		<call-query href="addPersonCompany">
@@ -1700,7 +1700,7 @@
     			name AS (VALUES (:name))
     		
     		SELECT "idPersonne" FROM public."personne"
-    		WHERE matricule IS NULL AND (LOWER(TRIM(nom)) LIKE CONCAT((table name),'%') OR LOWER(TRIM(prenom)) LIKE CONCAT((table name),'%'))
+    		WHERE matricule IS NULL AND (LOWER(TRIM(nom)) LIKE CONCAT('%',(SELECT * FROM name),'%') OR LOWER(TRIM(prenom)) LIKE CONCAT('%',(SELECT * FROM name),'%'))
 		</sql>
 		<param type="IN" name="name" optional="false" sqlType="STRING" paramType="SCALAR" />
 		<result outputType="json">
