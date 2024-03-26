@@ -6,7 +6,7 @@
     <property name="url">jdbc:postgresql://devedbmdb.cq07jvdma2am.af-south-1.rds.amazonaws.com:5432/entite</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
-  </config>  --> 
+  </config> -->
   <!-- CONFIGURATION TEST  -->
     <config id="entiteDS">
     	<property name="driverClassName">org.postgresql.Driver</property>
@@ -435,7 +435,7 @@
     	JOIN "centreSecteur" cs ON cs."centerId" = centre.id
     	JOIN secteur ON secteur.id = cs."sectorId"
     	JOIN "secteurDistrict" sd ON sd."sectorId" = secteur.id
-    	WHERE centre."centerId" = :centerId
+    	WHERE centre.id = :centerId
     </sql>
     <param type="IN" name="centerId" paramType="SCALAR" sqlType="INTEGER" />
     <result outputType="json">
