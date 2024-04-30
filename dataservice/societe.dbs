@@ -1096,7 +1096,10 @@
     <sql>
     	SELECT status.id, status."idSociete" FROM public."statutInteroperabilite" status
     	JOIN public.societe ON societe."idSociete" = status."idSociete"
-    	WHERE status."RCS" > 1 AND status."INSTAT" > 1 AND status."DGI" > 1 AND ("EDBM"=0 OR "EDBM" IS NULL) AND societe."STAT" IS NOT NULL
+    	JOIN "siegeSocial" ss ON ss."idSiege" = societe."idSiegeSocial"
+      	JOIN adresse ON adresse."idAdresse" = ss."adresseSiegeSocial"
+      	WHERE ss."siegePrincipal" IS NULL AND adresse."idRegion" IN (1) 
+    	AND status."RCS" > 1 AND status."INSTAT" > 1 AND status."DGI" > 1 AND ("EDBM"=0 OR "EDBM" IS NULL) AND societe."STAT" IS NOT NULL
     </sql>
     <result outputType="json">{"status":{"company":[{"idSociete":"$idSociete"}]}}</result>
   </query>
