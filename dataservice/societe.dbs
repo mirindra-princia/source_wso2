@@ -8,19 +8,19 @@
     <property name="password">devedbmdb</property>
   </config> -->
   <!-- CONFIGURATION TEST -->
-  <config id="societeDS">
+  <!-- <config id="societeDS">
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://13.246.0.44:5432/societe</property>
     <property name="username">devedbmdb</property>
     <property name="password">devedbmdb</property>
-  </config>
+  </config> -->
   <!-- CONFIGURATION DEV -->
-  <!-- <config id="societeDS"> 
+  <config id="societeDS"> 
     <property name="driverClassName">org.postgresql.Driver</property>
     <property name="url">jdbc:postgresql://localhost:5432/societe</property>
     <property name="username">postgres</property>
     <property name="password">postgres</property>
-  </config> -->
+  </config>
 
   <resource path="addSocietyForm" method="POST">
     <description>add society from online form</description>
@@ -390,6 +390,10 @@
   <resource path="getCreatedCompanyId" method="GET">
     <description />
     <call-query href="getCreatedCompanyId" />
+  </resource>
+  <resource path="getUnsentCompanies" method="GET">
+  	<description />
+  	<call-query href="getUnsentCompanies" />
   </resource>
   <resource path="setInstatInterStatus" method="PUT">
     <description />
@@ -1102,6 +1106,36 @@
     	AND status."RCS" > 1 AND status."INSTAT" > 1 AND status."DGI" > 1 AND ("EDBM"=0 OR "EDBM" IS NULL) AND societe."STAT" IS NOT NULL
     </sql>
     <result outputType="json">{"status":{"company":[{"idSociete":"$idSociete"}]}}</result>
+  </query>
+  <query id="getUnsentCompanies" useConfig="societeDS">
+    <sql>
+  		SELECT status."idSociete", status."EDBM", societe."denominationSocial",
+  		to_char(societe."dateCreation", 'YYYY-MM-DD') AS "dateCreation",
+    	societe."capital", societe."idFormeJuridique",
+		societe."duree", societe."objetSocial", societe."STAT",
+		societe."NIF", societe."RCS"
+    	FROM public."statutInteroperabilite" status
+    	JOIN public.societe ON societe."idSociete" = status."idSociete"
+		WHERE status."RCS" > 1 AND status."INSTAT" > 1 AND status."DGI" > 1 AND ("SITE"=0 OR "SITE" IS NULL) AND societe."NIF" IS NOT NULL
+    </sql>
+    <result outputType="json">
+    {
+    	"data":{
+    		"company":[{
+	    		"idSociete":"$idSociete",
+	    		"entreprise":"$denominationSocial",
+	    		"date_de_creation":"$dateCreation",
+	    		"capital":"$capital",
+	    		"idFormeJuridique":"$idFormeJuridique",
+	    		"duree":"$duree",
+	    		"activites":"$objetSocial",
+	    		"rcs":"$RCS",
+	    		"stat":"$STAT",
+	    		"nif":"$NIF"
+	    	}]
+	    }
+	}
+    </result>
   </query>
   <query id="setEdbmInterStatus" useConfig="societeDS">
     <sql>UPDATE public."statutInteroperabilite" SET "EDBM"=:status WHERE "idSociete"=ANY(:idsSociete::int[]) </sql>
