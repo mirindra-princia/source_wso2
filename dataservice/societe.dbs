@@ -391,10 +391,6 @@
     <description />
     <call-query href="getCreatedCompanyId" />
   </resource>
-  <resource path="getUnsentCompanies" method="GET">
-  	<description />
-  	<call-query href="getUnsentCompanies" />
-  </resource>
   <resource path="setInstatInterStatus" method="PUT">
     <description />
     <call-query href="setInstatInterStatus">
@@ -474,6 +470,13 @@
   <resource path="setEdbmInterStatus" method="PUT">
     <description />
     <call-query href="setEdbmInterStatus">
+      <with-param name="idsSociete" query-param="idsSociete" />
+      <with-param name="status" query-param="status" />
+    </call-query>
+  </resource>
+  <resource path="setSiteInterStatus" method="PUT">
+    <description />
+    <call-query href="setSiteInterStatus">
       <with-param name="idsSociete" query-param="idsSociete" />
       <with-param name="status" query-param="status" />
     </call-query>
@@ -1107,38 +1110,13 @@
     </sql>
     <result outputType="json">{"status":{"company":[{"idSociete":"$idSociete"}]}}</result>
   </query>
-  <query id="getUnsentCompanies" useConfig="societeDS">
-    <sql>
-  		SELECT status."idSociete", status."EDBM", societe."denominationSocial",
-  		to_char(societe."dateCreation", 'YYYY-MM-DD') AS "dateCreation",
-    	societe."capital", societe."idFormeJuridique",
-		societe."duree", societe."objetSocial", societe."STAT",
-		societe."NIF", societe."RCS"
-    	FROM public."statutInteroperabilite" status
-    	JOIN public.societe ON societe."idSociete" = status."idSociete"
-		WHERE status."RCS" > 1 AND status."INSTAT" > 1 AND status."DGI" > 1 AND ("SITE"=0 OR "SITE" IS NULL) AND societe."NIF" IS NOT NULL
-    </sql>
-    <result outputType="json">
-    {
-    	"data":{
-    		"company":[{
-	    		"idSociete":"$idSociete",
-	    		"entreprise":"$denominationSocial",
-	    		"date_de_creation":"$dateCreation",
-	    		"capital":"$capital",
-	    		"idFormeJuridique":"$idFormeJuridique",
-	    		"duree":"$duree",
-	    		"activites":"$objetSocial",
-	    		"rcs":"$RCS",
-	    		"stat":"$STAT",
-	    		"nif":"$NIF"
-	    	}]
-	    }
-	}
-    </result>
-  </query>
   <query id="setEdbmInterStatus" useConfig="societeDS">
     <sql>UPDATE public."statutInteroperabilite" SET "EDBM"=:status WHERE "idSociete"=ANY(:idsSociete::int[]) </sql>
+    <param type="IN" name="idsSociete" sqlType="STRING" paramType="ARRAY" optional="false" />
+    <param type="IN" name="status" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+  </query>
+  <query id="setSiteInterStatus" useConfig="societeDS">
+    <sql>UPDATE public."statutInteroperabilite" SET "SITE"=:status WHERE "idSociete"=ANY(:idsSociete::int[]) </sql>
     <param type="IN" name="idsSociete" sqlType="STRING" paramType="ARRAY" optional="false" />
     <param type="IN" name="status" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>
