@@ -474,6 +474,13 @@
       <with-param name="status" query-param="status" />
     </call-query>
   </resource>
+  <resource path="setSiteInterStatus" method="PUT">
+    <description />
+    <call-query href="setSiteInterStatus">
+      <with-param name="idsSociete" query-param="idsSociete" />
+      <with-param name="status" query-param="status" />
+    </call-query>
+  </resource>
   <resource path="getCreatedCompany" method="GET">
     <description />
     <call-query href="listCreatedSociety">
@@ -1105,6 +1112,11 @@
   </query>
   <query id="setEdbmInterStatus" useConfig="societeDS">
     <sql>UPDATE public."statutInteroperabilite" SET "EDBM"=:status WHERE "idSociete"=ANY(:idsSociete::int[]) </sql>
+    <param type="IN" name="idsSociete" sqlType="STRING" paramType="ARRAY" optional="false" />
+    <param type="IN" name="status" sqlType="INTEGER" paramType="SCALAR" optional="false" />
+  </query>
+  <query id="setSiteInterStatus" useConfig="societeDS">
+    <sql>UPDATE public."statutInteroperabilite" SET "SITE"=:status WHERE "idSociete"=ANY(:idsSociete::int[]) </sql>
     <param type="IN" name="idsSociete" sqlType="STRING" paramType="ARRAY" optional="false" />
     <param type="IN" name="status" sqlType="INTEGER" paramType="SCALAR" optional="false" />
   </query>

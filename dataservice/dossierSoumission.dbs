@@ -18,7 +18,7 @@
   
   <!-- <config id="dossierSomissionDS">
     <property name="driverClassName">org.postgresql.Driver</property>
-    <property name="url">jdbc:postgresql://localhost:5432/dossier_soumission</property>
+    <property name="url">jdbc:postgresql://localhost:5432/dossier_somission</property>
     <property name="username">postgres</property>
     <property name="password">postgres</property>
   </config> -->

@@ -788,21 +788,21 @@
 	<query id="getPersonById" useConfig="personneDS">
 		<sql>SELECT "idPersonne", nom, prenom, "nomPere", "nomMere",
 			"dateNaissance", "lieuNaissance", "situationMatrimonial",
-			"pieceIdentite", sexe, societe_mandataire, e_mail, "idUtilisateur",
+			"idPieceIdentite", sexe, societe_mandataire, e_mail, "idUtilisateur",
 			tel,tel2, idrole, idadresse,nationalite
 			FROM public.personne WHERE "idPersonne"=:idPersonne
 		</sql>
 		<param type="IN" name="idPersonne" sqlType="INTEGER"
 			paramType="SCALAR" />
 		<result outputType="json">
-			{"personnes":{"personne":{"idPersonne":$idPersonne, "nom":"$nom",
+			{"personne":{"idPersonne":$idPersonne, "nom":"$nom",
 			"prenom":"$prenom", "nomPere":"$nomPere", "nomMere":"$nomMere",
 			"dateNaissance":"$dateNaissance", "lieuNaissance":"$lieuNaissance",
 			"situationMatrimonial":"$situationMatrimonial",
-			"pieceIdentite":"$pieceIdentite", "sexe":"$sexe",
+			"pieceIdentite":"$idPieceIdentite", "sexe":"$sexe",
 			"societe_mandataire":"$societe_mandataire", "e_mail":"$e_mail",
 			"idUtilisateur":"$idUtilisateur", "tel":$tel, "idrole":"$idrole",
-			"idadresse":"$idadresse","tel2":$tel2,"nationalite":"$nationalite"}}}
+			"idadresse":"$idadresse","tel2":$tel2,"nationalite":"$nationalite"}}
 		</result>
 	</query>
 	<query id="getPersonByEmail" useConfig="personneDS">
