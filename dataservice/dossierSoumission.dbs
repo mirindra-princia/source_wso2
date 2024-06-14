@@ -1664,7 +1664,10 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
             FROM dossier 
             LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier" AND de.group = :group
             WHERE dossier."idDossier" IN (:ids) AND "idStatutDossier" IN (:status)
-            ORDER BY "dateSoumission" ASC LIMIT :limit OFFSET :offset
+            ORDER BY 
+             "numeroDossier" is NULL,
+             "numeroDossier" ASC,
+             "dateSoumission" ASC LIMIT :limit OFFSET :offset
         </sql>
     <param type="IN" name="ids" sqlType="INTEGER" paramType="ARRAY" />
     <param type="IN" name="status" sqlType="INTEGER" paramType="ARRAY" />
@@ -1710,7 +1713,10 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
             FROM dossier 
             LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier" AND de.group = :group
             WHERE dossier."idDossier" IN (:ids) AND "idStatutDossier" IN (:status)
-            ORDER BY "dateSoumission" DESC LIMIT :limit OFFSET :offset
+            ORDER BY 
+             "numeroDossier" is NULL,
+             "numeroDossier" ASC,
+             "dateSoumission" DESC LIMIT :limit OFFSET :offset
         </sql>
     <param type="IN" name="ids" sqlType="INTEGER" paramType="ARRAY" />
     <param type="IN" name="status" sqlType="INTEGER" paramType="ARRAY" />
@@ -1769,7 +1775,10 @@ FROM   T where "idStatut"=4 or "idStatut"=3 ;
             FROM dossier 
             LEFT JOIN public.dossier_etat de ON dossier."idDossier" = de."idDossier" AND de.group = :group
             WHERE "idStatutDossier" IN (:status)
-            ORDER BY "dateSoumission" NULLS LAST LIMIT :limit OFFSET :offset
+            ORDER BY 
+             "numeroDossier" is NULL,
+             "numeroDossier" ASC,
+             "dateSoumission" NULLS LAST LIMIT :limit OFFSET :offset
         </sql>
     <param type="IN" name="status" sqlType="INTEGER" paramType="ARRAY" />
     <param type="IN" name="limit" sqlType="INTEGER" paramType="SCALAR" />
