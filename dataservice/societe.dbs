@@ -2120,4 +2120,29 @@
 		</result>
   	</query>
   <!-- #ASSOCIATE -->
+   <query id="addArchive" useConfig="societeDS">
+    <sql>INSERT INTO public.archive(
+	"fileName", "fileType", "path")
+	VALUES ( :fileName, :fileType, :path);</sql>
+    <param type="IN" name="path" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <param type="IN" name="fileName" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <param type="IN" name="fileType" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"archives":{
+ "fileName":"$fileName",
+"fileType":"$fileType",
+"path":"$path"
+}
+}</result>
+  </query>
+  <query id="getArchive" useConfig="societeDS">
+    <sql>SELECT * FROM public.archive 		</sql>
+    <param type="IN" name="path" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <param type="IN" name="fileName" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <param type="IN" name="fileType" sqlType="STRING" paramType="SCALAR" optional="false" />
+    <result outputType="json">{"archives":{ "file_name":"$file_name",
+"file_type":"$file_type",
+"path":"$path"
+}
+}</result>
+  </query>
 </data>
